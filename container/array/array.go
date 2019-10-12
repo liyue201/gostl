@@ -1,6 +1,10 @@
-package gostl
+package array
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+	. "github.com/liyue201/gostl/container"
+)
 
 var ErrArraySizeNotEqual = errors.New("array size are not equal")
 var ErrOutOffRange = errors.New("out off range")
@@ -9,8 +13,16 @@ type Array struct {
 	data []interface{}
 }
 
-func NewArray(size int) *Array {
+func New(size int) *Array {
 	return &Array{data: make([]interface{}, size, size)}
+}
+
+func NewFromArray(other *Array) *Array {
+	this := &Array{data: make([]interface{}, other.Size(), other.Size())}
+	for i := range other.data {
+		this.data[i] = other.data[i]
+	}
+	return this
 }
 
 func (this *Array) Fill(val interface{}) {
@@ -19,7 +31,7 @@ func (this *Array) Fill(val interface{}) {
 	}
 }
 
-func (this *Array) Assign(index int, val interface{}) error {
+func (this *Array) Set(index int, val interface{}) error {
 	if index < 0 || index > len(this.data) {
 		return ErrOutOffRange
 	}
@@ -46,10 +58,6 @@ func (this *Array) Size() int {
 	return len(this.data)
 }
 
-func (this *Array) MaxSize() int {
-	return len(this.data)
-}
-
 func (this *Array) Empty() bool {
 	if len(this.data) > 0 {
 		return false
@@ -61,9 +69,7 @@ func (this *Array) Swap(other *Array) error {
 	if this.Size() != other.Size() {
 		return ErrArraySizeNotEqual
 	}
-	for i := range this.data {
-		this.data[i], other.data[i] = other.data[i], this.data[i]
-	}
+	this.data, other.data = other.data, this.data
 	return nil
 }
 
@@ -76,7 +82,7 @@ func (this *Array) Begin() Iterator {
 }
 
 func (this *Array) End() Iterator {
-	return &ArrayIterator{array: this, curIndex: len(this.data) - 1}
+	return &ArrayIterator{array: this, curIndex: len(this.data)}
 }
 
 func (this *Array) RBegin() ReverseIterator {
@@ -84,7 +90,11 @@ func (this *Array) RBegin() ReverseIterator {
 }
 
 func (this *Array) REnd() ReverseIterator {
-	return &ArrayReverseIterator{array: this, curIndex: 0}
+	return &ArrayReverseIterator{array: this, curIndex: -1}
+}
+
+func (this *Array) String() string {
+	return fmt.Sprintf("%v", this.data)
 }
 
 type ArrayIterator struct {
@@ -93,17 +103,16 @@ type ArrayIterator struct {
 }
 
 func (this *ArrayIterator) Next() Iterator {
-	this.curIndex++
-	return this
+	return &ArrayIterator{array: this.array, curIndex: this.curIndex + 1}
 }
 
-func (this *ArrayIterator) Data() interface{} {
+func (this *ArrayIterator) Value() interface{} {
 	data, _ := this.array.At(this.curIndex)
 	return data
 }
 
-func (this *ArrayIterator) Assign(val interface{}) error {
-	return this.array.Assign(this.curIndex, val)
+func (this *ArrayIterator) Set(val interface{}) error {
+	return this.array.Set(this.curIndex, val)
 }
 
 func (this *ArrayIterator) Equal(other Iterator) bool {
@@ -123,17 +132,17 @@ type ArrayReverseIterator struct {
 }
 
 func (this *ArrayReverseIterator) Next() ReverseIterator {
-	this.curIndex--
+	return &ArrayReverseIterator{array: this.array, curIndex: this.curIndex - 1}
 	return this
 }
 
-func (this *ArrayReverseIterator) Assign(val interface{}) error {
-	return this.array.Assign(this.curIndex, val)
+func (this *ArrayReverseIterator) Set(val interface{}) error {
+	return this.array.Set(this.curIndex, val)
 }
 
-func (this *ArrayReverseIterator) Data() interface{} {
-	data, _ := this.array.At(this.curIndex)
-	return data
+func (this *ArrayReverseIterator) Value() interface{} {
+	val, _ := this.array.At(this.curIndex)
+	return val
 }
 
 func (this *ArrayReverseIterator) Equal(other ReverseIterator) bool {

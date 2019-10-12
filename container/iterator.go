@@ -1,21 +1,24 @@
-package gostl
+package container
+
+type BaseIterator interface {
+}
 
 type ConstIterator interface {
 	Next() ConstIterator
-	Data() interface{}
+	Value() interface{}
 	Equal(ConstIterator) bool
 }
 
 type Iterator interface {
 	Next() Iterator
-	Data() interface{}
+	Value() interface{}
 	Equal(Iterator) bool
-	Assign(interface{}) error
+	Set(data interface{}) error
 }
 
 type ReverseIterator interface {
 	Next() ReverseIterator
-	Data() interface{}
+	Value() interface{}
 	Equal(ReverseIterator) bool
-	Assign(interface{}) error
+	Set(data interface{}) error
 }
