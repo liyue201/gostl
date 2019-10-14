@@ -20,26 +20,26 @@ func TestVectorBase(t *testing.T) {
 		t.Fatalf("size error")
 	}
 
-	if val, err := v.Front(); err != nil || val.(int) != 1 {
-		t.Fatalf("val error: %v , %v", val, err.Error())
+	if val := v.Front(); val == nil || val.(int) != 1 {
+		t.Fatalf("val error: %v", val)
 	}
-	if val, err := v.Back(); err != nil || val.(int) != 2 {
-		t.Fatalf("val error: %v , %v", val, err.Error())
+	if val := v.Back(); val == nil || val.(int) != 2 {
+		t.Fatalf("val error: %v ", val)
 	}
 
 	v.ShrinkToFit()
 	if v.Capacity() != 2 {
 		t.Fatalf("capacity error")
 	}
-	if val, err := v.At(0); err != nil || val.(int) != 1 {
-		t.Fatalf("val error: %v , %v", val, err.Error())
+	if val := v.At(0); val == nil || val.(int) != 1 {
+		t.Fatalf("val error: %v ", val)
 	}
 	v.Reserve(20)
 	if v.Capacity() != 20 || v.Size() != 2 {
 		t.Fatalf("capacity or size error")
 	}
-	if val, err := v.At(1); err != nil || val.(int) != 2 {
-		t.Fatalf("val error: %v , %v", val, err.Error())
+	if val := v.At(1); val.(int) != 2 {
+		t.Fatalf("val error: %v", val)
 	}
 	v.Clear()
 	if v.Size() != 0 || !v.Empty() {
@@ -53,16 +53,16 @@ func TestModifyVector(t *testing.T) {
 	v.PushBack(2)
 	v.PushBack(3)
 	//[1,2,3]
-	if val, err := v.PopBack(); err != nil || val.(int) != 3 {
-		t.Fatalf("val error: %v , %v", val, err.Error())
+	if val := v.PopBack(); val == nil || val.(int) != 3 {
+		t.Fatalf("val error: %v", val)
 	}
 	//[1 2]
 	v.PushBack(4)
 	//[1 2 4]
 
 	v.SetAt(1, 9)
-	if val, err := v.At(1); err != nil || val.(int) != 9 {
-		t.Fatalf("val error: %v , %v", val, err.Error())
+	if val := v.At(1); val == nil || val.(int) != 9 {
+		t.Fatalf("val error: %v", val)
 	}
 	//[1 9 4]
 
@@ -81,11 +81,12 @@ func TestVectorIter(t *testing.T) {
 	v.PushBack(2)
 	v.PushBack(3)
 	v.PushBack(4)
+	//[1 2 3 4]
 
 	i := 0
 	t.Logf("v: %v", v.String())
 	for iter := v.Begin(); !iter.Equal(v.End()); iter = iter.Next() {
-		if val, _ := v.At(i); val.(int) != iter.Value().(int) {
+		if val := v.At(i); val.(int) != iter.Value().(int) {
 			t.Fatalf("value error: expect %v, but get %v", val, iter.Value().(int))
 		}
 		i++
@@ -93,7 +94,7 @@ func TestVectorIter(t *testing.T) {
 
 	i = 3
 	for iter := v.RBegin(); !iter.Equal(v.REnd()); iter = iter.Next() {
-		if val, _ := v.At(i); val.(int) != iter.Value().(int) {
+		if val := v.At(i); val.(int) != iter.Value().(int) {
 			t.Fatalf("traversal value error: expect %v, but get %v", val, iter.Value().(int))
 		}
 		i--
@@ -103,11 +104,29 @@ func TestVectorIter(t *testing.T) {
 	if iter.Value().(int) != 2 {
 		t.Fatalf("erase error: expect %v, but get %v", 2, iter.Value().(int))
 	}
-	next := iter.Next()
-	v.EraseRange(iter, next)
+	//[2 3 4]
 
+	v.PushBack(5)
+	v.PushBack(6)
+	//[2 3 4 5 6]
+
+	iter = v.EraseRange(v.Begin().Next(), v.Begin().Next().Next().Next())
+	//[2 5 6]
 	t.Logf("v: %v", v.String())
-	if iter.Value().(int) != 2 {
-		t.Fatalf("erase error: expect %v, but get %v", 2, iter.Value().(int))
+	if iter.Value().(int) != 5 {
+		t.Fatalf("erase error: expect 5, but get %v", iter.Value().(int))
+	}
+	if v.String() != "[2 5 6]" {
+		t.Fatalf("erase error: expect [2 5 6], but get %v", v.String())
+	}
+	//
+	iter = v.Begin()
+	iter = v.Insert(iter, 7)
+	//[7 2 5 6]
+	if iter.Value().(int) != 7 {
+		t.Fatalf("erase error: expect 7, but get %v", iter.Value().(int))
+	}
+	if v.String() != "[7 2 5 6]" {
+		t.Fatalf("erase error: expect [7 2 5 6], but get %v", v.String())
 	}
 }

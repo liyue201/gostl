@@ -83,28 +83,32 @@ func (this *Vector) EraseIndexRange(first, last int) error {
 	return nil
 }
 
-func (this *Vector) At(index int) (interface{}, error) {
+//At returns the value at index, returns nil if index out off range .
+func (this *Vector) At(index int) interface{} {
 	if index < 0 || index > this.Size() {
-		return nil, ErrOutOffRange
+		return nil
 	}
-	return this.data[index], nil
+	return this.data[index]
 }
 
-func (this *Vector) Front() (interface{}, error) {
+//At returns the first value of the vector, returns nil if the vector is empty.
+func (this *Vector) Front() interface{} {
 	return this.At(0)
 }
 
-func (this *Vector) Back() (interface{}, error) {
+//At returns the last value of the vector, returns nil if the vector is empty.
+func (this *Vector) Back() interface{} {
 	return this.At(this.Size() - 1)
 }
 
-func (this *Vector) PopBack() (interface{}, error) {
+//At returns the last value of the vector and erase it, returns nil if the vector is empty.
+func (this *Vector) PopBack() interface{} {
 	if this.Empty() {
-		return nil, ErrEmpty
+		return nil
 	}
-	val, err := this.Back()
+	val := this.Back()
 	this.data = this.data[:len(this.data)-1]
-	return val, err
+	return val
 }
 
 func (this *Vector) Reserve(capacity int) {
@@ -192,11 +196,15 @@ type VectorIterator struct {
 }
 
 func (this *VectorIterator) Next() Iterator {
-	return &VectorIterator{vec: this.vec, curIndex: this.curIndex + 1}
+	index := this.curIndex + 1
+	if index > this.vec.Size() {
+		index = this.vec.Size()
+	}
+	return &VectorIterator{vec: this.vec, curIndex: index}
 }
 
 func (this *VectorIterator) Value() interface{} {
-	val, _ := this.vec.At(this.curIndex)
+	val := this.vec.At(this.curIndex)
 	return val
 }
 
@@ -221,8 +229,11 @@ type VectorReverseIterator struct {
 }
 
 func (this *VectorReverseIterator) Next() ReverseIterator {
-	return &VectorReverseIterator{vec: this.vec, curIndex: this.curIndex - 1}
-	return this
+	index := this.curIndex - 1
+	if index < -1 {
+		index = -1
+	}
+	return &VectorReverseIterator{vec: this.vec, curIndex: index}
 }
 
 func (this *VectorReverseIterator) Set(val interface{}) error {
@@ -230,8 +241,7 @@ func (this *VectorReverseIterator) Set(val interface{}) error {
 }
 
 func (this *VectorReverseIterator) Value() interface{} {
-	val, _ := this.vec.At(this.curIndex)
-	return val
+	return this.vec.At(this.curIndex)
 }
 
 func (this *VectorReverseIterator) Equal(other ReverseIterator) bool {

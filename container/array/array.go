@@ -39,18 +39,18 @@ func (this *Array) Set(index int, val interface{}) error {
 	return nil
 }
 
-func (this *Array) At(index int) (interface{}, error) {
+func (this *Array) At(index int) interface{} {
 	if index < 0 || index > len(this.data) {
-		return 0, ErrOutOffRange
+		return nil
 	}
-	return this.data[index], nil
+	return this.data[index]
 }
 
-func (this *Array) Front(index int) (interface{}, error) {
+func (this *Array) Front(index int) interface{} {
 	return this.At(0)
 }
 
-func (this *Array) Back(index int) (interface{}, error) {
+func (this *Array) Back(index int) interface{} {
 	return this.At(len(this.data) - 1)
 }
 
@@ -103,12 +103,15 @@ type ArrayIterator struct {
 }
 
 func (this *ArrayIterator) Next() Iterator {
-	return &ArrayIterator{array: this.array, curIndex: this.curIndex + 1}
+	index := this.curIndex + 1
+	if index > this.array.Size() {
+		index = this.array.Size()
+	}
+	return &ArrayIterator{array: this.array, curIndex: index}
 }
 
 func (this *ArrayIterator) Value() interface{} {
-	data, _ := this.array.At(this.curIndex)
-	return data
+	return this.array.At(this.curIndex)
 }
 
 func (this *ArrayIterator) Set(val interface{}) error {
@@ -132,8 +135,11 @@ type ArrayReverseIterator struct {
 }
 
 func (this *ArrayReverseIterator) Next() ReverseIterator {
-	return &ArrayReverseIterator{array: this.array, curIndex: this.curIndex - 1}
-	return this
+	index := this.curIndex - 1
+	if index < -1 {
+		index = -1
+	}
+	return &ArrayReverseIterator{array: this.array, curIndex: index}
 }
 
 func (this *ArrayReverseIterator) Set(val interface{}) error {
@@ -141,8 +147,7 @@ func (this *ArrayReverseIterator) Set(val interface{}) error {
 }
 
 func (this *ArrayReverseIterator) Value() interface{} {
-	val, _ := this.array.At(this.curIndex)
-	return val
+	return this.array.At(this.curIndex)
 }
 
 func (this *ArrayReverseIterator) Equal(other ReverseIterator) bool {
