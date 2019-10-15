@@ -48,7 +48,7 @@ func TestErase(t *testing.T) {
 	for i := 0; i < 5; i++ {
 		q.PushBack(i + 1)
 	}
-	//[1 2 3 4 5]
+   //[1 2 3 4 5]
 
 	t.Logf("capacity: %v", q.Capacity())
 	t.Logf("q: %v, %v", q, q.data)
