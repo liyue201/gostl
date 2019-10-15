@@ -171,6 +171,10 @@ func (this *Deque) Erase(pos int) error {
 	return this.EraseRange(pos, pos+1)
 }
 
+func (this *Deque) Clear() {
+	this.EraseRange(0, this.size)
+}
+
 //EraseRange erase the data in the range [firstPos, lastPos), not include lastPos.
 func (this *Deque) EraseRange(firstPos, lastPos int) error {
 	if firstPos < 0 || lastPos > this.size {
