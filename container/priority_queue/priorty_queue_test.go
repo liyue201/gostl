@@ -2,25 +2,24 @@ package priority_queue
 
 import "testing"
 
-  
 func TestMinPriorityQueue(t *testing.T) {
 	cmp := func(a, b interface{}) bool {
-		return  a.(int) < b.(int)
+		return a.(int) < b.(int)
 	}
-	pq := New(cmp) 
+	pq := New(cmp)
 	pq.Push(4)
 	pq.Push(8)
-	pq.Push(1) 
-	pq.Push(6) 
+	pq.Push(1)
+	pq.Push(6)
 	pq.Push(3)
 	for !pq.Empty() {
 		t.Logf("%v, %v", pq.Top(), pq.Pop())
 	}
-} 
+}
 
 func TestMaxPriorityQueue(t *testing.T) {
 	cmp := func(a, b interface{}) bool {
-		return  a.(int) > b.(int)
+		return a.(int) > b.(int)
 	}
 	pq := New(cmp)
 	pq.Push(4)
@@ -35,7 +34,7 @@ func TestMaxPriorityQueue(t *testing.T) {
 
 func TestStringPriorityQueue(t *testing.T) {
 	cmp := func(a, b interface{}) bool {
-		return  a.(string) < b.(string)
+		return a.(string) < b.(string)
 	}
 	pq := New(cmp)
 	pq.Push("fdsf")
@@ -47,6 +46,3 @@ func TestStringPriorityQueue(t *testing.T) {
 		t.Logf("%v, %v", pq.Top(), pq.Pop())
 	}
 }
-
-
-

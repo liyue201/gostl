@@ -1,18 +1,20 @@
 package priority_queue
 
-import "container/heap"
+import (
+	"container/heap"
+)
 
 type CmpFun func(a, b interface{}) bool
 
 type ItemHolder struct {
 	items  []interface{}
-	cmpFun CmpFun 
+	cmpFun CmpFun
 }
- 
+
 func (this *ItemHolder) Push(item interface{}) {
 	this.items = append(this.items, item)
 }
- 
+
 func (this *ItemHolder) Pop() interface{} {
 	if len(this.items) == 0 {
 		return nil
@@ -77,3 +79,4 @@ func (this *PriorityQueue) Empty() bool {
 	}
 	return false
 }
+
