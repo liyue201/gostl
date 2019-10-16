@@ -1,25 +1,23 @@
 package rbtree
 
+import (
+	. "github.com/liyue201/gostl/container"
+)
+
 const (
 	RED   = 0
 	BLACK = 1
 )
 
-// Should return a number:
-//    negative , if a < b
-//    zero     , if a == b
-//    positive , if a > b
-type Comparator func(a, b interface{}) int
-
-type node struct {
-	left, right, parent *node
+type Node struct {
+	left, right, parent *Node
 	color               int
 	Key                 interface{}
 	Value               interface{}
 }
 
 type RbTree struct {
-	root *node
+	root *Node
 	size int
 	cmp  Comparator
 }
@@ -28,19 +26,33 @@ func New(cmp Comparator) *RbTree {
 	return &RbTree{cmp: cmp}
 }
 
-// Find finds the node bye the key and return its value.
-func (t *RbTree) Find(key interface{}) interface{} {
-	n := t.findNode(key)
+// Clear clears the tree
+func (this *RbTree) Clear() {
+	this.root = nil
+	this.size = 0
+}
+
+// Find finds the first Node by the key and return its value.
+func (this *RbTree) Find(key interface{}) interface{} {
+	n := this.findFirstNode(key)
 	if n != nil {
 		return n.Value
 	}
 	return nil
 }
 
-// FindIt finds the node and return it as an iterator.
-//func (t *RbTree) FindIt(key interface{}) *node {
-//	return t.findNode(key)
-//}
+// FindIt finds the Node and return it as an iterator.
+func (this *RbTree) FindItr(key interface{}) *Node {
+	return this.findFirstNode(key)
+}
+
+// Begin returns the Node with min key in the tree
+func (this *RbTree) Begin() *Node {
+	if this.root == nil {
+		return nil
+	}
+	return minimum(this.root)
+}
 
 // Empty returns true if Tree is empty,otherwise returns false.
 func (this *RbTree) Empty() bool {
@@ -58,7 +70,7 @@ func (this *RbTree) Size() int {
 // Insert inserts a key-value pair into the rbtree.
 func (this *RbTree) Insert(key, value interface{}) {
 	x := this.root
-	var y *node
+	var y *Node
 
 	for x != nil {
 		y = x
@@ -69,7 +81,7 @@ func (this *RbTree) Insert(key, value interface{}) {
 		}
 	}
 
-	z := &node{parent: y, color: RED, Key: key, Value: value}
+	z := &Node{parent: y, color: RED, Key: key, Value: value}
 	this.size++
 
 	if y == nil {
@@ -84,8 +96,8 @@ func (this *RbTree) Insert(key, value interface{}) {
 	this.rbInsertFixup(z)
 }
 
-func (this *RbTree) rbInsertFixup(z *node) {
-	var y *node
+func (this *RbTree) rbInsertFixup(z *Node) {
+	var y *Node
 	for z.parent != nil && z.parent.color == RED {
 		if z.parent == z.parent.parent.left {
 			y = z.parent.parent.right
@@ -124,14 +136,14 @@ func (this *RbTree) rbInsertFixup(z *node) {
 	this.root.color = BLACK
 }
 
-// Delete deletes the node by key
-func (this *RbTree) Delete(key interface{}) {
-	z := this.findNode(key)
+// Delete deletes the Node
+func (this *RbTree) Delete(node *Node) {
+	z := node
 	if z == nil {
 		return
 	}
 
-	var x, y *node
+	var x, y *Node
 	if z.left != nil && z.right != nil {
 		y = successor(z)
 	} else {
@@ -167,8 +179,8 @@ func (this *RbTree) Delete(key interface{}) {
 	this.size--
 }
 
-func (this *RbTree) rbDeleteFixup(x, parent *node) {
-	var w *node
+func (this *RbTree) rbDeleteFixup(x, parent *Node) {
+	var w *Node
 
 	for x != this.root && getColor(x) == BLACK {
 		if x != nil {
@@ -237,7 +249,7 @@ func (this *RbTree) rbDeleteFixup(x, parent *node) {
 	}
 }
 
-func (this *RbTree) leftRotate(x *node) {
+func (this *RbTree) leftRotate(x *Node) {
 	y := x.right
 	x.right = y.left
 	if y.left != nil {
@@ -255,7 +267,7 @@ func (this *RbTree) leftRotate(x *node) {
 	x.parent = y
 }
 
-func (this *RbTree) rightRotate(x *node) {
+func (this *RbTree) rightRotate(x *Node) {
 	y := x.left
 	x.left = y.right
 	if y.right != nil {
@@ -273,8 +285,8 @@ func (this *RbTree) rightRotate(x *node) {
 	x.parent = y
 }
 
-// findNode finds the node by key and return it, if not exists return nil.
-func (this *RbTree) findNode(key interface{}) *node {
+// findNode finds the Node by key and return it's Node, if not exists return nil.
+func (this *RbTree) findNode(key interface{}) *Node {
 	x := this.root
 	for x != nil {
 		if this.cmp(key, x.Key) < 0 {
@@ -289,13 +301,50 @@ func (this *RbTree) findNode(key interface{}) *node {
 	return nil
 }
 
-// Next returns the node's successor as an iterator.
-func (n *node) Next() *node {
+// findNode returns the first Node that equal to key, if not exists return nil.
+func (this *RbTree) findFirstNode(key interface{}) *Node {
+	node := this.FindLowerBoundNode(key)
+	if node == nil {
+		return nil
+	}
+	if this.cmp(node.Key, key) == 0 {
+		return node
+	}
+	return nil
+}
+
+// findNode returns the first Node that equal or greater than key, if not exists return nil.
+func (this *RbTree) FindLowerBoundNode(key interface{}) *Node {
+	return this.findLowerBoundNode(this.root, key)
+}
+
+func (this *RbTree) findLowerBoundNode(x *Node, key interface{}) *Node {
+	if x == nil {
+		return nil
+	}
+	if this.cmp(key, x.Key) <= 0 {
+		ret := this.findLowerBoundNode(x.left, key)
+		if ret == nil {
+			return x
+		} else {
+			if this.cmp(ret.Key, x.Key) <= 0 {
+				return ret
+			} else {
+				return x
+			}
+		}
+	} else {
+		return this.findLowerBoundNode(x.right, key)
+	}
+}
+
+// Next returns the Node's successor as an iterator.
+func (n *Node) Next() *Node {
 	return successor(n)
 }
 
-// successor returns the successor of the node
-func successor(x *node) *node {
+// successor returns the successor of the Node
+func successor(x *Node) *Node {
 	if x.right != nil {
 		return minimum(x.right)
 	}
@@ -307,16 +356,16 @@ func successor(x *node) *node {
 	return y
 }
 
-// getColor gets color of the node.
-func getColor(n *node) int {
+// getColor gets color of the Node.
+func getColor(n *Node) int {
 	if n == nil {
 		return BLACK
 	}
 	return n.color
 }
 
-// minimum finds the minimum node of subtree n.
-func minimum(n *node) *node {
+// minimum finds the minimum Node of subtree n.
+func minimum(n *Node) *Node {
 	for n.left != nil {
 		n = n.left
 	}
