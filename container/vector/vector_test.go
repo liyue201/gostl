@@ -90,7 +90,7 @@ func TestVectorIter(t *testing.T) {
 			t.Fatalf("value error: expect %v, but get %v", val, iter.Value().(int))
 		}
 		i++
-	}
+	} 
 
 	i = 3
 	for iter := v.RBegin(); !iter.Equal(v.REnd()); iter = iter.Next() {

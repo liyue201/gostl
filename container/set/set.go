@@ -53,9 +53,21 @@ func (this *Set) Begin() ConstIterator {
 	return &SetIterator{node: this.tree.Begin()}
 }
 
-//Begin returns ConstIterator with nil value in the set
+//End returns ConstIterator with nil value in the set
 func (this *Set) End() ConstIterator {
 	return &SetIterator{node: nil}
+}
+
+//Begin returns the ConstIterator with the max value in the set, return nil if empty.
+func (this *Set) RBegin() ConstIterator {
+	//todo:
+	return nil
+}
+
+//REnd returns ConstIterator with nil value in the set
+func (this *Set) REnd() ConstIterator {
+	//return &SetIterator{node: nil}
+	return nil
 }
 
 func (this *Set) EqualRange(value interface{}) ConstIterator {
@@ -68,10 +80,15 @@ func (this *Set) Clear() {
 	this.tree.Clear()
 }
 
-// Count returns the 1 if value in the set, otherwise returns 0,
-func (this *Set) Count(value interface{}) int {
+// Contains returns true if value in the set. otherwise returns false.
+func (this *Set) Contains(value interface{}) bool {
 	if this.tree.Find(value) != nil {
-		return 1
+		return true
 	}
-	return 0
+	return false
+}
+
+// Contains returns the size of set
+func (this *Set) Size() int {
+	return this.tree.Size()
 }

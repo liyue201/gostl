@@ -15,10 +15,3 @@ type Iterator interface {
 	Equal(Iterator) bool
 	Set(data interface{}) error
 }
-
-type ReverseIterator interface {
-	Next() ReverseIterator
-	Value() interface{}
-	Equal(ReverseIterator) bool
-	Set(data interface{}) error
-}

@@ -7,7 +7,7 @@ func TestArray(t *testing.T) {
 	if a.Size() != 10 {
 		t.Fatalf("array size error")
 	}
-
+ 
 	va := 10
 	a.Fill(va)
 	for i := 0; i < a.Size(); i++ {
