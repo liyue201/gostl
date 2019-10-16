@@ -5,7 +5,7 @@ import (
 	"github.com/liyue201/gostl/container/rbtree"
 )
 
-const (
+const ( 
 	Empty = 0
 )
 
@@ -60,14 +60,12 @@ func (this *Set) End() ConstIterator {
 
 //Begin returns the ConstIterator with the max value in the set, return nil if empty.
 func (this *Set) RBegin() ConstIterator {
-	//todo:
-	return nil
+	return &SetReverseIterator{node: this.tree.RBegin()}
 }
 
 //REnd returns ConstIterator with nil value in the set
 func (this *Set) REnd() ConstIterator {
-	//return &SetIterator{node: nil}
-	return nil
+	return &SetReverseIterator{node: nil}
 }
 
 func (this *Set) EqualRange(value interface{}) ConstIterator {

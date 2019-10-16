@@ -49,11 +49,11 @@ func TestRbTee(t *testing.T) {
 			t.Logf("travesal: %v = %v ", n.Key, n.Value)
 		}
 	}
-
+  
 	for n := tree.Begin(); n != nil; n = n.Next() {
 		t.Logf("found: %v = %v ", n.Key, n.Value)
 	}
-
+  
 	t.Logf("==============")
 	tree.Delete(tree.findFirstNode(7))
 	for n := tree.Begin(); n != nil; n = n.Next() {
@@ -67,5 +67,35 @@ func TestRbTee(t *testing.T) {
 	tree.Delete(tree.findFirstNode(8))
 	for n := tree.Begin(); n != nil; n = n.Next() {
 		t.Logf("found: %v = %v ", n.Key, n.Value)
+	}
+} 
+
+func TestTravesal(t *testing.T) {
+	cmp := func(a, b interface{}) int {
+		if a.(int) == b.(int) {
+			return 0
+		}
+		if a.(int) < b.(int) {
+			return -1
+		}
+		return 1
+	}
+	tree := New(cmp)
+	for i := 20; i >= 1; i-- {
+		tree.Insert(i, 0)
+	}
+	for n := tree.Begin(); n != nil; n = n.Next() {
+		k := n.Key
+		var p interface{}
+		d := 0
+		if n.parent != nil {
+			p = n.parent.Key
+			if n.parent.left == n {
+				d = 0
+			} else {
+				d = 1
+			}
+		}
+		t.Logf("found: %v, %v, %v ", k, p, d)
 	}
 }

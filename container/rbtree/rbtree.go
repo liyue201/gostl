@@ -4,7 +4,7 @@ import (
 	. "github.com/liyue201/gostl/container"
 )
 
-const (
+const ( 
 	RED   = 0
 	BLACK = 1
 )
@@ -46,12 +46,20 @@ func (this *RbTree) FindItr(key interface{}) *Node {
 	return this.findFirstNode(key)
 }
 
-// Begin returns the Node with min key in the tree
+// Begin returns the Node with minimum key in the tree
 func (this *RbTree) Begin() *Node {
 	if this.root == nil {
 		return nil
 	}
 	return minimum(this.root)
+}
+
+// RBegin returns the Node with maximum key in the tree
+func (this *RbTree) RBegin() *Node {
+	if this.root == nil {
+		return nil
+	}
+	return maximum(this.root)
 }
 
 // Empty returns true if Tree is empty,otherwise returns false.
@@ -61,11 +69,11 @@ func (this *RbTree) Empty() bool {
 	}
 	return false
 }
-
+  
 // Size returns the size of the rbtree.
 func (this *RbTree) Size() int {
 	return this.size
-}
+}  
 
 // Insert inserts a key-value pair into the rbtree.
 func (this *RbTree) Insert(key, value interface{}) {
@@ -76,7 +84,7 @@ func (this *RbTree) Insert(key, value interface{}) {
 		y = x
 		if this.cmp(key, x.Key) < 0 {
 			x = x.left
-		} else {
+		} else {  
 			x = x.right
 		}
 	}
@@ -343,6 +351,11 @@ func (n *Node) Next() *Node {
 	return successor(n)
 }
 
+// Prev returns the Node's predecessor as an iterator.
+func (n *Node) Prev() *Node {
+	return presuccessor(n)
+}
+
 // successor returns the successor of the Node
 func successor(x *Node) *Node {
 	if x.right != nil {
@@ -354,6 +367,23 @@ func successor(x *Node) *Node {
 		y = x.parent
 	}
 	return y
+}
+
+// presuccessor returns the presuccessor of the Node
+func presuccessor(x *Node) *Node {
+	if x.left != nil {
+		return maximum(x.left)
+	}
+	if x.parent != nil {
+		if x.parent.right == x {
+			return x.parent
+		}
+		for x.parent != nil &&  x.parent.left == x{
+			x = x.parent
+		}
+		return x.parent
+	}
+	return nil
 }
 
 // getColor gets color of the Node.
@@ -368,6 +398,14 @@ func getColor(n *Node) int {
 func minimum(n *Node) *Node {
 	for n.left != nil {
 		n = n.left
+	}
+	return n
+}
+
+// maximum finds the maximum Node of subtree n.
+func maximum(n *Node) *Node {
+	for n.right != nil {
+		n = n.right
 	}
 	return n
 }
