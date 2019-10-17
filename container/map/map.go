@@ -15,9 +15,9 @@ func New(cmp Comparator) *Map {
 
 //Insert inserts key-value to the set
 func (this *Map) Insert(key, value interface{}) {
-	node := this.tree.FindItr(key)
+	node := this.tree.FindNode(key)
 	if node != nil {
-		node.Value = value
+		node.SetValue(value)
 		return
 	}
 	this.tree.Insert(key, value)
@@ -25,15 +25,15 @@ func (this *Map) Insert(key, value interface{}) {
 
 //Erase erases value in the Map
 func (this *Map) Erase(key interface{}) {
-	node := this.tree.FindItr(key)
+	node := this.tree.FindNode(key)
 	if node != nil {
 		this.tree.Delete(node)
 	}
 }
 
 //Begin returns the ConstIterator related to value in the set, return nil if not exist.
-func (this *Map) Find(key interface{}) ConstIterator {
-	node := this.tree.FindItr(key)
+func (this *Map) Find(key interface{}) ConstKvIterator {
+	node := this.tree.FindNode(key)
 	if node == nil {
 		return nil
 	}
@@ -41,28 +41,28 @@ func (this *Map) Find(key interface{}) ConstIterator {
 }
 
 //LowerBound returns the first ConstIterator that equal or greater than key in the Map
-func (this *Map) LowerBound(key interface{}) ConstIterator {
+func (this *Map) LowerBound(key interface{}) ConstKvIterator {
 	node := this.tree.FindLowerBoundNode(key)
 	return &MapIterator{node: node}
 }
 
 //Begin returns the ConstIterator with the min value in the Map, return nil if empty.
-func (this *Map) Begin() ConstIterator {
+func (this *Map) Begin() ConstKvIterator {
 	return &MapIterator{node: this.tree.Begin()}
 }
 
 //End returns ConstIterator with nil value in the Map
-func (this *Map) End() ConstIterator {
+func (this *Map) End() ConstKvIterator {
 	return &MapIterator{node: nil}
 }
 
 //Begin returns the ConstIterator with the max value in the Map, return nil if empty.
-func (this *Map) RBegin() ConstIterator {
+func (this *Map) RBegin() ConstKvIterator {
 	return &MapReverseIterator{node: this.tree.RBegin()}
 }
 
 //REnd returns ConstIterator with nil value in the set
-func (this *Map) REnd() ConstIterator {
+func (this *Map) REnd() ConstKvIterator {
 	return &MapReverseIterator{node: nil}
 }
 

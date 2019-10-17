@@ -4,18 +4,6 @@ import (
 	. "github.com/liyue201/gostl/container"
 )
 
-const ( 
-	RED   = 0
-	BLACK = 1
-)
-
-type Node struct {
-	left, right, parent *Node
-	color               int
-	Key                 interface{}
-	Value               interface{}
-}
-
 type RbTree struct {
 	root *Node
 	size int
@@ -36,13 +24,13 @@ func (this *RbTree) Clear() {
 func (this *RbTree) Find(key interface{}) interface{} {
 	n := this.findFirstNode(key)
 	if n != nil {
-		return n.Value
+		return n.value
 	}
 	return nil
 }
 
-// FindIt finds the Node and return it as an iterator.
-func (this *RbTree) FindItr(key interface{}) *Node {
+// FindIt finds the first Node and return it as an iterator.
+func (this *RbTree) FindNode(key interface{}) *Node {
 	return this.findFirstNode(key)
 }
 
@@ -69,34 +57,34 @@ func (this *RbTree) Empty() bool {
 	}
 	return false
 }
-  
+
 // Size returns the size of the rbtree.
 func (this *RbTree) Size() int {
 	return this.size
-}  
+}
 
 // Insert inserts a key-value pair into the rbtree.
 func (this *RbTree) Insert(key, value interface{}) {
 	x := this.root
 	var y *Node
-
+ 
 	for x != nil {
 		y = x
-		if this.cmp(key, x.Key) < 0 {
+		if this.cmp(key, x.key) < 0 {
 			x = x.left
-		} else {  
+		} else {
 			x = x.right
 		}
 	}
 
-	z := &Node{parent: y, color: RED, Key: key, Value: value}
+	z := &Node{parent: y, color: RED, key: key, value: value}
 	this.size++
 
 	if y == nil {
 		z.color = BLACK
 		this.root = z
 		return
-	} else if this.cmp(z.Key, y.Key) < 0 {
+	} else if this.cmp(z.key, y.key) < 0 {
 		y.left = z
 	} else {
 		y.right = z
@@ -177,8 +165,8 @@ func (this *RbTree) Delete(node *Node) {
 	}
 
 	if y != z {
-		z.Key = y.Key
-		z.Value = y.Value
+		z.key = y.key
+		z.value = y.value
 	}
 
 	if y.color == BLACK {
@@ -297,10 +285,10 @@ func (this *RbTree) rightRotate(x *Node) {
 func (this *RbTree) findNode(key interface{}) *Node {
 	x := this.root
 	for x != nil {
-		if this.cmp(key, x.Key) < 0 {
+		if this.cmp(key, x.key) < 0 {
 			x = x.left
 		} else {
-			if this.cmp(key, x.Key) == 0 {
+			if this.cmp(key, x.key) == 0 {
 				return x
 			}
 			x = x.right
@@ -315,7 +303,7 @@ func (this *RbTree) findFirstNode(key interface{}) *Node {
 	if node == nil {
 		return nil
 	}
-	if this.cmp(node.Key, key) == 0 {
+	if this.cmp(node.key, key) == 0 {
 		return node
 	}
 	return nil
@@ -330,12 +318,12 @@ func (this *RbTree) findLowerBoundNode(x *Node, key interface{}) *Node {
 	if x == nil {
 		return nil
 	}
-	if this.cmp(key, x.Key) <= 0 {
+	if this.cmp(key, x.key) <= 0 {
 		ret := this.findLowerBoundNode(x.left, key)
 		if ret == nil {
 			return x
 		} else {
-			if this.cmp(ret.Key, x.Key) <= 0 {
+			if this.cmp(ret.key, x.key) <= 0 {
 				return ret
 			} else {
 				return x
@@ -346,66 +334,10 @@ func (this *RbTree) findLowerBoundNode(x *Node, key interface{}) *Node {
 	}
 }
 
-// Next returns the Node's successor as an iterator.
-func (n *Node) Next() *Node {
-	return successor(n)
-}
-
-// Prev returns the Node's predecessor as an iterator.
-func (n *Node) Prev() *Node {
-	return presuccessor(n)
-}
-
-// successor returns the successor of the Node
-func successor(x *Node) *Node {
-	if x.right != nil {
-		return minimum(x.right)
-	}
-	y := x.parent
-	for y != nil && x == y.right {
-		x = y
-		y = x.parent
-	}
-	return y
-}
-
-// presuccessor returns the presuccessor of the Node
-func presuccessor(x *Node) *Node {
-	if x.left != nil {
-		return maximum(x.left)
-	}
-	if x.parent != nil {
-		if x.parent.right == x {
-			return x.parent
-		}
-		for x.parent != nil &&  x.parent.left == x{
-			x = x.parent
-		}
-		return x.parent
-	}
-	return nil
-}
-
 // getColor gets color of the Node.
-func getColor(n *Node) int {
+func getColor(n *Node) Color {
 	if n == nil {
 		return BLACK
 	}
 	return n.color
-}
-
-// minimum finds the minimum Node of subtree n.
-func minimum(n *Node) *Node {
-	for n.left != nil {
-		n = n.left
-	}
-	return n
-}
-
-// maximum finds the maximum Node of subtree n.
-func maximum(n *Node) *Node {
-	for n.right != nil {
-		n = n.right
-	}
-	return n
 }

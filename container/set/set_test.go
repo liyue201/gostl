@@ -1,18 +1,12 @@
 package set
 
-import "testing" 
- 
+import (
+	"github.com/liyue201/gostl/container"
+	"testing"
+)
+
 func TestSet(t *testing.T) {
-	cmp := func(a, b interface{}) int {
-		if a.(int) == b.(int) {
-			return 0  
-		}
-		if a.(int) < b.(int) {
-			return -1
-		}
-		return 1
-	}
-	s := New(cmp)
+	s := New(container.BuiltinTypeComparator)
 	for i := 10; i >= 1; i-- {
 		s.Insert(i) 
 	}       

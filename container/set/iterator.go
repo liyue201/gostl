@@ -3,12 +3,12 @@ package set
 import (
 	. "github.com/liyue201/gostl/container"
 	"github.com/liyue201/gostl/container/rbtree"
-) 
+)
 
 type SetIterator struct {
 	node *rbtree.Node
-} 
-
+}
+ 
 func (this *SetIterator) Next() ConstIterator {
 	return &SetIterator{
 		node: this.node.Next(),
@@ -16,7 +16,7 @@ func (this *SetIterator) Next() ConstIterator {
 }
 
 func (this *SetIterator) Value() interface{} {
-	return this.node.Key
+	return this.node.Key()
 }
 
 func (this *SetIterator) Equal(other ConstIterator) bool {
@@ -41,7 +41,7 @@ func (this *SetReverseIterator) Next() ConstIterator {
 }
 
 func (this *SetReverseIterator) Value() interface{} {
-	return this.node.Key
+	return this.node.Key()
 }
 
 func (this *SetReverseIterator) Equal(other ConstIterator) bool {

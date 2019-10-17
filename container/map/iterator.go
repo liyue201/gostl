@@ -9,17 +9,21 @@ type MapIterator struct {
 	node *rbtree.Node
 }
 
-func (this *MapIterator) Next() ConstIterator {
+func (this *MapIterator) Next() ConstKvIterator {
 	return &MapIterator{
 		node: this.node.Next(),
 	}
 }
 
-func (this *MapIterator) Value() interface{} {
-	return this.node.Value
+func (this *MapIterator) Key() interface{} {
+	return this.node.Key()
 }
 
-func (this *MapIterator) Equal(other ConstIterator) bool {
+func (this *MapIterator) Value() interface{} {
+	return this.node.Value()
+}
+
+func (this *MapIterator) Equal(other ConstKvIterator) bool {
 	otherItr, ok := other.(*MapIterator)
 	if !ok {
 		return false
@@ -34,17 +38,21 @@ type MapReverseIterator struct {
 	node *rbtree.Node
 }
 
-func (this *MapReverseIterator) Next() ConstIterator {
+func (this *MapReverseIterator) Next() ConstKvIterator {
 	return &MapReverseIterator{
 		node: this.node.Prev(),
 	}
 }
 
-func (this *MapReverseIterator) Value() interface{} {
-	return this.node.Value
+func (this *MapReverseIterator) Key() interface{} {
+	return this.node.Key()
 }
 
-func (this *MapReverseIterator) Equal(other ConstIterator) bool {
+func (this *MapReverseIterator) Value() interface{} {
+	return this.node.Value()
+}
+
+func (this *MapReverseIterator) Equal(other ConstKvIterator) bool {
 	otherItr, ok := other.(*MapReverseIterator)
 	if !ok {
 		return false

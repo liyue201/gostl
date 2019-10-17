@@ -1,20 +1,12 @@
 package rbtree
 
 import (
+	"github.com/liyue201/gostl/container"
 	"testing"
 )
 
 func TestRbTee(t *testing.T) {
-	cmp := func(a, b interface{}) int {
-		if a.(int) == b.(int) {
-			return 0
-		}
-		if a.(int) < b.(int) {
-			return -1
-		}
-		return 1
-	}
-	tree := New(cmp)
+	tree := New(container.BuiltinTypeComparator)
 	for i := 0; i < 10; i++ {
 		tree.Insert(i, i+10000)
 	}
@@ -29,8 +21,8 @@ func TestRbTee(t *testing.T) {
 		if iter == nil {
 			t.Fatalf("findIt %v nil", i)
 		}
-		if iter.Value != i+10000 {
-			t.Fatalf("findIt %v: found %v, %v ", i, iter.Key, iter.Value)
+		if iter.value != i+10000 {
+			t.Fatalf("findIt %v: found %v, %v ", i, iter.key, iter.value)
 		}
 	}
 	for i := 0; i < 10; i++ {
@@ -43,21 +35,21 @@ func TestRbTee(t *testing.T) {
 			t.Fatalf("findIt %v nil", i)
 		}
 		for n := iter; n != nil; n = n.Next() {
-			if n.Key != i {
+			if n.key != i {
 				break
 			}
-			t.Logf("travesal: %v = %v ", n.Key, n.Value)
+			t.Logf("travesal: %v = %v ", n.key, n.value)
 		}
 	}
-  
+
 	for n := tree.Begin(); n != nil; n = n.Next() {
-		t.Logf("found: %v = %v ", n.Key, n.Value)
+		t.Logf("found: %v = %v ", n.key, n.value)
 	}
-  
+
 	t.Logf("==============")
 	tree.Delete(tree.findFirstNode(7))
 	for n := tree.Begin(); n != nil; n = n.Next() {
-		t.Logf("found: %v = %v ", n.Key, n.Value)
+		t.Logf("found: %v = %v ", n.key, n.value)
 	}
 
 	t.Logf("==============")
@@ -66,30 +58,21 @@ func TestRbTee(t *testing.T) {
 	tree.Delete(tree.findFirstNode(1))
 	tree.Delete(tree.findFirstNode(8))
 	for n := tree.Begin(); n != nil; n = n.Next() {
-		t.Logf("found: %v = %v ", n.Key, n.Value)
+		t.Logf("found: %v = %v ", n.key, n.value)
 	}
-} 
+}
 
 func TestTravesal(t *testing.T) {
-	cmp := func(a, b interface{}) int {
-		if a.(int) == b.(int) {
-			return 0
-		}
-		if a.(int) < b.(int) {
-			return -1
-		}
-		return 1
-	}
-	tree := New(cmp)
+	tree := New(container.BuiltinTypeComparator)
 	for i := 20; i >= 1; i-- {
 		tree.Insert(i, 0)
 	}
 	for n := tree.Begin(); n != nil; n = n.Next() {
-		k := n.Key
+		k := n.key
 		var p interface{}
 		d := 0
 		if n.parent != nil {
-			p = n.parent.Key
+			p = n.parent.key
 			if n.parent.left == n {
 				d = 0
 			} else {
