@@ -3,15 +3,18 @@ package deque
 import (
 	"errors"
 	"fmt"
+	"github.com/liyue201/gostl/uitls/comparator"
+	. "github.com/liyue201/gostl/uitls/iterator"
 )
 
 var ErrOutOffRange = errors.New("out off range")
 
 type Deque struct {
-	data  []interface{}
-	begin int
-	end   int
-	size  int
+	data    []interface{}
+	begin   int
+	end     int
+	size    int
+	cmpFunc comparator.Comparator
 }
 
 func New(capacity int) *Deque {
@@ -23,16 +26,17 @@ func New(capacity int) *Deque {
 	}
 }
 
-//Size return the size of deque
+//Size returns the size of deque
 func (this *Deque) Size() int {
 	return this.size
 }
 
-//Capacity return the capacity of deque
+//Capacity returns the capacity of deque
 func (this *Deque) Capacity() int {
 	return len(this.data)
 }
 
+//Capacity returns true if the Deque is empty,otherwise returns false.
 func (this *Deque) Empty() bool {
 	if this.Size() == 0 {
 		return true
@@ -40,6 +44,7 @@ func (this *Deque) Empty() bool {
 	return false
 }
 
+//expandIfNeeded expand the Deque if full.
 func (this *Deque) expandIfNeeded() {
 	if this.size == this.Capacity() {
 		newCapacity := this.size * 2
@@ -56,6 +61,7 @@ func (this *Deque) expandIfNeeded() {
 	}
 }
 
+// shrinkIfNeeded shrink the Deque if is has too many unused space .
 func (this *Deque) shrinkIfNeeded() {
 	if int(float64(this.size*2)*1.2) < this.Capacity() {
 		newCapacity := this.Capacity() / 2
@@ -151,6 +157,14 @@ func (this *Deque) At(pos int) interface{} {
 	return this.data[(pos+this.begin)%this.Capacity()]
 }
 
+func (this *Deque) Set(pos int, val interface{}) error {
+	if pos < 0 || pos >= len(this.data) {
+		return ErrOutOffRange
+	}
+	this.data[(pos+this.begin)%this.Capacity()] = val
+	return nil
+}
+
 func (this *Deque) Back() interface{} {
 	return this.At(this.size - 1)
 }
@@ -229,4 +243,54 @@ func (this *Deque) String() string {
 	}
 	str += "]"
 	return str
+}
+
+///////////////////////////////////////////////////
+//iterator API
+func (this *Deque) Begin() BidIterator {
+	return this.First()
+}
+
+func (this *Deque) First() BidIterator {
+	return this.IterAt(0)
+}
+
+func (this *Deque) Last() BidIterator {
+	return this.IterAt(this.Size() - 1)
+}
+
+func (this *Deque) IterAt(index int) BidIterator {
+	return &DequeIterator{dq: this, curIndex: index}
+}
+
+/////////////////////////////////////////////////////////
+//for sort.Sort API
+func (this *Deque) SetComparator(cmp comparator.Comparator) {
+	this.cmpFunc = cmp
+}
+
+//sort.Sort API
+func (this *Deque) Len() int {
+	return this.Size()
+}
+
+//sort.Sort API
+func (this *Deque) Less(i, j int) bool {
+	if this.cmpFunc != nil {
+		if this.cmpFunc(this.At(i), this.At(j)) < 0 {
+			return true
+		}
+	}
+	return false
+}
+
+//sort.Sort API
+func (this *Deque) Swap(i, j int) {
+	if i < 0 || j < 0 || i >= this.Size() || j >= this.Size() {
+		return
+	}
+	vi := this.At(i)
+	vj := this.At(j)
+	this.Set(i, vj)
+	this.Set(j, vi)
 }

@@ -3,8 +3,9 @@ package vector
 import (
 	"errors"
 	"fmt"
+	"github.com/liyue201/gostl/uitls/comparator"
 	. "github.com/liyue201/gostl/uitls/iterator"
-)
+) 
 
 var ErrOutOffRange = errors.New("out off range")
 var ErrEmpty = errors.New("vector is empty")
@@ -13,8 +14,8 @@ var ErrInvalidIterator = errors.New("invalid iterator")
 type Less func(i, j int) bool
 
 type Vector struct {
-	data []interface{}
-	less Less
+	data    []interface{}
+	cmpFunc comparator.Comparator
 }
 
 func New(capacity int) *Vector {
@@ -193,8 +194,8 @@ func (this *Vector) String() string {
 
 /////////////////////////////////////////////////////////
 //for sort.Sort API
-func (this *Vector) SetLess(less Less) {
-	this.less = less
+func (this *Vector) SetComparator(cmp comparator.Comparator) {
+	this.cmpFunc = cmp
 }
 
 //sort.Sort API
@@ -204,8 +205,10 @@ func (this *Vector) Len() int {
 
 //sort.Sort API
 func (this *Vector) Less(i, j int) bool {
-	if this.less != nil {
-		return this.less(i, j)
+	if this.cmpFunc != nil {
+		if this.cmpFunc(this.At(i), this.At(j)) < 0 {
+			return true
+		}
 	}
 	return false
 }

@@ -1,11 +1,16 @@
 package comparator
- 
+
 // Should return a number:
 //    -1 , if a < b
 //    0  , if a == b
 //    1  , if a > b
 type Comparator func(a, b interface{}) int
- 
+
+// Compare a with b
+//    -1 , if a < b 
+//    0  , if a == b
+//    1  , if a > b
+// make sure a and b are both builtin type
 func BuiltinTypeComparator(a, b interface{}) int {
 	if a == b {
 		return 0
@@ -93,7 +98,8 @@ func BuiltinTypeComparator(a, b interface{}) int {
 	return 1
 }
 
-func ReverseComparator(cmp Comparator) Comparator {
+//Reverse returns a comparator reverse to cmp
+func Reverse(cmp Comparator) Comparator {
 	return func(a, b interface{}) int {
 		return -cmp(a, b)
 	}

@@ -1,20 +1,21 @@
 package vector
 
 import (
+	"github.com/liyue201/gostl/uitls/comparator"
 	"sort"
-	"testing" 
+	"testing"
 )
-   
+
 func TestVectorBase(t *testing.T) {
 	v := New(10)
 
-	if !v.Empty() {
+	if !v.Empty() { 
 		t.Fatalf("is not emtpy")
 	}
 	if v.Capacity() != 10 {
 		t.Fatalf("capacity error")
 	}
-	v.PushBack(1)  
+	v.PushBack(1)
 	v.PushBack(2)
 	if v.Empty() {
 		t.Fatalf("v is emtpy")
@@ -93,10 +94,10 @@ func TestVectorIter(t *testing.T) {
 			t.Fatalf("value error: expect %v, but get %v", val, iter.Value().(int))
 		}
 		i++
-	} 
+	}
 
 	i = 3
-	for iter := v.Last(); iter.IsValid();  iter.Prev() {
+	for iter := v.Last(); iter.IsValid(); iter.Prev() {
 		if val := v.At(i); val.(int) != iter.Value().(int) {
 			t.Fatalf("traversal value error: expect %v, but get %v", val, iter.Value().(int))
 		}
@@ -134,24 +135,26 @@ func TestVectorIter(t *testing.T) {
 	}
 }
 
-func TestSort(t *testing.T)  {
+func TestSort(t *testing.T) {
 	v := New(10)
 	for i := 10; i >= 0; i-- {
 		v.PushBack(i)
 	}
-	v.SetLess(func(i, j int) bool {
-		if v.At(i).(int) < v.At(j).(int) {
-			return true
-		}
-		return false
-	})
+	v.SetComparator(comparator.BuiltinTypeComparator)
 	sort.Sort(v)
-	for i := 0; i< v.Size(); i++ {
+	for i := 0; i < v.Size(); i++ {
 		t.Logf("%v", v.At(i))
 		if i != v.At(i).(int) {
 			t.Fatalf("sort error")
 		}
 	}
+
+	v.SetComparator(comparator.Reverse(comparator.BuiltinTypeComparator))
+	sort.Sort(v)
+	for i := 0; i < v.Size(); i++ {
+		t.Logf("%v", v.At(i))
+		if v.Size()-i-1 != v.At(i).(int) {
+			t.Fatalf("sort error")
+		}
+	}
 }
-
-
