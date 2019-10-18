@@ -1,6 +1,9 @@
 package vector
 
-import "testing"
+import (
+	"sort"
+	"testing" 
+)
 
 func TestVectorBase(t *testing.T) {
 	v := New(10)
@@ -130,3 +133,25 @@ func TestVectorIter(t *testing.T) {
 		t.Fatalf("erase error: expect [7 2 5 6], but get %v", v.String())
 	}
 }
+
+func TestSort(t *testing.T)  {
+	v := New(10)
+	for i := 10; i >= 1; i-- {
+		v.PushBack(i)
+	}
+	v.SetLess(func(i, j int) bool {
+		if v.At(i).(int) < v.At(j).(int) {
+			return true
+		}
+		return false
+	})
+	sort.Sort(v)
+	for i := 0; i< v.Size(); i++ {
+		t.Logf("%v", v.At(i))
+		if i != v.At(i).(int) {
+			t.Fatalf("sort error")
+		}
+	}
+}
+
+

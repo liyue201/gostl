@@ -2,16 +2,19 @@ package vector
 
 import (
 	"errors"
-	"fmt"
+	"fmt" 
 	. "github.com/liyue201/gostl/container"
 )
- 
+
 var ErrOutOffRange = errors.New("out off range")
 var ErrEmpty = errors.New("vector is empty")
 var ErrInvalidIterator = errors.New("invalid iterator")
 
+type Less func(i, j int) bool
+
 type Vector struct {
 	data []interface{}
+	less Less
 }
 
 func New(capacity int) *Vector {
@@ -182,10 +185,34 @@ func (this *Vector) Resize(size int) {
 	this.data = this.data[:size]
 }
 
-func (this *Vector) Swap(other *Vector) {
-	this.data, other.data = other.data, this.data
-}
-
 func (this *Vector) String() string {
 	return fmt.Sprintf("%v", this.data)
 }
+
+/////////////////////////////////////////////////////////
+//for sort.Sort API
+func (this *Vector) SetLess(less Less) {
+	this.less = less
+}
+
+//sort.Sort API
+func (this *Vector) Len() int {
+	return this.Size()
+}
+
+//sort.Sort API
+func (this *Vector) Less(i, j int) bool {
+	if this.less != nil {
+		return this.less(i, j)
+	}
+	return false
+}
+
+//sort.Sort API
+func (this *Vector) Swap(i, j int) {
+	if i < 0 || j < 0 || i >= this.Size() || j >= this.Size() {
+		return
+	}
+	this.data[i], this.data[j] = this.data[j], this.data[i]
+}
+
