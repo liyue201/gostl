@@ -1,15 +1,15 @@
 package rbtree
 
 import (
-	"github.com/liyue201/gostl/uitls/comparator"
+	. "github.com/liyue201/gostl/uitls/comparator"
 	"testing"
 )
 
 func TestRbTee(t *testing.T) {
-	tree := New(container.BuiltinTypeComparator)
+	tree := New(BuiltinTypeComparator)
 	for i := 0; i < 10; i++ {
 		tree.Insert(i, i+10000)
-	}
+	} 
 	for i := 0; i < 10; i++ {
 		val := tree.Find(i)
 		if val == nil || val.(int) != i+10000 {
@@ -63,7 +63,7 @@ func TestRbTee(t *testing.T) {
 }
 
 func TestTravesal(t *testing.T) {
-	tree := New(container.BuiltinTypeComparator)
+	tree := New(BuiltinTypeComparator)
 	for i := 20; i >= 1; i-- {
 		tree.Insert(i, 0)
 	}
@@ -80,5 +80,15 @@ func TestTravesal(t *testing.T) {
 			}
 		}
 		t.Logf("found: %v, %v, %v ", k, p, d)
+	}
+}
+
+func TestIterator(t *testing.T) {
+	tree := New(BuiltinTypeComparator)
+	for i := 10; i >= 1; i-- {
+		tree.Insert(i, i + 100)
+	}
+	for iter := tree.IterFirst(); iter.IsValid(); iter.Next(){
+		t.Logf("found: %v, %v", iter.Key(), iter.Value())
 	}
 }

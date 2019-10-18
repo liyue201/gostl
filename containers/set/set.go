@@ -57,7 +57,7 @@ func (this *Set) Begin() ConstIterator {
 
 //First returns the ConstIterator with the minimum value in the Set, return nil if empty.
 func (this *Set) First() ConstBidIterator {
-	return &SetIterator{node: this.tree.Fisrt()}
+	return &SetIterator{node: this.tree.First()}
 }
 
 //Last returns the ConstIterator with the maximum value in the Set, return nil if empty.

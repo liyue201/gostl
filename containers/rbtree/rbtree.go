@@ -2,7 +2,8 @@ package rbtree
 
 import (
 	. "github.com/liyue201/gostl/uitls/comparator"
-)
+	. "github.com/liyue201/gostl/uitls/iterator"
+) 
 
 type RbTree struct {
 	root *Node
@@ -36,11 +37,11 @@ func (this *RbTree) FindNode(key interface{}) *Node {
 
 // Begin returns the Node with minimum key in the tree
 func (this *RbTree) Begin() *Node {
-	return this.Fisrt()
+	return this.First()
 }
 
 // Fisrt returns the Node with minimum key in the tree
-func (this *RbTree) Fisrt() *Node {
+func (this *RbTree) First() *Node {
 	if this.root == nil {
 		return nil
 	}
@@ -58,6 +59,16 @@ func (this *RbTree) Last() *Node {
 		return nil
 	}
 	return maximum(this.root)
+}
+
+// IterFirst returns the iterator of first Node
+func (this *RbTree) IterFirst() KvBidIterator {
+	return NewIterator(this.First())
+}
+
+// IterLast returns the iterator of first Node
+func (this *RbTree) IterLast() KvBidIterator {
+	return NewIterator(this.Last())
 }
 
 // Empty returns true if Tree is empty,otherwise returns false.

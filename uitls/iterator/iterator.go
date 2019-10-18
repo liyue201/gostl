@@ -1,4 +1,4 @@
-package container
+package iterator
 
 // const iterator
 type ConstIterator interface {
@@ -6,7 +6,7 @@ type ConstIterator interface {
 	Next() ConstIterator
 	Value() interface{}
 	Clone() interface{}
-}
+} 
 
 // mutable iterator
 type Iterator interface {

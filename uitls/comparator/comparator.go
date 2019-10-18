@@ -1,5 +1,5 @@
-package container
-
+package comparator
+ 
 // Should return a number:
 //    -1 , if a < b
 //    0  , if a == b
