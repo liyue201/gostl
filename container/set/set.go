@@ -49,24 +49,19 @@ func (this *Set) LowerBound(value interface{}) ConstIterator {
 	return &SetIterator{node: node}
 }
 
-//Begin returns the ConstIterator with the min value in the Set, return nil if empty.
+//Begin returns the ConstIterator with the minimum value in the Set, return nil if empty.
 func (this *Set) Begin() ConstIterator {
-	return &SetIterator{node: this.tree.Begin()}
+	return this.First()
 }
 
-//End returns ConstIterator with nil value in the Set
-func (this *Set) End() ConstIterator {
-	return &SetIterator{node: nil}
+//First returns the ConstIterator with the minimum value in the Set, return nil if empty.
+func (this *Set) First() ConstBidIterator {
+	return &SetIterator{node: this.tree.Fisrt()}
 }
 
-//Begin returns the ConstIterator with the max value in the Set, return nil if empty.
-func (this *Set) RBegin() ConstIterator {
-	return &SetReverseIterator{node: this.tree.RBegin()}
-}
-
-//REnd returns ConstIterator with nil value in the set
-func (this *Set) REnd() ConstIterator {
-	return &SetReverseIterator{node: nil}
+//Last returns the ConstIterator with the maximum value in the Set, return nil if empty.
+func (this *Set) Last() ConstBidIterator {
+	return &SetIterator{node: this.tree.Last()}
 }
 
 //Clear clears the Set

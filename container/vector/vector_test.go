@@ -4,7 +4,7 @@ import (
 	"sort"
 	"testing" 
 )
-
+   
 func TestVectorBase(t *testing.T) {
 	v := New(10)
 
@@ -14,7 +14,7 @@ func TestVectorBase(t *testing.T) {
 	if v.Capacity() != 10 {
 		t.Fatalf("capacity error")
 	}
-	v.PushBack(1)
+	v.PushBack(1)  
 	v.PushBack(2)
 	if v.Empty() {
 		t.Fatalf("v is emtpy")
@@ -88,7 +88,7 @@ func TestVectorIter(t *testing.T) {
 
 	i := 0
 	t.Logf("v: %v", v.String())
-	for iter := v.Begin(); !iter.Equal(v.End()); iter = iter.Next() {
+	for iter := v.Begin(); iter.IsValid(); iter.Next() {
 		if val := v.At(i); val.(int) != iter.Value().(int) {
 			t.Fatalf("value error: expect %v, but get %v", val, iter.Value().(int))
 		}
@@ -96,7 +96,7 @@ func TestVectorIter(t *testing.T) {
 	} 
 
 	i = 3
-	for iter := v.RBegin(); !iter.Equal(v.REnd()); iter = iter.Next() {
+	for iter := v.Last(); iter.IsValid();  iter.Prev() {
 		if val := v.At(i); val.(int) != iter.Value().(int) {
 			t.Fatalf("traversal value error: expect %v, but get %v", val, iter.Value().(int))
 		}
@@ -136,7 +136,7 @@ func TestVectorIter(t *testing.T) {
 
 func TestSort(t *testing.T)  {
 	v := New(10)
-	for i := 10; i >= 1; i-- {
+	for i := 10; i >= 0; i-- {
 		v.PushBack(i)
 	}
 	v.SetLess(func(i, j int) bool {

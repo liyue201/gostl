@@ -46,24 +46,19 @@ func (this *Map) LowerBound(key interface{}) ConstKvIterator {
 	return &MapIterator{node: node}
 }
 
-//Begin returns the ConstIterator with the min value in the Map, return nil if empty.
-func (this *Map) Begin() ConstKvIterator {
+//Begin returns the ConstIterator with the minimum key in the Map, return nil if empty.
+func (this *Map) Begin() KvIterator {
+	return this.First()
+}
+
+//First returns the ConstIterator with the minimum key in the Map, return nil if empty.
+func (this *Map) First() KvIterator {
 	return &MapIterator{node: this.tree.Begin()}
 }
 
-//End returns ConstIterator with nil value in the Map
-func (this *Map) End() ConstKvIterator {
-	return &MapIterator{node: nil}
-}
-
-//Begin returns the ConstIterator with the max value in the Map, return nil if empty.
-func (this *Map) RBegin() ConstKvIterator {
-	return &MapReverseIterator{node: this.tree.RBegin()}
-}
-
-//REnd returns ConstIterator with nil value in the set
-func (this *Map) REnd() ConstKvIterator {
-	return &MapReverseIterator{node: nil}
+//Last returns the ConstIterator with the maximum key in the Map, return nil if empty.
+func (this *Map) Last() KvIterator {
+	return &MapIterator{node: this.tree.Last()}
 }
 
 //Clear clears the Map

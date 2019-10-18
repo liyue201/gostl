@@ -5,7 +5,7 @@ import (
 	"fmt"
 	. "github.com/liyue201/gostl/container"
 )
- 
+
 var ErrArraySizeNotEqual = errors.New("array size are not equal")
 var ErrOutOffRange = errors.New("out off range")
 
@@ -32,7 +32,7 @@ func (this *Array) Fill(val interface{}) {
 }
 
 func (this *Array) Set(index int, val interface{}) error {
-	if index < 0 || index > len(this.data) {
+	if index < 0 || index >= len(this.data) {
 		return ErrOutOffRange
 	}
 	this.data[index] = val
@@ -40,17 +40,17 @@ func (this *Array) Set(index int, val interface{}) error {
 }
 
 func (this *Array) At(index int) interface{} {
-	if index < 0 || index > len(this.data) {
+	if index < 0 || index >= len(this.data) {
 		return nil
 	}
 	return this.data[index]
 }
 
-func (this *Array) Front(index int) interface{} {
+func (this *Array) Front() interface{} {
 	return this.At(0)
 }
 
-func (this *Array) Back(index int) interface{} {
+func (this *Array) Back() interface{} {
 	return this.At(len(this.data) - 1)
 }
 
@@ -65,7 +65,7 @@ func (this *Array) Empty() bool {
 	return true
 }
 
-func (this *Array) Swap(other *Array) error {
+func (this *Array) SwapArray(other *Array) error {
 	if this.Size() != other.Size() {
 		return ErrArraySizeNotEqual
 	}
@@ -77,23 +77,22 @@ func (this *Array) Data() []interface{} {
 	return this.data
 }
 
-func (this *Array) Begin() Iterator {
-	return &ArrayIterator{array: this, curIndex: 0}
+func (this *Array) Begin() BidIterator {
+	return this.First()
 }
 
-func (this *Array) End() Iterator {
-	return &ArrayIterator{array: this, curIndex: len(this.data)}
+func (this *Array) First() BidIterator {
+	return this.IterAt(0)
 }
 
-func (this *Array) RBegin() Iterator {
-	return &ArrayReverseIterator{array: this, curIndex: len(this.data) - 1}
+func (this *Array) Last() BidIterator {
+	return this.IterAt(this.Size() - 1)
 }
 
-func (this *Array) REnd() Iterator {
-	return &ArrayReverseIterator{array: this, curIndex: -1}
+func (this *Array) IterAt(index int) BidIterator {
+	return &ArrayIterator{array: this, curIndex: index}
 }
 
 func (this *Array) String() string {
 	return fmt.Sprintf("%v", this.data)
 }
-

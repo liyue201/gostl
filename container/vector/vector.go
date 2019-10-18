@@ -2,7 +2,7 @@ package vector
 
 import (
 	"errors"
-	"fmt" 
+	"fmt"
 	. "github.com/liyue201/gostl/container"
 )
 
@@ -88,7 +88,7 @@ func (this *Vector) EraseIndexRange(first, last int) error {
 
 //At returns the value at index, returns nil if index out off range .
 func (this *Vector) At(index int) interface{} {
-	if index < 0 || index > this.Size() {
+	if index < 0 || index >= this.Size() {
 		return nil
 	}
 	return this.data[index]
@@ -145,33 +145,35 @@ func (this *Vector) Data() [] interface{} {
 	return this.data
 }
 
-func (this *Vector) Begin() Iterator {
-	return &VectorIterator{vec: this, curIndex: 0}
+func (this *Vector) Begin() BidIterator {
+	return this.First()
 }
 
-func (this *Vector) End() Iterator {
-	return &VectorIterator{vec: this, curIndex: this.Size()}
+func (this *Vector) First() BidIterator {
+	return this.IterAt(0)
 }
 
-func (this *Vector) RBegin() Iterator {
-	return &VectorReverseIterator{vec: this, curIndex: this.Size() - 1}
+func (this *Vector) Last() BidIterator {
+	return this.IterAt(this.Size() - 1)
 }
 
-func (this *Vector) REnd() Iterator {
-	return &VectorReverseIterator{vec: this, curIndex: -1}
+func (this *Vector) IterAt(index int) BidIterator {
+	return &VectorIterator{vec: this, curIndex: index}
 }
 
-func (this *Vector) Insert(iter Iterator, val interface{}) Iterator {
-	this.InsertAt(iter.(*VectorIterator).curIndex, val)
-	return iter
+func (this *Vector) Insert(iter ConstIterator, val interface{}) BidIterator {
+	index := iter.(*VectorIterator).curIndex
+	this.InsertAt(index, val)
+	return &VectorIterator{vec: this, curIndex: index}
 }
 
-func (this *Vector) Erase(iter Iterator) Iterator {
-	this.EraseAt(iter.(*VectorIterator).curIndex)
-	return iter
+func (this *Vector) Erase(iter ConstIterator) BidIterator {
+	index := iter.(*VectorIterator).curIndex
+	this.EraseAt(index)
+	return &VectorIterator{vec: this, curIndex: index}
 }
 
-func (this *Vector) EraseRange(first, last Iterator) Iterator {
+func (this *Vector) EraseRange(first, last ConstIterator) BidIterator {
 	from := first.(*VectorIterator).curIndex
 	to := last.(*VectorIterator).curIndex
 	this.EraseIndexRange(from, to)
@@ -215,4 +217,3 @@ func (this *Vector) Swap(i, j int) {
 	}
 	this.data[i], this.data[j] = this.data[j], this.data[i]
 }
-

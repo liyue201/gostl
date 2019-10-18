@@ -2,32 +2,51 @@ package container
 
 // const iterator
 type ConstIterator interface {
+	IsValid() bool
 	Next() ConstIterator
 	Value() interface{}
-	Equal(ConstIterator) bool
-} 
+	Clone() interface{}
+}
 
-// iterator
+// mutable iterator
 type Iterator interface {
-	Next() Iterator
-	Value() interface{}
-	Equal(Iterator) bool
-	Set(value interface{}) error
+	ConstIterator
+	SetValue(value interface{}) error
 }
 
 //const key-value type iterator
 type ConstKvIterator interface {
-	Next() ConstKvIterator
+	ConstIterator
 	Key() interface{}
-	Value() interface{}
-	Equal(ConstKvIterator) bool
 }
 
-// key-value type iterator
+// mutable key-value type iterator
 type KvIterator interface {
-	Next() KvIterator
-	Key() interface{}
-	Value() interface{}
+	ConstKvIterator
 	SetValue(value interface{}) error
-	Equal(KvIterator) bool
+}
+
+//const bidirectional iterator
+type ConstBidIterator interface {
+	ConstIterator
+	Prev() ConstBidIterator
+}
+
+//mutable bidirectional iterator
+type BidIterator interface {
+	ConstBidIterator
+	SetValue(value interface{}) error
+}
+
+//const key-value type bidirectional iterator
+type ConstKvBidIterator interface {
+	ConstKvIterator
+	Prev() ConstBidIterator
+}
+
+//mutable key-value type bidirectional iterator
+type KvBidIterator interface {
+	ConstKvIterator
+	Prev() ConstBidIterator
+	SetValue(value interface{}) error
 }

@@ -9,10 +9,25 @@ type MapIterator struct {
 	node *rbtree.Node
 }
 
-func (this *MapIterator) Next() ConstKvIterator {
-	return &MapIterator{
-		node: this.node.Next(),
+func (this *MapIterator) IsValid() bool {
+	if this.node != nil {
+		return true
 	}
+	return false
+}
+
+func (this *MapIterator) Next() ConstIterator {
+	if this.IsValid() {
+		this.node = this.node.Next()
+	}
+	return this
+}
+
+func (this *MapIterator) Prev() ConstBidIterator {
+	if this.IsValid() {
+		this.node = this.node.Prev()
+	}
+	return this
 }
 
 func (this *MapIterator) Key() interface{} {
@@ -23,42 +38,11 @@ func (this *MapIterator) Value() interface{} {
 	return this.node.Value()
 }
 
-func (this *MapIterator) Equal(other ConstKvIterator) bool {
-	otherItr, ok := other.(*MapIterator)
-	if !ok {
-		return false
-	}
-	if this.node == otherItr.node {
-		return true
-	}
-	return false
+func (this *MapIterator) SetValue(val interface{}) error {
+	this.node.SetValue(val)
+	return nil
 }
 
-type MapReverseIterator struct {
-	node *rbtree.Node
-}
-
-func (this *MapReverseIterator) Next() ConstKvIterator {
-	return &MapReverseIterator{
-		node: this.node.Prev(),
-	}
-}
-
-func (this *MapReverseIterator) Key() interface{} {
-	return this.node.Key()
-}
-
-func (this *MapReverseIterator) Value() interface{} {
-	return this.node.Value()
-}
-
-func (this *MapReverseIterator) Equal(other ConstKvIterator) bool {
-	otherItr, ok := other.(*MapReverseIterator)
-	if !ok {
-		return false
-	}
-	if this.node == otherItr.node {
-		return true
-	}
-	return false
+func (this *MapIterator) Clone() interface{} {
+	return &MapIterator{this.node}
 }

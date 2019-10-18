@@ -9,61 +9,36 @@ type ArrayIterator struct {
 	curIndex int
 }
 
-func (this *ArrayIterator) Next() Iterator {
-	index := this.curIndex + 1
-	if index > this.array.Size() {
-		index = this.array.Size()
+func (this *ArrayIterator) IsValid() bool {
+	if this.curIndex >= 0 && this.curIndex < this.array.Size() {
+		return true
 	}
-	return &ArrayIterator{array: this.array, curIndex: index}
+	return false
 }
 
 func (this *ArrayIterator) Value() interface{} {
 	return this.array.At(this.curIndex)
 }
 
-func (this *ArrayIterator) Set(val interface{}) error {
+func (this *ArrayIterator) SetValue(val interface{}) error {
 	return this.array.Set(this.curIndex, val)
 }
 
-func (this *ArrayIterator) Equal(other Iterator) bool {
-	otherItr, ok := other.(*ArrayIterator)
-	if !ok {
-		return false
+func (this *ArrayIterator) Next() ConstIterator {
+	if this.IsValid() {
+		this.curIndex++
 	}
-	if this.array == otherItr.array && otherItr.curIndex == this.curIndex {
-		return true
-	}
-	return false
+	return this
 }
 
-type ArrayReverseIterator struct {
-	array    *Array
-	curIndex int
-}
-
-func (this *ArrayReverseIterator) Next() Iterator {
-	index := this.curIndex - 1
-	if index < -1 {
-		index = -1
+func (this *ArrayIterator) Prev() ConstBidIterator {
+	if this.IsValid() {
+		this.curIndex--
 	}
-	return &ArrayReverseIterator{array: this.array, curIndex: index}
+	return this
 }
 
-func (this *ArrayReverseIterator) Set(val interface{}) error {
-	return this.array.Set(this.curIndex, val)
+func (this *ArrayIterator) Clone() interface{} {
+	return &ArrayIterator{array: this.array, curIndex: this.curIndex}
 }
 
-func (this *ArrayReverseIterator) Value() interface{} {
-	return this.array.At(this.curIndex)
-}
-
-func (this *ArrayReverseIterator) Equal(other Iterator) bool {
-	otherItr, ok := other.(*ArrayReverseIterator)
-	if !ok {
-		return false
-	}
-	if this.array == otherItr.array && otherItr.curIndex == this.curIndex {
-		return true
-	}
-	return false
-}

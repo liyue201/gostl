@@ -1,7 +1,7 @@
 package array
 
 import "testing"
-
+ 
 func TestArray(t *testing.T) {
 	a := New(10)
 	if a.Size() != 10 {
@@ -19,7 +19,7 @@ func TestArray(t *testing.T) {
 	b := New(10)
 	vb := 66
 	b.Fill(vb)
-	a.Swap(b)
+	a.SwapArray(b)
 
 	for i := 0; i < a.Size(); i++ {
 		if val := a.At(i); val.(int) != vb {
@@ -36,7 +36,7 @@ func TestArray(t *testing.T) {
 
 	t.Logf("Traversal a:")
 	i := 0
-	for iter := a.Begin(); !iter.Equal(a.End()); iter = iter.Next() {
+	for iter := a.First(); iter.IsValid(); iter.Next() {
 		t.Logf("%v ", iter.Value().(int))
 		if iter.Value().(int) != i {
 			t.Fatalf("expect %v, but get %v", i, iter.Value().(int))
@@ -46,7 +46,7 @@ func TestArray(t *testing.T) {
 
 	t.Logf(" Reverse traversal a:")
 	i = a.Size() - 1
-	for iter := a.RBegin(); !iter.Equal(a.REnd()); iter = iter.Next() {
+	for iter := a.Last(); iter.IsValid(); iter.Next() {
 		t.Logf("%v ", iter.Value().(int))
 		if iter.Value().(int) != i {
 			t.Fatalf("expect %v, but get %v", i, iter.Value().(int))

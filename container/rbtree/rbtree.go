@@ -36,6 +36,11 @@ func (this *RbTree) FindNode(key interface{}) *Node {
 
 // Begin returns the Node with minimum key in the tree
 func (this *RbTree) Begin() *Node {
+	return this.Fisrt()
+}
+
+// Fisrt returns the Node with minimum key in the tree
+func (this *RbTree) Fisrt() *Node {
 	if this.root == nil {
 		return nil
 	}
@@ -44,6 +49,11 @@ func (this *RbTree) Begin() *Node {
 
 // RBegin returns the Node with maximum key in the tree
 func (this *RbTree) RBegin() *Node {
+	return this.Last()
+}
+
+// Last returns the Node with maximum key in the tree
+func (this *RbTree) Last() *Node {
 	if this.root == nil {
 		return nil
 	}
@@ -67,7 +77,7 @@ func (this *RbTree) Size() int {
 func (this *RbTree) Insert(key, value interface{}) {
 	x := this.root
 	var y *Node
- 
+
 	for x != nil {
 		y = x
 		if this.cmp(key, x.key) < 0 {
