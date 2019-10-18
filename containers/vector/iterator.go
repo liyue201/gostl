@@ -1,7 +1,7 @@
 package vector
 
 import (
-	. "github.com/liyue201/gostl/container"
+	. "github.com/liyue201/gostl/uitls/iterator"
 )
 
 func (this *VectorIterator) IsValid() bool {
@@ -9,7 +9,7 @@ func (this *VectorIterator) IsValid() bool {
 		return true
 	}
 	return false
-} 
+}
 
 func (this *VectorIterator) Value() interface{} {
 	val := this.vec.At(this.curIndex)

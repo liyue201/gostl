@@ -1,8 +1,8 @@
 package treemap
 
 import (
-	. "github.com/liyue201/gostl/container"
-	"github.com/liyue201/gostl/container/rbtree"
+	"github.com/liyue201/gostl/containers/rbtree"
+	. "github.com/liyue201/gostl/uitls/iterator"
 )
 
 type MapIterator struct {

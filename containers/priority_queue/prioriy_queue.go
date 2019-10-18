@@ -2,13 +2,12 @@ package priority_queue
 
 import (
 	"container/heap"
+	. "github.com/liyue201/gostl/uitls/comparator"
 )
-
-type CmpFun func(a, b interface{}) bool
 
 type ItemHolder struct {
 	items  []interface{}
-	cmpFun CmpFun
+	cmpFun Comparator
 }
 
 func (this *ItemHolder) Push(item interface{}) {
@@ -40,7 +39,10 @@ func (this *ItemHolder) Len() int {
 }
 
 func (this *ItemHolder) Less(i, j int) bool {
-	return this.cmpFun(this.items[i], this.items[j])
+	if this.cmpFun(this.items[i], this.items[j]) < 0 {
+		return true
+	}
+	return false
 }
 
 func (this *ItemHolder) Swap(i, j int) {
@@ -51,7 +53,7 @@ type PriorityQueue struct {
 	holder *ItemHolder
 }
 
-func New(cmp CmpFun) *PriorityQueue {
+func New(cmp Comparator) *PriorityQueue {
 	holder := &ItemHolder{
 		items:  make([]interface{}, 0, 0),
 		cmpFun: cmp,
@@ -79,4 +81,3 @@ func (this *PriorityQueue) Empty() bool {
 	}
 	return false
 }
-

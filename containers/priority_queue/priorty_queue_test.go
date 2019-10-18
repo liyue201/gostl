@@ -1,12 +1,12 @@
 package priority_queue
 
-import "testing"
+import (
+	. "github.com/liyue201/gostl/uitls/comparator"
+	"testing"
+)
 
 func TestMinPriorityQueue(t *testing.T) {
-	cmp := func(a, b interface{}) bool {
-		return a.(int) < b.(int)
-	}
-	pq := New(cmp)
+	pq := New(BuiltinTypeComparator)
 	pq.Push(4)
 	pq.Push(8)
 	pq.Push(1)
@@ -18,10 +18,7 @@ func TestMinPriorityQueue(t *testing.T) {
 }
 
 func TestMaxPriorityQueue(t *testing.T) {
-	cmp := func(a, b interface{}) bool {
-		return a.(int) > b.(int)
-	}
-	pq := New(cmp)
+	pq := New(BuiltinTypeComparator)
 	pq.Push(4)
 	pq.Push(8)
 	pq.Push(1)
@@ -33,10 +30,7 @@ func TestMaxPriorityQueue(t *testing.T) {
 }
 
 func TestStringPriorityQueue(t *testing.T) {
-	cmp := func(a, b interface{}) bool {
-		return a.(string) < b.(string)
-	}
-	pq := New(cmp)
+	pq := New(BuiltinTypeComparator)
 	pq.Push("fdsf")
 	pq.Push("aavdsav")
 	pq.Push("hrh42y5")

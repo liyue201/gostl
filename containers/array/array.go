@@ -3,7 +3,7 @@ package array
 import (
 	"errors"
 	"fmt"
-	. "github.com/liyue201/gostl/container"
+	. "github.com/liyue201/gostl/uitls/iterator"
 )
 
 var ErrArraySizeNotEqual = errors.New("array size are not equal")

@@ -1,7 +1,7 @@
 package array
 
 import (
-	. "github.com/liyue201/gostl/container"
+	. "github.com/liyue201/gostl/uitls/iterator"
 )
 
 type ArrayIterator struct {
@@ -41,4 +41,3 @@ func (this *ArrayIterator) Prev() ConstBidIterator {
 func (this *ArrayIterator) Clone() interface{} {
 	return &ArrayIterator{array: this.array, curIndex: this.curIndex}
 }
-

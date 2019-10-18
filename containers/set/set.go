@@ -1,12 +1,13 @@
 package set
 
 import (
-	. "github.com/liyue201/gostl/container"
-	"github.com/liyue201/gostl/container/rbtree"
+	"github.com/liyue201/gostl/containers/rbtree"
+	. "github.com/liyue201/gostl/uitls/comparator"
+	. "github.com/liyue201/gostl/uitls/iterator"
 )
 
 const (
-	Empty = 0 
+	Empty = 0
 )
 
 type Set struct {

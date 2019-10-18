@@ -1,6 +1,6 @@
 package stack
 
-import "github.com/liyue201/gostl/container/deque"
+import "github.com/liyue201/gostl/containers/deque"
 
 type Stack struct {
 	dq *deque.Deque
