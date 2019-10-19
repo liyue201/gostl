@@ -6,17 +6,17 @@ GoSTL is a algorithm and data structure library for go, designed to provide func
 - container
     - array
     - vector
+    - list
     - deque
     - queue
     - priority_queue
     - stack
+    - rbtree
     - map
     - multimap
     - set 
     - multiset
-    - rbtree
 - algorithm
-    - sort
-    - stable_sort
+    - next_permutation
     - lower_bound
     - upper_bound
