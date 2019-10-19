@@ -5,7 +5,7 @@ import (
 	. "github.com/liyue201/gostl/uitls/comparator"
 	. "github.com/liyue201/gostl/uitls/iterator"
 )
-
+ 
 const (
 	Empty = 0
 )
@@ -18,61 +18,61 @@ func New(cmp Comparator) *Set {
 	return &Set{tree: rbtree.New(cmp)}
 }
 
-//Insert inserts value to the Set
-func (this *Set) Insert(value interface{}) {
-	node := this.tree.FindNode(value)
+// Insert inserts element to the Set
+func (this *Set) Insert(element interface{}) {
+	node := this.tree.FindNode(element)
 	if node != nil {
 		return
 	}
-	this.tree.Insert(value, Empty)
+	this.tree.Insert(element, Empty)
 }
 
-//Erase erases value in the Set
-func (this *Set) Erase(value interface{}) {
-	node := this.tree.FindNode(value)
+// Erase erases element in the Set
+func (this *Set) Erase(element interface{}) {
+	node := this.tree.FindNode(element)
 	if node != nil {
 		this.tree.Delete(node)
 	}
 }
 
-//Begin returns the ConstIterator related to value in the Set, return nil if not exist.
-func (this *Set) Find(value interface{}) ConstIterator {
-	node := this.tree.FindNode(value)
+// Begin returns the ConstIterator related to element in the Set, return nil if not exist.
+func (this *Set) Find(element interface{}) ConstIterator {
+	node := this.tree.FindNode(element)
 	if node == nil {
 		return nil
 	}
 	return &SetIterator{node: node}
 }
 
-//LowerBound returns the first ConstIterator that equal or greater than value in the Set
-func (this *Set) LowerBound(value interface{}) ConstIterator {
-	node := this.tree.FindLowerBoundNode(value)
+// LowerBound returns the first ConstIterator that equal or greater than element in the Set
+func (this *Set) LowerBound(element interface{}) ConstIterator {
+	node := this.tree.FindLowerBoundNode(element)
 	return &SetIterator{node: node}
 }
 
-//Begin returns the ConstIterator with the minimum value in the Set, return nil if empty.
+// Begin returns the ConstIterator with the minimum element in the Set, return nil if empty.
 func (this *Set) Begin() ConstIterator {
 	return this.First()
 }
 
-//First returns the ConstIterator with the minimum value in the Set, return nil if empty.
+// First returns the ConstIterator with the minimum element in the Set, return nil if empty.
 func (this *Set) First() ConstBidIterator {
 	return &SetIterator{node: this.tree.First()}
 }
 
-//Last returns the ConstIterator with the maximum value in the Set, return nil if empty.
+// Last returns the ConstIterator with the maximum element in the Set, return nil if empty.
 func (this *Set) Last() ConstBidIterator {
 	return &SetIterator{node: this.tree.Last()}
 }
 
-//Clear clears the Set
+// Clear clears the Set
 func (this *Set) Clear() {
 	this.tree.Clear()
 }
 
-// Contains returns true if value in the Set. otherwise returns false.
-func (this *Set) Contains(value interface{}) bool {
-	if this.tree.Find(value) != nil {
+// Contains returns true if element in the Set. otherwise returns false.
+func (this *Set) Contains(element interface{}) bool {
+	if this.tree.Find(element) != nil {
 		return true
 	}
 	return false
