@@ -3,8 +3,6 @@ package deque
 import (
 	"errors"
 	"fmt"
-	"github.com/liyue201/gostl/uitls/comparator"
-	. "github.com/liyue201/gostl/uitls/iterator"
 )
 
 var ErrOutOffRange = errors.New("out off range")
@@ -14,7 +12,6 @@ type Deque struct {
 	begin   int
 	end     int
 	size    int
-	cmpFunc comparator.Comparator
 }
 
 func New(capacity int) *Deque {
@@ -89,24 +86,24 @@ func (this *Deque) PushFront(value interface{}) {
 	this.size++
 }
 
-func (this *Deque) Insert(pos int, value interface{}) error {
-	if pos < 0 || pos > this.size {
+func (this *Deque) Insert(position int, value interface{}) error {
+	if position < 0 || position > this.size {
 		return ErrOutOffRange
 	}
-	if pos == 0 {
+	if position == 0 {
 		this.PushFront(value)
 		return nil
 	}
-	if pos == this.size {
+	if position == this.size {
 		this.PushBack(value)
 		return nil
 	}
 
 	this.expandIfNeeded()
-	if pos < this.size-pos {
+	if position < this.size-position {
 		//move the front pos items
 		idx := this.preIndex(this.begin)
-		for i := 0; i < pos; i++ {
+		for i := 0; i < position; i++ {
 			this.data[idx] = this.data[this.nextIndex(idx)]
 			idx = this.nextIndex(idx)
 		}
@@ -115,7 +112,7 @@ func (this *Deque) Insert(pos int, value interface{}) error {
 	} else {
 		//move the back pos items
 		idx := this.end
-		for i := 0; i < this.size-pos; i++ {
+		for i := 0; i < this.size-position; i++ {
 			this.data[idx] = this.data[this.preIndex(idx)]
 			idx = this.preIndex(idx)
 		}
@@ -150,18 +147,18 @@ func (this *Deque) PopFront() interface{} {
 	return val
 }
 
-func (this *Deque) At(pos int) interface{} {
-	if pos < 0 || pos >= this.size {
+func (this *Deque) At(position int) interface{} {
+	if position < 0 || position >= this.size {
 		return nil
 	}
-	return this.data[(pos+this.begin)%this.Capacity()]
+	return this.data[(position+this.begin)%this.Capacity()]
 }
 
-func (this *Deque) Set(pos int, val interface{}) error {
-	if pos < 0 || pos >= len(this.data) {
+func (this *Deque) Set(position int, val interface{}) error {
+	if position < 0 || position >= len(this.data) {
 		return ErrOutOffRange
 	}
-	this.data[(pos+this.begin)%this.Capacity()] = val
+	this.data[(position+this.begin)%this.Capacity()] = val
 	return nil
 }
 
@@ -247,50 +244,22 @@ func (this *Deque) String() string {
 
 ///////////////////////////////////////////////////
 //iterator API
-func (this *Deque) Begin() BidIterator {
+func (this *Deque) Begin() *DequeIterator {
 	return this.First()
 }
 
-func (this *Deque) First() BidIterator {
+func (this *Deque) End() *DequeIterator {
+	return this.IterAt(this.Size())
+}
+
+func (this *Deque) First() *DequeIterator {
 	return this.IterAt(0)
 }
 
-func (this *Deque) Last() BidIterator {
+func (this *Deque) Last() *DequeIterator {
 	return this.IterAt(this.Size() - 1)
 }
 
-func (this *Deque) IterAt(index int) BidIterator {
-	return &DequeIterator{dq: this, curIndex: index}
-}
-
-/////////////////////////////////////////////////////////
-//for sort.Sort API
-func (this *Deque) SetComparator(cmp comparator.Comparator) {
-	this.cmpFunc = cmp
-}
-
-//sort.Sort API
-func (this *Deque) Len() int {
-	return this.Size()
-}
-
-//sort.Sort API
-func (this *Deque) Less(i, j int) bool {
-	if this.cmpFunc != nil {
-		if this.cmpFunc(this.At(i), this.At(j)) < 0 {
-			return true
-		}
-	}
-	return false
-}
-
-//sort.Sort API
-func (this *Deque) Swap(i, j int) {
-	if i < 0 || j < 0 || i >= this.Size() || j >= this.Size() {
-		return
-	}
-	vi := this.At(i)
-	vj := this.At(j)
-	this.Set(i, vj)
-	this.Set(j, vi)
+func (this *Deque) IterAt(position int) *DequeIterator {
+	return &DequeIterator{dq: this, position: position}
 }

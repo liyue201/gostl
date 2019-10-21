@@ -1,7 +1,11 @@
 package array
 
-import "testing"
- 
+import (
+	"github.com/liyue201/gostl/algorithm/sort"
+	"github.com/liyue201/gostl/uitls/comparator"
+	"testing"
+)
+  
 func TestArray(t *testing.T) {
 	a := New(10)
 	if a.Size() != 10 {
@@ -53,4 +57,16 @@ func TestArray(t *testing.T) {
 		}
 		i--
 	}
+}
+
+func TestSort(t *testing.T)  {
+	a := New(10)
+	if a.Size() != 10 {
+		t.Fatalf("array size error")
+	}
+	for i := 0; i < 10; i++ {
+		a.Set(i, 10 - i)
+	}
+	sort.Stable(a.Begin(), a.End(), comparator.BuiltinTypeComparator)
+	t.Logf("a: %v", a.String())
 }

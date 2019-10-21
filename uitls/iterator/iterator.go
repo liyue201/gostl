@@ -50,3 +50,12 @@ type KvBidIterator interface {
 	Prev() ConstBidIterator
 	SetValue(value interface{}) error
 }
+
+//sortable iterator
+type SortableIterator interface {
+	BidIterator
+
+	//IteratorAt returns a new iterator at position
+	IteratorAt(position int) SortableIterator
+	Position() int
+}

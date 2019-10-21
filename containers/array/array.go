@@ -3,8 +3,6 @@ package array
 import (
 	"errors"
 	"fmt"
-	"github.com/liyue201/gostl/uitls/comparator"
-	. "github.com/liyue201/gostl/uitls/iterator"
 )
 
 var ErrArraySizeNotEqual = errors.New("array size are not equal")
@@ -12,7 +10,6 @@ var ErrOutOffRange = errors.New("out off range")
 
 type Array struct {
 	data    []interface{}
-	cmpFunc comparator.Comparator
 }
 
 func New(size int) *Array {
@@ -33,19 +30,19 @@ func (this *Array) Fill(val interface{}) {
 	}
 }
 
-func (this *Array) Set(index int, val interface{}) error {
-	if index < 0 || index >= len(this.data) {
+func (this *Array) Set(position int, val interface{}) error {
+	if position < 0 || position >= len(this.data) {
 		return ErrOutOffRange
 	}
-	this.data[index] = val
+	this.data[position] = val
 	return nil
 }
 
-func (this *Array) At(index int) interface{} {
-	if index < 0 || index >= len(this.data) {
+func (this *Array) At(position int) interface{} {
+	if position < 0 || position >= len(this.data) {
 		return nil
 	}
-	return this.data[index]
+	return this.data[position]
 }
 
 func (this *Array) Front() interface{} {
@@ -79,51 +76,26 @@ func (this *Array) Data() []interface{} {
 	return this.data
 }
 
-func (this *Array) Begin() BidIterator {
+func (this *Array) Begin() *ArrayIterator {
 	return this.First()
 }
 
-func (this *Array) First() BidIterator {
+func (this *Array) End() *ArrayIterator {
+	return this.IterAt(this.Size())
+}
+
+func (this *Array) First() *ArrayIterator {
 	return this.IterAt(0)
 }
 
-func (this *Array) Last() BidIterator {
+func (this *Array) Last() *ArrayIterator {
 	return this.IterAt(this.Size() - 1)
 }
 
-func (this *Array) IterAt(index int) BidIterator {
-	return &ArrayIterator{array: this, curIndex: index}
+func (this *Array) IterAt(position int) *ArrayIterator {
+	return &ArrayIterator{array: this, position: position}
 }
 
 func (this *Array) String() string {
 	return fmt.Sprintf("%v", this.data)
-}
-
-/////////////////////////////////////////////////////////
-//for sort.Sort API
-func (this *Array) SetComparator(cmp comparator.Comparator) {
-	this.cmpFunc = cmp
-}
-
-//sort.Sort API
-func (this *Array) Len() int {
-	return this.Size()
-}
-
-//sort.Sort API
-func (this *Array) Less(i, j int) bool {
-	if this.cmpFunc != nil {
-		if this.cmpFunc(this.At(i), this.At(j)) < 0 {
-			return true
-		}
-	}
-	return false
-}
-
-//sort.Sort API
-func (this *Array) Swap(i, j int) {
-	if i < 0 || j < 0 || i >= this.Size() || j >= this.Size() {
-		return
-	}
-	this.data[i], this.data[j] = this.data[j], this.data[i]
 }

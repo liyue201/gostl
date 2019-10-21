@@ -3,9 +3,8 @@ package vector
 import (
 	"errors"
 	"fmt"
-	"github.com/liyue201/gostl/uitls/comparator"
 	. "github.com/liyue201/gostl/uitls/iterator"
-) 
+)
 
 var ErrOutOffRange = errors.New("out off range")
 var ErrEmpty = errors.New("vector is empty")
@@ -15,7 +14,6 @@ type Less func(i, j int) bool
 
 type Vector struct {
 	data    []interface{}
-	cmpFunc comparator.Comparator
 }
 
 func New(capacity int) *Vector {
@@ -49,28 +47,28 @@ func (this *Vector) PushBack(val interface{}) {
 	this.data = append(this.data, val)
 }
 
-func (this *Vector) SetAt(index int, val interface{}) error {
-	if index < 0 || index >= this.Size() {
+func (this *Vector) SetAt(position int, val interface{}) error {
+	if position < 0 || position >= this.Size() {
 		return ErrOutOffRange
 	}
-	this.data[index] = val
+	this.data[position] = val
 	return nil
 }
 
-func (this *Vector) InsertAt(index int, val interface{}) error {
-	if index < 0 || index > this.Size() {
+func (this *Vector) InsertAt(position int, val interface{}) error {
+	if position < 0 || position > this.Size() {
 		return ErrOutOffRange
 	}
 	this.data = append(this.data, val)
-	for i := len(this.data) - 1; i > index; i-- {
+	for i := len(this.data) - 1; i > position; i-- {
 		this.data[i] = this.data[i-1]
 	}
-	this.data[index] = val
+	this.data[position] = val
 	return nil
 }
 
-func (this *Vector) EraseAt(index int) error {
-	return this.EraseIndexRange(index, index+1)
+func (this *Vector) EraseAt(position int) error {
+	return this.EraseIndexRange(position, position+1)
 }
 
 func (this *Vector) EraseIndexRange(first, last int) error {
@@ -87,12 +85,12 @@ func (this *Vector) EraseIndexRange(first, last int) error {
 	return nil
 }
 
-//At returns the value at index, returns nil if index out off range .
-func (this *Vector) At(index int) interface{} {
-	if index < 0 || index >= this.Size() {
+//At returns the value at position, returns nil if position out off range .
+func (this *Vector) At(position int) interface{} {
+	if position < 0 || position >= this.Size() {
 		return nil
 	}
-	return this.data[index]
+	return this.data[position]
 }
 
 //At returns the first value of the vector, returns nil if the vector is empty.
@@ -146,39 +144,43 @@ func (this *Vector) Data() [] interface{} {
 	return this.data
 }
 
-func (this *Vector) Begin() BidIterator {
+func (this *Vector) Begin() *VectorIterator {
 	return this.First()
 }
 
-func (this *Vector) First() BidIterator {
+func (this *Vector) End() *VectorIterator {
+	return this.IterAt(this.Size())
+}
+
+func (this *Vector) First() *VectorIterator {
 	return this.IterAt(0)
 }
 
-func (this *Vector) Last() BidIterator {
+func (this *Vector) Last() *VectorIterator {
 	return this.IterAt(this.Size() - 1)
 }
 
-func (this *Vector) IterAt(index int) BidIterator {
-	return &VectorIterator{vec: this, curIndex: index}
+func (this *Vector) IterAt(position int) *VectorIterator {
+	return &VectorIterator{vec: this, position: position}
 }
 
-func (this *Vector) Insert(iter ConstIterator, val interface{}) BidIterator {
-	index := iter.(*VectorIterator).curIndex
+func (this *Vector) Insert(iter ConstIterator, val interface{}) *VectorIterator {
+	index := iter.(*VectorIterator).position
 	this.InsertAt(index, val)
-	return &VectorIterator{vec: this, curIndex: index}
+	return &VectorIterator{vec: this, position: index}
 }
 
-func (this *Vector) Erase(iter ConstIterator) BidIterator {
-	index := iter.(*VectorIterator).curIndex
+func (this *Vector) Erase(iter ConstIterator) *VectorIterator {
+	index := iter.(*VectorIterator).position
 	this.EraseAt(index)
-	return &VectorIterator{vec: this, curIndex: index}
+	return &VectorIterator{vec: this, position: index}
 }
 
-func (this *Vector) EraseRange(first, last ConstIterator) BidIterator {
-	from := first.(*VectorIterator).curIndex
-	to := last.(*VectorIterator).curIndex
+func (this *Vector) EraseRange(first, last ConstIterator) *VectorIterator {
+	from := first.(*VectorIterator).position
+	to := last.(*VectorIterator).position
 	this.EraseIndexRange(from, to)
-	return &VectorIterator{vec: this, curIndex: from}
+	return &VectorIterator{vec: this, position: from}
 }
 
 func (this *Vector) Resize(size int) {
@@ -190,33 +192,4 @@ func (this *Vector) Resize(size int) {
 
 func (this *Vector) String() string {
 	return fmt.Sprintf("%v", this.data)
-}
-
-/////////////////////////////////////////////////////////
-//for sort.Sort API
-func (this *Vector) SetComparator(cmp comparator.Comparator) {
-	this.cmpFunc = cmp
-}
-
-//sort.Sort API
-func (this *Vector) Len() int {
-	return this.Size()
-}
-
-//sort.Sort API
-func (this *Vector) Less(i, j int) bool {
-	if this.cmpFunc != nil {
-		if this.cmpFunc(this.At(i), this.At(j)) < 0 {
-			return true
-		}
-	}
-	return false
-}
-
-//sort.Sort API
-func (this *Vector) Swap(i, j int) {
-	if i < 0 || j < 0 || i >= this.Size() || j >= this.Size() {
-		return
-	}
-	this.data[i], this.data[j] = this.data[j], this.data[i]
 }

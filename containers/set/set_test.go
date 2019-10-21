@@ -4,7 +4,7 @@ import (
 	. "github.com/liyue201/gostl/uitls/comparator"
 	"testing"
 )
-
+ 
 func TestSet(t *testing.T) {
 	s := New(BuiltinTypeComparator)
 	for i := 10; i >= 1; i-- {
