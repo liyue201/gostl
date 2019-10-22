@@ -1,9 +1,9 @@
 package sort
-
+  
 import (
 	"github.com/liyue201/gostl/iterator"
 	"github.com/liyue201/gostl/uitls/comparator"
-)   
+)
 
 //LowerBound returns true if exist an element witch value is val in the range [begin, end), or false if not exist
 func BinarySearch(begin, end iterator.SortableIterator, val interface{}, cmp comparator.Comparator) bool {

@@ -2,11 +2,12 @@ package slice
 
 import . "github.com/liyue201/gostl/iterator"
 
+
 //SliceIterator is a SortableIterator
 var _ SortableIterator = (*SliceIterator)(nil)
 
 type SliceIterator struct {
-	s        Slice
+	s        ISlice
 	position int
 }
 
