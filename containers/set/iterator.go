@@ -37,3 +37,15 @@ func (this *SetIterator) Value() interface{} {
 func (this *SetIterator) Clone() ConstIterator {
 	return &SetIterator{this.node}
 }
+
+func (this *SetIterator) Equal(other ConstIterator) bool {
+	otherIter, ok := other.(*SetIterator)
+	if !ok {
+		return false
+	}
+	if otherIter.node == this.node {
+		return true
+	}
+	return false
+}
+

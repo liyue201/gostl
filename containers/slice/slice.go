@@ -1,5 +1,5 @@
 package slice
-
+ 
 // Interface of Slice for iterator
 type ISlice interface {
 	Len() int

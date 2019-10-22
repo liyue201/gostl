@@ -47,3 +47,15 @@ func (this *RbTreeIterator) SetValue(val interface{}) error {
 func (this *RbTreeIterator) Clone() ConstIterator {
 	return NewIterator(this.node)
 }
+
+func (this *RbTreeIterator) Equal(other ConstIterator) bool {
+	otherIter, ok := other.(*RbTreeIterator)
+	if !ok {
+		return false
+	}
+	if otherIter.node == this.node {
+		return true
+	}
+	return false
+}
+

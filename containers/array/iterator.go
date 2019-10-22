@@ -52,3 +52,14 @@ func (this *ArrayIterator) IteratorAt(position int) SortableIterator {
 func (this *ArrayIterator) Position() int {
 	return this.position
 }
+
+func (this *ArrayIterator) Equal(other ConstIterator) bool {
+	otherIter, ok := other.(*ArrayIterator)
+	if !ok {
+		return false
+	}
+	if otherIter.array == this.array && otherIter.position == this.position {
+		return true
+	}
+	return false
+}

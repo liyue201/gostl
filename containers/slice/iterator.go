@@ -2,7 +2,6 @@ package slice
 
 import . "github.com/liyue201/gostl/iterator"
 
-
 //SliceIterator is a SortableIterator
 var _ SortableIterator = (*SliceIterator)(nil)
 
@@ -51,4 +50,15 @@ func (this *SliceIterator) IteratorAt(position int) SortableIterator {
 
 func (this *SliceIterator) Position() int {
 	return this.position
+}
+
+func (this *SliceIterator) Equal(other ConstIterator) bool {
+	otherIter, ok := other.(*SliceIterator)
+	if !ok {
+		return false
+	}
+	if otherIter.s == this.s && otherIter.position == this.position {
+		return true
+	}
+	return false
 }

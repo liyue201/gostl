@@ -3,7 +3,7 @@ package deque
 import (
 	. "github.com/liyue201/gostl/iterator"
 )
- 
+
 //ArrayIterator is a SortableIterator
 var _ SortableIterator = (*DequeIterator)(nil)
 
@@ -51,4 +51,15 @@ func (this *DequeIterator) IteratorAt(position int) SortableIterator {
 
 func (this *DequeIterator) Position() int {
 	return this.position
+}
+
+func (this *DequeIterator) Equal(other ConstIterator) bool {
+	otherIter, ok := other.(*DequeIterator)
+	if !ok {
+		return false
+	}
+	if otherIter.dq == this.dq && otherIter.position == this.position {
+		return true
+	}
+	return false
 }

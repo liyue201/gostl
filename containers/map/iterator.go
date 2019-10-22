@@ -4,7 +4,7 @@ import (
 	"github.com/liyue201/gostl/containers/rbtree"
 	. "github.com/liyue201/gostl/iterator"
 )
- 
+
 type MapIterator struct {
 	node *rbtree.Node
 }
@@ -43,6 +43,17 @@ func (this *MapIterator) SetValue(val interface{}) error {
 	return nil
 }
 
-func (this *MapIterator) Clone() interface{} {
+func (this *MapIterator) Clone() ConstIterator {
 	return &MapIterator{this.node}
+}
+
+func (this *MapIterator) Equal(other ConstIterator) bool {
+	otherIter, ok := other.(*MapIterator)
+	if !ok {
+		return false
+	}
+	if otherIter.node == this.node {
+		return true
+	}
+	return false
 }

@@ -3,7 +3,7 @@ package vector
 import (
 	. "github.com/liyue201/gostl/iterator"
 )
- 
+
 //ArrayIterator is a SortableIterator
 var _ SortableIterator = (*VectorIterator)(nil)
 
@@ -52,4 +52,15 @@ func (this *VectorIterator) IteratorAt(position int) SortableIterator {
 
 func (this *VectorIterator) Position() int {
 	return this.position
+}
+
+func (this *VectorIterator) Equal(other ConstIterator) bool {
+	otherIter, ok := other.(*VectorIterator)
+	if !ok {
+		return false
+	}
+	if otherIter.vec == this.vec && otherIter.position == this.position {
+		return true
+	}
+	return false
 }
