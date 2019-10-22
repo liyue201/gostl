@@ -1,6 +1,6 @@
 # GoSTL
 
-GoSTL is a algorithm and data structure library for go,designed to provide functions similar to C++ STL,but more powerful.
+GoSTL is a data structure and algorithm library for go,designed to provide functions similar to C++ STL,but more powerful.
 
 ## Function list
 - containers
@@ -14,12 +14,12 @@ GoSTL is a algorithm and data structure library for go,designed to provide funct
     - rbtree
     - map/multimap
     - set/multiset
-    - bitmap [TODO]
-    - bloom_filter[TODO]
+    - bitmap
+    - bloom_filter [TODO]
     - hamt [TODO]
     - consistent_hash [TODO] 
 - algorithm
-    - sort(quick_sort) [TODO]
+    - sort(quick_sort)
     - stable_sort(merge_sort)
     - lower_bound [TODO]
     - upper_bound [TODO]
