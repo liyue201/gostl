@@ -26,5 +26,5 @@ GoSTL is a data structure and algorithm library for go,designed to provide funct
     - binary_search
     - lower_bound
     - upper_bound
-    - next_permutation [TODO]
+    - next_permutation
    

@@ -18,7 +18,7 @@ func TestMinPriorityQueue(t *testing.T) {
 }
 
 func TestMaxPriorityQueue(t *testing.T) {
-	pq := New(BuiltinTypeComparator)
+	pq := New(Reverse(BuiltinTypeComparator))
 	pq.Push(4)
 	pq.Push(8)
 	pq.Push(1)
