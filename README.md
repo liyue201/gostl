@@ -4,6 +4,7 @@ GoSTL is a data structure and algorithm library for go,designed to provide funct
 
 ## Function list
 - containers
+    - slice
     - array
     - vector
     - list
