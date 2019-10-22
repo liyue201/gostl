@@ -2,11 +2,11 @@ package sort
 
 import (
 	"github.com/liyue201/gostl/uitls/comparator"
-	"github.com/liyue201/gostl/uitls/iterator"
+	"github.com/liyue201/gostl/iterator"
 
 	"math/rand"
 )   
-              
+               
 //sort the container by using quick sort
 func Sort(begin, end iterator.SortableIterator, cmp comparator.Comparator) {
 	quickSort(begin, end, cmp)

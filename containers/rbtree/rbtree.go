@@ -2,7 +2,7 @@ package rbtree
 
 import (
 	. "github.com/liyue201/gostl/uitls/comparator"
-	. "github.com/liyue201/gostl/uitls/iterator"
+	. "github.com/liyue201/gostl/iterator"
 ) 
 
 type RbTree struct {

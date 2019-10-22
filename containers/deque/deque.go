@@ -3,7 +3,7 @@ package deque
 import (
 	"errors"
 	"fmt"
-)
+) 
 
 var ErrOutOffRange = errors.New("out off range")
 

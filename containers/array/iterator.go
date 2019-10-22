@@ -1,7 +1,7 @@
 package array
 
 import (
-	. "github.com/liyue201/gostl/uitls/iterator"
+	. "github.com/liyue201/gostl/iterator"
 )
 
 //ArrayIterator is a SortableIterator
@@ -41,7 +41,7 @@ func (this *ArrayIterator) Prev() ConstBidIterator {
 	return this
 }
 
-func (this *ArrayIterator) Clone() interface{} {
+func (this *ArrayIterator) Clone() ConstIterator {
 	return &ArrayIterator{array: this.array, position: this.position}
 }
 

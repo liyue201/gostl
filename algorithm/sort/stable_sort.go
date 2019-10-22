@@ -2,9 +2,9 @@ package sort
 
 import (
 	"github.com/liyue201/gostl/uitls/comparator"
-	"github.com/liyue201/gostl/uitls/iterator"
+	"github.com/liyue201/gostl/iterator"
 )
- 
+  
 //Stable sort the container by using merge sort
 func Stable(begin, end iterator.SortableIterator, cmp comparator.Comparator) {
 	tempSlice := make([]interface{}, end.Position()-begin.Position(), end.Position()-begin.Position())

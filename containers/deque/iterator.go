@@ -1,9 +1,9 @@
 package deque
 
 import (
-	. "github.com/liyue201/gostl/uitls/iterator"
+	. "github.com/liyue201/gostl/iterator"
 )
-
+ 
 //ArrayIterator is a SortableIterator
 var _ SortableIterator = (*DequeIterator)(nil)
 
@@ -41,7 +41,7 @@ func (this *DequeIterator) Prev() ConstBidIterator {
 	return this
 }
 
-func (this *DequeIterator) Clone() interface{} {
+func (this *DequeIterator) Clone() ConstIterator {
 	return &DequeIterator{dq: this.dq, position: this.position}
 }
 

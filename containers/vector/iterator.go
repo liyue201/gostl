@@ -1,9 +1,9 @@
 package vector
 
 import (
-	. "github.com/liyue201/gostl/uitls/iterator"
+	. "github.com/liyue201/gostl/iterator"
 )
-
+ 
 //ArrayIterator is a SortableIterator
 var _ SortableIterator = (*VectorIterator)(nil)
 
@@ -42,7 +42,7 @@ func (this *VectorIterator) Prev() ConstBidIterator {
 	return this
 }
 
-func (this *VectorIterator) Clone() interface{} {
+func (this *VectorIterator) Clone() ConstIterator {
 	return &VectorIterator{vec: this.vec, position: this.position}
 }
 

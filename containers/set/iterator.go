@@ -2,9 +2,9 @@ package set
 
 import (
 	"github.com/liyue201/gostl/containers/rbtree"
-	. "github.com/liyue201/gostl/uitls/iterator"
+	. "github.com/liyue201/gostl/iterator"
 )
- 
+
 type SetIterator struct {
 	node *rbtree.Node
 }
@@ -34,6 +34,6 @@ func (this *SetIterator) Value() interface{} {
 	return this.node.Key()
 }
 
-func (this *SetIterator) Clone() interface{} {
+func (this *SetIterator) Clone() ConstIterator {
 	return &SetIterator{this.node}
 }

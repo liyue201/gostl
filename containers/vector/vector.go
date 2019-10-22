@@ -3,9 +3,9 @@ package vector
 import (
 	"errors"
 	"fmt"
-	. "github.com/liyue201/gostl/uitls/iterator"
-)
-
+	. "github.com/liyue201/gostl/iterator"
+) 
+ 
 var ErrOutOffRange = errors.New("out off range")
 var ErrEmpty = errors.New("vector is empty")
 var ErrInvalidIterator = errors.New("invalid iterator")

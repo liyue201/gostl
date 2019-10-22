@@ -1,7 +1,5 @@
 package bitmap
 
-import "fmt"
-
 type Bitmap struct {
 	data []byte
 	size uint64 //bitmap's size in bit, is the multiple of 8
@@ -66,11 +64,4 @@ func (this *Bitmap) Size() uint64 {
 // Clear clear the bitmap's data
 func (this *Bitmap) Clear() {
 	this.data = make([]byte, this.size/8, this.size/8)
-}
-
-func (this *Bitmap) Print() {
-	for _, v := range this.data {
-		fmt.Printf("%X \n", v)
-	}
-	fmt.Printf("\n")
 }

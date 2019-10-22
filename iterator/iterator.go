@@ -1,12 +1,12 @@
 package iterator
-
+ 
 // const iterator
 type ConstIterator interface {
 	IsValid() bool
 	Next() ConstIterator
 	Value() interface{}
-	Clone() interface{}
-} 
+	Clone() ConstIterator
+}
 
 // mutable iterator
 type Iterator interface {

@@ -1,10 +1,10 @@
 package rbtree
 
-import . "github.com/liyue201/gostl/uitls/iterator"
+import . "github.com/liyue201/gostl/iterator"
 
 type RbTreeIterator struct {
 	node *Node
-} 
+}
 
 func NewIterator(node *Node) *RbTreeIterator {
 	return &RbTreeIterator{node: node}
@@ -44,6 +44,6 @@ func (this *RbTreeIterator) SetValue(val interface{}) error {
 	return nil
 }
 
-func (this *RbTreeIterator) Clone() interface{} {
+func (this *RbTreeIterator) Clone() ConstIterator {
 	return NewIterator(this.node)
 }

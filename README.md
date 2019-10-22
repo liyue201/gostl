@@ -21,7 +21,8 @@ GoSTL is a data structure and algorithm library for go,designed to provide funct
 - algorithm
     - sort(quick_sort)
     - stable_sort(merge_sort)
-    - lower_bound [TODO]
-    - upper_bound [TODO]
+    - binary_search
+    - lower_bound
+    - upper_bound
     - next_permutation [TODO]
    
