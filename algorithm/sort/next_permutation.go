@@ -2,7 +2,7 @@ package sort
 
 import (
 	"github.com/liyue201/gostl/iterator"
-	"github.com/liyue201/gostl/uitls/comparator"
+	"github.com/liyue201/gostl/comparator"
 )
 
 func NextPermutation(begin, end iterator.SortableIterator, cmp comparator.Comparator) bool {

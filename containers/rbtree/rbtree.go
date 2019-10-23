@@ -1,7 +1,7 @@
 package rbtree
 
 import (
-	. "github.com/liyue201/gostl/uitls/comparator"
+	. "github.com/liyue201/gostl/comparator"
 	. "github.com/liyue201/gostl/iterator"
 ) 
 

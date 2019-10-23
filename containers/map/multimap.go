@@ -2,7 +2,7 @@ package treemap
 
 import (
 	"github.com/liyue201/gostl/containers/rbtree"
-	. "github.com/liyue201/gostl/uitls/comparator"
+	. "github.com/liyue201/gostl/comparator"
 	. "github.com/liyue201/gostl/iterator"
 )
 

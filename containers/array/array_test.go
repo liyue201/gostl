@@ -2,7 +2,7 @@ package array
 
 import (
 	"github.com/liyue201/gostl/algorithm/sort"
-	"github.com/liyue201/gostl/uitls/comparator"
+	"github.com/liyue201/gostl/comparator"
 	"testing"
 )
   

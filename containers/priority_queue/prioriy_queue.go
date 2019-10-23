@@ -2,7 +2,7 @@ package priority_queue
 
 import (
 	"container/heap"
-	. "github.com/liyue201/gostl/uitls/comparator"
+	. "github.com/liyue201/gostl/comparator"
 )
 
 type ItemHolder struct {

@@ -2,7 +2,7 @@ package sort
   
 import (
 	"github.com/liyue201/gostl/iterator"
-	"github.com/liyue201/gostl/uitls/comparator"
+	"github.com/liyue201/gostl/comparator"
 )
 
 //LowerBound returns true if exist an element witch value is val in the range [begin, end), or false if not exist

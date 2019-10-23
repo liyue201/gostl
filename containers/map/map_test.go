@@ -1,7 +1,7 @@
 package treemap
 
 import (
-	"github.com/liyue201/gostl/uitls/comparator"
+	"github.com/liyue201/gostl/comparator"
 	"testing"
 ) 
 
