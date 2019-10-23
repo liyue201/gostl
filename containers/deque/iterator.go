@@ -4,8 +4,8 @@ import (
 	. "github.com/liyue201/gostl/iterator"
 )
 
-//ArrayIterator is a SortableIterator
-var _ SortableIterator = (*DequeIterator)(nil)
+//ArrayIterator is a RandomAccessIterator
+var _ RandomAccessIterator = (*DequeIterator)(nil)
 
 type DequeIterator struct {
 	dq       *Deque
@@ -45,7 +45,7 @@ func (this *DequeIterator) Clone() ConstIterator {
 	return &DequeIterator{dq: this.dq, position: this.position}
 }
 
-func (this *DequeIterator) IteratorAt(position int) SortableIterator {
+func (this *DequeIterator) IteratorAt(position int) RandomAccessIterator {
 	return &DequeIterator{dq: this.dq, position: position}
 }
 

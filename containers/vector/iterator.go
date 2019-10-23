@@ -4,8 +4,8 @@ import (
 	. "github.com/liyue201/gostl/iterator"
 )
 
-//ArrayIterator is a SortableIterator
-var _ SortableIterator = (*VectorIterator)(nil)
+//ArrayIterator is a RandomAccessIterator
+var _ RandomAccessIterator = (*VectorIterator)(nil)
 
 type VectorIterator struct {
 	vec      *Vector
@@ -46,7 +46,7 @@ func (this *VectorIterator) Clone() ConstIterator {
 	return &VectorIterator{vec: this.vec, position: this.position}
 }
 
-func (this *VectorIterator) IteratorAt(position int) SortableIterator {
+func (this *VectorIterator) IteratorAt(position int) RandomAccessIterator {
 	return &VectorIterator{vec: this.vec, position: position}
 }
 

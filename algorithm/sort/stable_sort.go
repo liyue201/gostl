@@ -6,12 +6,12 @@ import (
 )
   
 //Stable sort the container by using merge sort
-func Stable(begin, end iterator.SortableIterator, cmp comparator.Comparator) {
+func Stable(begin, end iterator.RandomAccessIterator, cmp comparator.Comparator) {
 	tempSlice := make([]interface{}, end.Position()-begin.Position(), end.Position()-begin.Position())
 	mergeSort(begin, end, cmp, tempSlice)
 }
 
-func mergeSort(begin, end iterator.SortableIterator, cmp comparator.Comparator, tempSlice []interface{}) {
+func mergeSort(begin, end iterator.RandomAccessIterator, cmp comparator.Comparator, tempSlice []interface{}) {
 	if begin.Position()+1 == end.Position() {
 		return
 	}
@@ -21,9 +21,9 @@ func mergeSort(begin, end iterator.SortableIterator, cmp comparator.Comparator, 
 	merge(begin, mid, end, cmp, tempSlice)
 }
 
-func merge(begin, mid, end iterator.SortableIterator, cmp comparator.Comparator, tempSlice []interface{}) {
-	firstIter := (begin.Clone()).(iterator.SortableIterator)
-	secondIter := (mid.Clone()).(iterator.SortableIterator)
+func merge(begin, mid, end iterator.RandomAccessIterator, cmp comparator.Comparator, tempSlice []interface{}) {
+	firstIter := (begin.Clone()).(iterator.RandomAccessIterator)
+	secondIter := (mid.Clone()).(iterator.RandomAccessIterator)
 	pos := 0
 
 	for firstIter.Position() < mid.Position() && secondIter.Position() < end.Position() {
@@ -46,7 +46,7 @@ func merge(begin, mid, end iterator.SortableIterator, cmp comparator.Comparator,
 		pos++
 	}
 
-	iter := begin.Clone().(iterator.SortableIterator)
+	iter := begin.Clone().(iterator.RandomAccessIterator)
 	for idx := 0; idx < pos; idx++ {
 		iter.SetValue(tempSlice[idx])
 		iter.Next()

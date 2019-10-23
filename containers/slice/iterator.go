@@ -2,8 +2,8 @@ package slice
 
 import . "github.com/liyue201/gostl/iterator"
 
-//SliceIterator is a SortableIterator
-var _ SortableIterator = (*SliceIterator)(nil)
+//SliceIterator is a RandomAccessIterator
+var _ RandomAccessIterator = (*SliceIterator)(nil)
 
 type SliceIterator struct {
 	s        ISlice
@@ -44,7 +44,7 @@ func (this *SliceIterator) Clone() ConstIterator {
 	return &SliceIterator{s: this.s, position: this.position}
 }
 
-func (this *SliceIterator) IteratorAt(position int) SortableIterator {
+func (this *SliceIterator) IteratorAt(position int) RandomAccessIterator {
 	return &SliceIterator{s: this.s, position: position}
 }
 

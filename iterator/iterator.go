@@ -15,7 +15,7 @@ type Iterator interface {
 	SetValue(value interface{}) error
 }
 
-//const key-value type iterator
+// const key-value type iterator
 type ConstKvIterator interface {
 	ConstIterator
 	Key() interface{}
@@ -27,36 +27,35 @@ type KvIterator interface {
 	SetValue(value interface{}) error
 }
 
-//const bidirectional iterator
+// const bidirectional iterator
 type ConstBidIterator interface {
 	ConstIterator
 	Prev() ConstBidIterator
 }
 
-//mutable bidirectional iterator
+// mutable bidirectional iterator
 type BidIterator interface {
 	ConstBidIterator
 	SetValue(value interface{}) error
 }
 
-//const key-value type bidirectional iterator
+// const key-value type bidirectional iterator
 type ConstKvBidIterator interface {
 	ConstKvIterator
 	Prev() ConstBidIterator
 }
 
-//mutable key-value type bidirectional iterator
+// mutable key-value type bidirectional iterator
 type KvBidIterator interface {
 	ConstKvIterator
 	Prev() ConstBidIterator
 	SetValue(value interface{}) error
 }
 
-//sortable iterator
-type SortableIterator interface {
+// random access iterator
+type RandomAccessIterator interface {
 	BidIterator
-
 	//IteratorAt returns a new iterator at position
-	IteratorAt(position int) SortableIterator
+	IteratorAt(position int) RandomAccessIterator
 	Position() int
 }

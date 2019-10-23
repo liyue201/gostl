@@ -5,7 +5,8 @@ import (
 	"github.com/liyue201/gostl/comparator"
 )
 
-func NextPermutation(begin, end iterator.SortableIterator, cmp comparator.Comparator) bool {
+//NextPermutation transform range [begin end) to next permutation,return true if success, or false if failure
+func NextPermutation(begin, end iterator.RandomAccessIterator, cmp comparator.Comparator) bool {
 	len := end.Position() - begin.Position()
 	endPos := begin.Position() + len - 1
 	cur := endPos
@@ -27,7 +28,7 @@ func NextPermutation(begin, end iterator.SortableIterator, cmp comparator.Compar
 	return true
 }
 
-func reverse(s, e iterator.SortableIterator) {
+func reverse(s, e iterator.RandomAccessIterator) {
 	for s.Position() < e.Position() {
 		swapValue(s, e)
 		s.Next()

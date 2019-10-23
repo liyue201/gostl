@@ -4,8 +4,8 @@ import (
 	. "github.com/liyue201/gostl/iterator"
 )
 
-//ArrayIterator is a SortableIterator
-var _ SortableIterator = (*ArrayIterator)(nil)
+//ArrayIterator is a RandomAccessIterator
+var _ RandomAccessIterator = (*ArrayIterator)(nil)
 
 type ArrayIterator struct {
 	array    *Array
@@ -45,7 +45,7 @@ func (this *ArrayIterator) Clone() ConstIterator {
 	return &ArrayIterator{array: this.array, position: this.position}
 }
 
-func (this *ArrayIterator) IteratorAt(position int) SortableIterator {
+func (this *ArrayIterator) IteratorAt(position int) RandomAccessIterator {
 	return &ArrayIterator{array: this.array, position: position}
 }
 
