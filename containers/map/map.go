@@ -24,6 +24,15 @@ func (this *Map) Insert(key, value interface{}) {
 	this.tree.Insert(key, value)
 }
 
+//Get returns the value by key if found, or nil if not found
+func (this *Map) Get(key interface{}) interface{} {
+	node := this.tree.FindNode(key)
+	if node != nil {
+		return node.Value()
+	}
+	return nil
+}
+
 //Erase erases node by key in the Map
 func (this *Map) Erase(key interface{}) {
 	node := this.tree.FindNode(key)

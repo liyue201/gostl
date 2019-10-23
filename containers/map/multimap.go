@@ -22,6 +22,15 @@ func (this *MultiMap) Insert(key, value interface{}) {
 	this.tree.Insert(key, value)
 }
 
+//Get returns the first node's value by key if found, or nil if not found
+func (this *MultiMap) Get(key interface{}) interface{} {
+	node := this.tree.FindNode(key)
+	if node != nil {
+		return node.Value()
+	}
+	return nil
+}
+
 //Erase erases key in the Map
 func (this *MultiMap) Erase(key interface{}) {
 	node := this.tree.FindNode(key)

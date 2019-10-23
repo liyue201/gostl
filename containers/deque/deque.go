@@ -130,6 +130,7 @@ func (this *Deque) PopBack() interface{} {
 	index := this.preIndex(this.end)
 	val := this.data[index]
 	this.data[index] = nil
+	this.end = index
 	this.size--
 	this.shrinkIfNeeded()
 	return val

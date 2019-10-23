@@ -99,7 +99,7 @@ func (this *Ketama) Remove(nodes ...string) {
 	}
 }
 
-// Get returns the node witch closest to key in the clockwise direction
+// Get returns the node which closest to key in the clockwise direction
 func (this *Ketama) Get(key string) (string, bool) {
 	if this.Empty() {
 		return "", false

@@ -76,8 +76,5 @@ func (this *PriorityQueue) Top() interface{} {
 }
 
 func (this *PriorityQueue) Empty() bool {
-	if this.holder.Size() == 0 {
-		return true
-	}
-	return false
+	return this.holder.Size() == 0
 }
