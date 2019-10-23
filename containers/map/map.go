@@ -1,11 +1,11 @@
 package treemap
 
 import (
-	"github.com/liyue201/gostl/containers/rbtree"
 	. "github.com/liyue201/gostl/comparator"
+	"github.com/liyue201/gostl/containers/rbtree"
 	. "github.com/liyue201/gostl/iterator"
-) 
-  
+)
+
 type Map struct {
 	tree *rbtree.RbTree
 }
@@ -24,11 +24,19 @@ func (this *Map) Insert(key, value interface{}) {
 	this.tree.Insert(key, value)
 }
 
-//Erase erases node with key in the Map
+//Erase erases node by key in the Map
 func (this *Map) Erase(key interface{}) {
 	node := this.tree.FindNode(key)
 	if node != nil {
 		this.tree.Delete(node)
+	}
+}
+
+//Erase erases node by iter in the Map
+func (this *Map) EraseIter(iter ConstKvIterator) {
+	mpIter, ok := iter.(*MapIterator)
+	if ok {
+		this.tree.Delete(mpIter.node)
 	}
 }
 

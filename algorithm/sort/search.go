@@ -28,7 +28,7 @@ func BinarySearch(begin, end iterator.RandomAccessIterator, val interface{}, cmp
 	return false
 }
 
-//LowerBound returns the iterator of the first element greater than or equal to value in the range [begin, end), or iterator end if not exist.
+//LowerBound returns the iterator pointing to the first element greater than or equal to value passed in the range [begin, end), or iterator end if not exist.
 func LowerBound(begin, end iterator.RandomAccessIterator, val interface{}, cmp comparator.Comparator) iterator.RandomAccessIterator {
 	if !begin.IsValid() || begin.Position() >= end.Position() {
 		return end.Clone().(iterator.RandomAccessIterator)
@@ -53,7 +53,7 @@ func LowerBound(begin, end iterator.RandomAccessIterator, val interface{}, cmp c
 	return begin.IteratorAt(pos)
 }
 
-//LowerBound returns the iterator of the first element greater than val in the range [begin, end), or iterator end if not exist.
+//LowerBound returns the iterator pointing to the first element greater than val in the range [begin, end), or iterator end if not exist.
 func UpperBound(begin, end iterator.RandomAccessIterator, val interface{}, cmp comparator.Comparator) iterator.RandomAccessIterator {
 	if !begin.IsValid() || begin.Position() >= end.Position() {
 		return end.Clone().(iterator.RandomAccessIterator)

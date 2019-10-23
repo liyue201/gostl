@@ -9,7 +9,7 @@ var ErrArraySizeNotEqual = errors.New("array size are not equal")
 var ErrOutOffRange = errors.New("out off range")
 
 type Array struct {
-	data    []interface{}
+	data []interface{}
 }
 
 func New(size int) *Array {
@@ -58,10 +58,7 @@ func (this *Array) Size() int {
 }
 
 func (this *Array) Empty() bool {
-	if len(this.data) > 0 {
-		return false
-	}
-	return true
+	return len(this.data) == 0
 }
 
 func (this *Array) SwapArray(other *Array) error {
