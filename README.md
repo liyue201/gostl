@@ -29,4 +29,4 @@ GoSTL is a data structure and algorithm library for go,designed to provide funct
     - next_permutation
     
  ## Examples
- see here: [examples](/exmaples)
+ see here: [examples](/examples)
