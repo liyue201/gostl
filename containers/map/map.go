@@ -49,12 +49,9 @@ func (this *Map) EraseIter(iter ConstKvIterator) {
 	}
 }
 
-//Begin returns the ConstIterator related to value in the map, return nil if not exist.
+//Begin returns the ConstIterator related to value in the map, or an invalid iterator if not exist.
 func (this *Map) Find(key interface{}) ConstKvIterator {
 	node := this.tree.FindNode(key)
-	if node == nil {
-		return nil
-	}
 	return &MapIterator{node: node}
 }
 

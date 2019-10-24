@@ -32,12 +32,9 @@ func (this *MultiSet) Erase(element interface{}) {
 	}
 }
 
-// Begin returns the ConstIterator related to element in the MultiSet, return nil if not exist.
+// Begin returns the ConstIterator related to element in the MultiSet,or an invalid iterator if not exist.
 func (this *MultiSet) Find(element interface{}) ConstIterator {
 	node := this.tree.FindNode(element)
-	if node == nil {
-		return nil
-	}
 	return &SetIterator{node: node}
 }
 

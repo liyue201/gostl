@@ -1,8 +1,8 @@
 package treemap
 
 import (
-	"github.com/liyue201/gostl/containers/rbtree"
 	. "github.com/liyue201/gostl/comparator"
+	"github.com/liyue201/gostl/containers/rbtree"
 	. "github.com/liyue201/gostl/iterator"
 )
 
@@ -41,12 +41,9 @@ func (this *MultiMap) Erase(key interface{}) {
 	}
 }
 
-//Begin returns the ConstIterator related to key in the set, return nil if not exist.
+//Begin returns the ConstIterator related to key in the set, or an invalid iterator if not exist.
 func (this *MultiMap) Find(key interface{}) ConstKvIterator {
 	node := this.tree.FindNode(key)
-	if node == nil {
-		return nil
-	}
 	return &MapIterator{node: node}
 }
 

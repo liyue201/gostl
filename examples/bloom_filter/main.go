@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	filter := bloom.New(100000, 5)
+	filter := bloom.New(100, 4)
 	fmt.Printf("%v\n", filter.Contains("gggg"))
 
 	filter.Add("hhhh")

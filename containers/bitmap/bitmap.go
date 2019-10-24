@@ -15,6 +15,14 @@ func New(size uint64) *Bitmap {
 	return bitmap
 }
 
+func NewFromData(data []byte) *Bitmap {
+	bitmap := &Bitmap{
+		size: uint64(len(data)) * 8,
+		data: data,
+	}
+	return bitmap
+}
+
 // Set set 1 at position
 func (this *Bitmap) Set(position uint64) bool {
 	if position >= this.size {
@@ -64,4 +72,9 @@ func (this *Bitmap) Size() uint64 {
 // Clear clear the bitmap's data
 func (this *Bitmap) Clear() {
 	this.data = make([]byte, this.size/8, this.size/8)
+}
+
+
+func (this *Bitmap) Data() []byte {
+	return this.data
 }

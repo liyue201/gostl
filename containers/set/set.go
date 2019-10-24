@@ -35,12 +35,9 @@ func (this *Set) Erase(element interface{}) {
 	}
 }
 
-// Begin returns the ConstIterator related to element in the Set, return nil if not exist.
+// Begin returns the ConstIterator related to element in the Set,or an invalid iterator if not exist.
 func (this *Set) Find(element interface{}) ConstIterator {
 	node := this.tree.FindNode(element)
-	if node == nil {
-		return nil
-	}
 	return &SetIterator{node: node}
 }
 

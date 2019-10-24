@@ -1,19 +1,17 @@
 package ketama
 
 import (
+	"github.com/liyue201/gostl/algorithm/hash"
 	"github.com/liyue201/gostl/comparator"
 	"github.com/liyue201/gostl/containers/map"
-	"hash/crc32"
-	"strconv"
 	"sync"
 )
 
-type HashFunc func(data []byte) uint32
-
 var (
 	defaultReplicas = 10
-	defaultHashFunc = crc32.ChecksumIEEE
 )
+
+const Salt = "ni9fkh72hgh1g"
 
 type Ketama struct {
 	sync.RWMutex
@@ -23,7 +21,6 @@ type Ketama struct {
 
 type Option struct {
 	replicas int
-	hash     HashFunc
 }
 
 type Options func(option *Option)
@@ -34,18 +31,11 @@ func WithReplicas(replicas int) Options {
 	}
 }
 
-func WithHashFunc(hash HashFunc) Options {
-	return func(option *Option) {
-		option.hash = hash
-	}
-}
-
 // New new a ketama ring
 // Ketama is a thread-safe implementation of consistent hash
 func New(opts ...Options) *Ketama {
 	option := Option{
 		replicas: defaultReplicas,
-		hash:     defaultHashFunc,
 	}
 	this := &Ketama{
 		option: option,
@@ -71,8 +61,9 @@ func (this *Ketama) Add(nodes ...string) {
 	defer this.Unlock()
 
 	for _, node := range nodes {
+		hashs := hash.GenHashInts([]byte(Salt+node), this.option.replicas)
 		for i := 0; i < this.option.replicas; i++ {
-			key := int(this.option.hash([]byte(makeRingKey(node, i))))
+			key := hashs[i]
 			if !this.m.Contains(key) {
 				this.m.Insert(key, node)
 			}
@@ -80,17 +71,14 @@ func (this *Ketama) Add(nodes ...string) {
 	}
 }
 
-func makeRingKey(node string, index int) string {
-	return node + "-" + strconv.Itoa(index)
-}
-
 // Get remove nodes from ketama ring
 func (this *Ketama) Remove(nodes ...string) {
 	this.Lock()
 	defer this.Unlock()
 	for _, node := range nodes {
+		hashs := hash.GenHashInts([]byte(Salt+node), this.option.replicas)
 		for i := 0; i < this.option.replicas; i++ {
-			key := int(this.option.hash([]byte(makeRingKey(node, i))))
+			key := hashs[i]
 			iter := this.m.Find(key)
 			if iter.IsValid() && iter.Value() == node {
 				this.m.EraseIter(iter)
@@ -105,7 +93,8 @@ func (this *Ketama) Get(key string) (string, bool) {
 		return "", false
 	}
 
-	hash := int(this.option.hash([]byte(key)))
+	hashs := hash.GenHashInts([]byte(Salt+key), 1)
+	hash := hashs[0]
 
 	this.Lock()
 	defer this.Unlock()
