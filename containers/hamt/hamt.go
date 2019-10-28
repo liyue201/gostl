@@ -16,13 +16,13 @@ type Key []byte
 
 type Entry interface {
 	Type() int
-	BitPos() uint64
+	BitPos(depth int) uint64
 }
 
 type BitmapNode struct {
 	bitmap   uint64
 	children []Entry
-	bitPos   uint64
+	pos      uint8 //position in parent array, in range [0, 64)
 }
 
 type KvPair struct {
@@ -34,7 +34,6 @@ type KvPair struct {
 type KvNode struct {
 	hash   uint64
 	kvList *KvPair
-	bitPos uint64
 }
 
 type Hamt struct {
@@ -45,29 +44,28 @@ func (this *BitmapNode) Type() int {
 	return BITMAP_NODE
 }
 
-func (this *BitmapNode) BitPos() uint64 {
-	return this.bitPos
+func (this *BitmapNode) BitPos(depth int) uint64 {
+	return uint64(1) << this.pos
 }
 
-func (this *BitmapNode) Index(pos uint64) int {
-	return bits.OnesCount64((pos - 1) & this.bitmap)
+func (this *BitmapNode) Index(bitPos uint64) int {
+	return bits.OnesCount64((bitPos - 1) & this.bitmap)
 }
 
 func (this *BitmapNode) insert(depth int, hash uint64, kv *KvPair) {
-	nBits := (hash >> (uint64(depth) * Fanout)) & Mask //hash in current node's bits
-	bitPos := uint64(1) << nBits                       //hash in current bitmap's position
+	pos := pos(hash, depth) //hash in current node's position
+	bitPos := bitPos(pos)   //hash in current bitmap's position in bit
 	if bitPos&this.bitmap == 0 {
 		this.bitmap |= bitPos
 		newChildren := make([]Entry, len(this.children)+1)
 		kvNode := &KvNode{
 			hash:   hash,
 			kvList: kv,
-			bitPos: bitPos,
 		}
 		index := this.Index(bitPos)
 		newChildren[index] = kvNode
 		for _, entry := range this.children {
-			index = this.Index(entry.BitPos())
+			index = this.Index(entry.BitPos(depth))
 			newChildren[index] = entry
 		}
 		this.children = newChildren
@@ -87,7 +85,7 @@ func (this *BitmapNode) insert(depth int, hash uint64, kv *KvPair) {
 				kvNode.kvList = kv
 			} else {
 				bitmapNode := &BitmapNode{
-					bitPos: bitPos,
+					pos: pos,
 				}
 				bitmapNode.insert(depth+1, kvNode.hash, kvNode.kvList)
 				bitmapNode.insert(depth+1, hash, kv)
@@ -100,8 +98,8 @@ func (this *BitmapNode) insert(depth int, hash uint64, kv *KvPair) {
 }
 
 func (this *BitmapNode) find(depth int, hash uint64, key Key) interface{} {
-	nBits := (hash >> (uint64(depth) * Fanout)) & Mask //hash in current node's bits
-	bitPos := uint64(1) << nBits                       //hash in current bitmap's position
+	pos := pos(hash, depth) //hash in current node's position
+	bitPos := bitPos(pos)   //hash in current bitmap's position in bit
 	if bitPos&this.bitmap == 0 {
 		return nil
 	}
@@ -135,8 +133,8 @@ func (this *BitmapNode) traversal(f func(node *KvNode)) {
 }
 
 func (this *BitmapNode) erase(depth int, hash uint64, key Key) bool {
-	nBits := (hash >> (uint64(depth) * Fanout)) & Mask //hash in current node's bits
-	bitPos := uint64(1) << nBits                       //hash in current bitmap's position
+	pos := pos(hash, depth) //hash in current node's position
+	bitPos := bitPos(pos)   //hash in current bitmap's position in bit
 	if bitPos&this.bitmap == 0 {
 		return false
 	}
@@ -170,7 +168,7 @@ func (this *BitmapNode) erase(depth int, hash uint64, key Key) bool {
 				newChildren := make([]Entry, len(this.children)-1)
 				for _, entry := range this.children {
 					if entry != nil {
-						newIndex := this.Index(entry.BitPos())
+						newIndex := this.Index(entry.BitPos(depth))
 						newChildren[newIndex] = entry
 					}
 				}
@@ -185,7 +183,6 @@ func (this *BitmapNode) erase(depth int, hash uint64, key Key) bool {
 		// change bitmapNode to kvNode, if the a bitmapNode has only one kvNode
 		if ok && len(bitmapNode.children) == 1 && bitmapNode.children[0].Type() == KV_NODE {
 			child := bitmapNode.children[0].(*KvNode)
-			child.bitPos = bitmapNode.bitPos
 			this.children[index] = child
 		}
 		return ok
@@ -196,8 +193,8 @@ func (this *KvNode) Type() int {
 	return KV_NODE
 }
 
-func (this *KvNode) BitPos() uint64 {
-	return this.bitPos
+func (this *KvNode) BitPos(depth int) uint64 {
+	return uint64(1) << pos(this.hash, depth)
 }
 
 // New new a Hamt(hash array map tree) instance
@@ -210,7 +207,7 @@ func (this *Hamt) Insert(key Key, value interface{}) {
 	keyHash := hash(key)
 	this.root.insert(0, keyHash, &KvPair{key: key, value: value})
 }
-
+ 
 // Insert returns the value by the passed key, or nil if not found
 func (this *Hamt) Get(key Key) interface{} {
 	keyHash := hash(key)
@@ -249,4 +246,12 @@ func hash(a []byte) uint64 {
 	h := fnv.New64()
 	h.Write(a)
 	return h.Sum64()
+}
+
+func pos(hash uint64, depth int) uint8 {
+	return uint8((hash >> (uint64(depth) * Fanout)) & Mask)
+}
+
+func bitPos(pos uint8) uint64 {
+	return uint64(1) << pos
 }
