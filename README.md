@@ -19,7 +19,7 @@ GoSTL is a data structure and algorithm library for go,designed to provide funct
     - bloom_filter
     - hamt(hash_array_map_tree)
     - ketama
-    - skiplist [TODO] 
+    - skiplist
 - algorithm
     - sort(quick_sort)
     - stable_sort(merge_sort)
@@ -29,4 +29,4 @@ GoSTL is a data structure and algorithm library for go,designed to provide funct
     - next_permutation
     
  ## Examples
- see here: [examples](/examples)
+ [see here](/examples)
