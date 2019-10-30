@@ -232,7 +232,7 @@ func (this *List) String() string {
 // Traversal traversals elements in list, it will not stop until to the end or visitor returns false
 func (this *List) Traversal(visitor visitor.Visitor) {
 	for node := this.head; node != nil; node = node.next {
-		if visitor(node.Value) {
+		if !visitor(node.Value) {
 			break
 		}
 	}

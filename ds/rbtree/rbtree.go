@@ -381,7 +381,7 @@ func (this *RbTree) findLowerBoundNode(x *Node, key interface{}) *Node {
 // Traversal traversals elements in rbtree, it will not stop until to the end or visitor returns false
 func (this *RbTree) Traversal(visitor visitor.KvVisitor) {
 	for node := this.First(); node != nil; node = node.Next() {
-		if visitor(node.key, node.value) {
+		if !visitor(node.key, node.value) {
 			break
 		}
 	}
