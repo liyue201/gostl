@@ -1,13 +1,12 @@
 package skiplist
 
 import (
-	"github.com/liyue201/gostl/comparator"
 	"math/rand"
 	"testing"
 )
 
 func TestInsert(t *testing.T) {
-	list := New(5, comparator.BuiltinTypeComparator)
+	list := New(WithMaxLevel(5))
 
 	m := make(map[int]int)
 	for i := 0; i < 100; i++ {
@@ -28,7 +27,7 @@ func TestInsert(t *testing.T) {
 }
 
 func TestRemove(t *testing.T) {
-	list := New(10, comparator.BuiltinTypeComparator)
+	list := New()
 
 	m := make(map[int]int)
 	for i := 0; i < 1000; i++ {

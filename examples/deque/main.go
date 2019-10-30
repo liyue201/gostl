@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	q := deque.New(0)
+	q := deque.New()
 	q.PushBack(2)
 	q.PushFront(1)
 	q.PushBack(3)

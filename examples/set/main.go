@@ -1,13 +1,12 @@
 package main
 
 import (
-	"github.com/liyue201/gostl/comparator"
-	"github.com/liyue201/gostl/ds/set"
 	"fmt"
+	"github.com/liyue201/gostl/ds/set"
 )
 
 func main()  {
-	s := set.New(comparator.BuiltinTypeComparator)
+	s := set.New()
 	s.Insert(1)
 	s.Insert(5)
 	s.Insert(3)

@@ -5,6 +5,10 @@ import (
 	. "github.com/liyue201/gostl/comparator"
 )
 
+var (
+	defaultComparator = BuiltinTypeComparator
+)
+
 type ItemHolder struct {
 	items  []interface{}
 	cmpFun Comparator
@@ -49,14 +53,32 @@ func (this *ItemHolder) Swap(i, j int) {
 	this.items[i], this.items[j] = this.items[j], this.items[i]
 }
 
+type Option struct {
+	cmp Comparator
+}
+
+type Options func(option *Option)
+
+func WithComparator(cmp Comparator) Options {
+	return func(option *Option) {
+		option.cmp = cmp
+	}
+}
+
 type PriorityQueue struct {
 	holder *ItemHolder
 }
 
-func New(cmp Comparator) *PriorityQueue {
+func New(opts ...Options) *PriorityQueue {
+	option := Option{
+		cmp: defaultComparator,
+	}
+	for _, opt := range opts {
+		opt(&option)
+	}
 	holder := &ItemHolder{
 		items:  make([]interface{}, 0, 0),
-		cmpFun: cmp,
+		cmpFun: option.cmp,
 	}
 	return &PriorityQueue{
 		holder: holder,

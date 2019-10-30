@@ -6,12 +6,34 @@ import (
 	. "github.com/liyue201/gostl/iterator"
 )
 
+var (
+	defaultKeyComparator = BuiltinTypeComparator
+)
+
+type Option struct {
+	keyCmp Comparator
+}
+
+type Options func(option *Option)
+
+func WithKeyComparator(cmp Comparator) Options {
+	return func(option *Option) {
+		option.keyCmp = cmp
+	}
+}
+
 type Map struct {
 	tree *rbtree.RbTree
 }
 
-func New(cmp Comparator) *Map {
-	return &Map{tree: rbtree.New(cmp)}
+func New(opts ...Options) *Map {
+	option := Option{
+		keyCmp: defaultKeyComparator,
+	}
+	for _, opt := range opts {
+		opt(&option)
+	}
+	return &Map{tree: rbtree.New(rbtree.WithKeyComparator(option.keyCmp))}
 }
 
 //Insert inserts key-value to the map

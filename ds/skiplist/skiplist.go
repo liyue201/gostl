@@ -7,6 +7,30 @@ import (
 	"time"
 )
 
+var (
+	defaultKeyComparator = comparator.BuiltinTypeComparator
+	defaultMaxLevel      = 10
+)
+
+type Option struct {
+	keyCmp   comparator.Comparator
+	maxLevel int
+}
+
+type Options func(option *Option)
+
+func WithKeyComparator(cmp comparator.Comparator) Options {
+	return func(option *Option) {
+		option.keyCmp = cmp
+	}
+}
+
+func WithMaxLevel(maxLevel int) Options {
+	return func(option *Option) {
+		option.maxLevel = maxLevel
+	}
+}
+
 type Node struct {
 	next []*Element
 }
@@ -21,20 +45,27 @@ type Skiplist struct {
 	sync.RWMutex
 	head           Node
 	maxLevel       int
-	cmpFun         comparator.Comparator
+	keyCmp         comparator.Comparator
 	len            int
 	prevNodesCache []*Node
 	rander         *rand.Rand
 }
 
-func New(maxLevel int, cmp comparator.Comparator) *Skiplist {
+func New(opts ...Options) *Skiplist {
+	option := Option{
+		keyCmp:   defaultKeyComparator,
+		maxLevel: defaultMaxLevel,
+	}
+	for _, opt := range opts {
+		opt(&option)
+	}
 	l := &Skiplist{
-		maxLevel: maxLevel,
-		cmpFun:   cmp,
+		maxLevel: option.maxLevel,
+		keyCmp:   option.keyCmp,
 		rander:   rand.New(rand.NewSource(time.Now().Unix())),
 	}
-	l.head.next = make([]*Element, maxLevel)
-	l.prevNodesCache = make([]*Node, maxLevel)
+	l.head.next = make([]*Element, l.maxLevel)
+	l.prevNodesCache = make([]*Node, l.maxLevel)
 	return l
 }
 
@@ -44,7 +75,7 @@ func (this *Skiplist) Insert(key, value interface{}) {
 	defer this.Unlock()
 	prevs := this.findPrevNodes(key)
 
-	if prevs[0].next[0] != nil && this.cmpFun(prevs[0].next[0].key, key) == 0 {
+	if prevs[0].next[0] != nil && this.keyCmp(prevs[0].next[0].key, key) == 0 {
 		//same key, update value
 		prevs[0].next[0].value = value
 		return
@@ -77,7 +108,7 @@ func (this *Skiplist) Get(key interface{}) interface{} {
 	for i := this.maxLevel - 1; i >= 0; i-- {
 		cur := pre.next[i]
 		for ; cur != nil; cur = cur.next[i] {
-			cmpRet := this.cmpFun(cur.key, key)
+			cmpRet := this.keyCmp(cur.key, key)
 			if cmpRet == 0 {
 				return cur.value
 			}
@@ -100,7 +131,7 @@ func (this *Skiplist) Remove(key interface{}) bool {
 	if element == nil {
 		return false
 	}
-	if element != nil && this.cmpFun(element.key, key) != 0 {
+	if element != nil && this.keyCmp(element.key, key) != 0 {
 		return false
 	}
 
@@ -137,7 +168,7 @@ func (this *Skiplist) findPrevNodes(key interface{}) []*Node {
 	for i := this.maxLevel - 1; i >= 0; i-- {
 		if this.head.next[i] != nil {
 			for next := prev.next[i]; next != nil; next = next.next[i] {
-				if this.cmpFun(next.key, key) >= 0 {
+				if this.keyCmp(next.key, key) >= 0 {
 					break
 				}
 				prev = &next.Node

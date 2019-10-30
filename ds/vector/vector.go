@@ -4,20 +4,36 @@ import (
 	"errors"
 	"fmt"
 	. "github.com/liyue201/gostl/iterator"
-) 
- 
+)
+
 var ErrOutOffRange = errors.New("out off range")
 var ErrEmpty = errors.New("vector is empty")
 var ErrInvalidIterator = errors.New("invalid iterator")
 
-type Less func(i, j int) bool
-
-type Vector struct {
-	data    []interface{}
+type Option struct {
+	capacity int
 }
 
-func New(capacity int) *Vector {
-	return &Vector{data: make([]interface{}, 0, capacity)}
+type Options func(option *Option)
+
+func WithCapacity(capacity int) Options {
+	return func(option *Option) {
+		option.capacity = capacity
+	}
+}
+
+type Vector struct {
+	data []interface{}
+}
+
+func New(opts ...Options) *Vector {
+	option := Option{}
+	for _, opt := range opts {
+		opt(&option)
+	}
+	return &Vector{
+		data: make([]interface{}, 0, option.capacity),
+	}
 }
 
 func NewFromVector(other *Vector) *Vector {

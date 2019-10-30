@@ -3,7 +3,7 @@ package deque
 import "testing"
 
 func TestPushPop(t *testing.T) {
-	q := New(10)
+	q := New()
 
 	q.PushBack(1)  //[1]
 	q.PushFront(2) //[2 1]
@@ -44,7 +44,7 @@ func TestPushPop(t *testing.T) {
 }
 
 func TestErase(t *testing.T) {
-	q := New(0)
+	q := New()
 	for i := 0; i < 5; i++ {
 		q.PushBack(i + 1)
 	}

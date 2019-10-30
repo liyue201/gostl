@@ -1,15 +1,15 @@
 package vector
 
 import (
+	"github.com/liyue201/gostl/algorithm/sort"
 	"github.com/liyue201/gostl/comparator"
-	"sort"
 	"testing"
 )
 
 func TestVectorBase(t *testing.T) {
-	v := New(10)
+	v := New(WithCapacity(10))
 
-	if !v.Empty() { 
+	if !v.Empty() {
 		t.Fatalf("is not emtpy")
 	}
 	if v.Capacity() != 10 {
@@ -52,7 +52,7 @@ func TestVectorBase(t *testing.T) {
 }
 
 func TestModifyVector(t *testing.T) {
-	v := New(10)
+	v := New()
 	v.PushBack(1)
 	v.PushBack(2)
 	v.PushBack(3)
@@ -80,7 +80,7 @@ func TestModifyVector(t *testing.T) {
 }
 
 func TestVectorIter(t *testing.T) {
-	v := New(10)
+	v := New()
 	v.PushBack(1)
 	v.PushBack(2)
 	v.PushBack(3)
@@ -136,12 +136,11 @@ func TestVectorIter(t *testing.T) {
 }
 
 func TestSort(t *testing.T) {
-	v := New(10)
+	v := New()
 	for i := 10; i >= 0; i-- {
 		v.PushBack(i)
 	}
-	v.SetComparator(comparator.BuiltinTypeComparator)
-	sort.Sort(v)
+	sort.Sort(v.Begin(), v.End(), comparator.BuiltinTypeComparator)
 	for i := 0; i < v.Size(); i++ {
 		t.Logf("%v", v.At(i))
 		if i != v.At(i).(int) {
@@ -149,8 +148,7 @@ func TestSort(t *testing.T) {
 		}
 	}
 
-	v.SetComparator(comparator.Reverse(comparator.BuiltinTypeComparator))
-	sort.Sort(v)
+	sort.Sort(v.Begin(), v.End(), comparator.Reverse(comparator.BuiltinTypeComparator))
 	for i := 0; i < v.Size(); i++ {
 		t.Logf("%v", v.At(i))
 		if v.Size()-i-1 != v.At(i).(int) {

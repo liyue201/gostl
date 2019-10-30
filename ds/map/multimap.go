@@ -7,13 +7,19 @@ import (
 )
 
 type MultiMap struct {
-	tree    *rbtree.RbTree
-	cmpFunc Comparator
+	tree   *rbtree.RbTree
+	keyCmp Comparator
 }
 
-func NewMultiMap(cmp Comparator) *MultiMap {
-	return &MultiMap{tree: rbtree.New(cmp),
-		cmpFunc: cmp,
+func NewMultiMap(opts ...Options) *MultiMap {
+	option := Option{
+		keyCmp: defaultKeyComparator,
+	}
+	for _, opt := range opts {
+		opt(&option)
+	}
+	return &MultiMap{tree: rbtree.New(rbtree.WithKeyComparator(option.keyCmp)),
+		keyCmp: option.keyCmp,
 	}
 }
 
@@ -34,7 +40,7 @@ func (this *MultiMap) Get(key interface{}) interface{} {
 //Erase erases key in the Map
 func (this *MultiMap) Erase(key interface{}) {
 	node := this.tree.FindNode(key)
-	for node != nil && this.cmpFunc(node.Key(), key) == 0 {
+	for node != nil && this.keyCmp(node.Key(), key) == 0 {
 		nextNode := node.Next()
 		this.tree.Delete(node)
 		node = nextNode

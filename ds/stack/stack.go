@@ -8,7 +8,7 @@ type Stack struct {
 
 func New() *Stack {
 	return &Stack{
-		dq: deque.New(0),
+		dq: deque.New(),
 	}
 }
 

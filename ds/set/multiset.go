@@ -1,19 +1,26 @@
 package set
 
 import (
-	"github.com/liyue201/gostl/ds/rbtree"
 	. "github.com/liyue201/gostl/comparator"
+	"github.com/liyue201/gostl/ds/rbtree"
 	. "github.com/liyue201/gostl/iterator"
-) 
+)
 
 type MultiSet struct {
-	tree    *rbtree.RbTree
-	cmpFunc Comparator
+	tree   *rbtree.RbTree
+	keyCmp Comparator
 }
 
-func NewMultiSet(cmp Comparator) *MultiSet {
-	return &MultiSet{tree: rbtree.New(cmp),
-		cmpFunc: cmp,
+func NewMultiSet(opts ...Options) *MultiSet {
+	option := Option{
+		keyCmp: defaultKeyComparator,
+	}
+	for _, opt := range opts {
+		opt(&option)
+	}
+	return &MultiSet{
+		tree:   rbtree.New(rbtree.WithKeyComparator(option.keyCmp)),
+		keyCmp: option.keyCmp,
 	}
 }
 
@@ -25,7 +32,7 @@ func (this *MultiSet) Insert(element interface{}) {
 // Erase erases all node with element in this MultiSet
 func (this *MultiSet) Erase(element interface{}) {
 	node := this.tree.FindNode(element)
-	for node != nil && this.cmpFunc(node.Key(), element) == 0 {
+	for node != nil && this.keyCmp(node.Key(), element) == 0 {
 		nextNode := node.Next()
 		this.tree.Delete(node)
 		node = nextNode

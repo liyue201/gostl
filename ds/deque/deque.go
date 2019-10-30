@@ -3,23 +3,36 @@ package deque
 import (
 	"errors"
 	"fmt"
-) 
+)
 
 var ErrOutOffRange = errors.New("out off range")
 
 type Deque struct {
-	data    []interface{}
-	begin   int
-	end     int
-	size    int
+	data  []interface{}
+	begin int
+	end   int
+	size  int
 }
 
-func New(capacity int) *Deque {
-	if capacity == 0 {
-		capacity = 1
+type Option struct {
+	capacity int
+}
+
+type Options func(option *Option)
+
+func WithCapacity(capacity int) Options {
+	return func(option *Option) {
+		option.capacity = capacity
+	}
+}
+
+func New(opts ...Options) *Deque {
+	option := Option{}
+	for _, opt := range opts {
+		opt(&option)
 	}
 	return &Deque{
-		data: make([]interface{}, capacity, capacity),
+		data: make([]interface{}, option.capacity),
 	}
 }
 

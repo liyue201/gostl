@@ -1,12 +1,11 @@
 package treemap
 
 import (
-	"github.com/liyue201/gostl/comparator"
 	"testing"
 ) 
 
 func TestMap(t *testing.T) {
-	m := New(comparator.BuiltinTypeComparator)
+	m := New()
 
 	for i := 9; i >= 0; i-- {
 		m.Insert(i, i+1000)

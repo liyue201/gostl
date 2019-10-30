@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	q := queue.New(10)
+	q := queue.New()
 	for i := 0; i < 5; i++ {
 		q.Push(i)
 	}

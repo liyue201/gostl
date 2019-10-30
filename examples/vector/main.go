@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	v := vector.New(1)
+	v := vector.New()
 	v.PushBack(1)
 	v.PushBack(2)
 	v.PushBack(3)

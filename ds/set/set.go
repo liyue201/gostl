@@ -1,21 +1,43 @@
 package set
 
 import (
-	"github.com/liyue201/gostl/ds/rbtree"
 	. "github.com/liyue201/gostl/comparator"
+	"github.com/liyue201/gostl/ds/rbtree"
 	. "github.com/liyue201/gostl/iterator"
 )
- 
+
 const (
 	Empty = 0
 )
+
+var (
+	defaultKeyComparator = BuiltinTypeComparator
+)
+
+type Option struct {
+	keyCmp Comparator
+}
+
+type Options func(option *Option)
+
+func WithKeyComparator(cmp Comparator) Options {
+	return func(option *Option) {
+		option.keyCmp = cmp
+	}
+}
 
 type Set struct {
 	tree *rbtree.RbTree
 }
 
-func New(cmp Comparator) *Set {
-	return &Set{tree: rbtree.New(cmp)}
+func New(opts ...Options) *Set {
+	option := Option{
+		keyCmp: defaultKeyComparator,
+	}
+	for _, opt := range opts {
+		opt(&option)
+	}
+	return &Set{tree: rbtree.New(rbtree.WithKeyComparator(option.keyCmp))}
 }
 
 // Insert inserts element to the Set

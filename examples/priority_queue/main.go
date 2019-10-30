@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	q := priority_queue.New(comparator.Reverse(comparator.BuiltinTypeComparator))
+	q := priority_queue.New(priority_queue.WithComparator(comparator.Reverse(comparator.BuiltinTypeComparator)))
 	q.Push(5)
 	q.Push(13)
 	q.Push(7)

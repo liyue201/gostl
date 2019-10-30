@@ -6,12 +6,11 @@ type Queue struct {
 	dq *deque.Deque
 }
 
-func New(capacity int) *Queue {
+func New() *Queue {
 	return &Queue{
-		dq: deque.New(capacity),
+		dq: deque.New(),
 	}
 }
-
 func (this *Queue) Size() int {
 	return this.dq.Size()
 }

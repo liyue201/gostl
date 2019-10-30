@@ -3,16 +3,38 @@ package rbtree
 import (
 	. "github.com/liyue201/gostl/comparator"
 	. "github.com/liyue201/gostl/iterator"
-) 
+)
 
-type RbTree struct {
-	root *Node
-	size int
-	cmp  Comparator
+var (
+	defaultKeyComparator = BuiltinTypeComparator
+)
+
+type Option struct {
+	keyCmp Comparator
 }
 
-func New(cmp Comparator) *RbTree {
-	return &RbTree{cmp: cmp}
+type Options func(option *Option)
+
+func WithKeyComparator(cmp Comparator) Options {
+	return func(option *Option) {
+		option.keyCmp = cmp
+	}
+}
+
+type RbTree struct {
+	root   *Node
+	size   int
+	keyCmp Comparator
+}
+
+func New(opts ...Options) *RbTree {
+	option := Option{
+		keyCmp: defaultKeyComparator,
+	}
+	for _, opt := range opts {
+		opt(&option)
+	}
+	return &RbTree{keyCmp: option.keyCmp}
 }
 
 // Clear clears the tree
@@ -91,7 +113,7 @@ func (this *RbTree) Insert(key, value interface{}) {
 
 	for x != nil {
 		y = x
-		if this.cmp(key, x.key) < 0 {
+		if this.keyCmp(key, x.key) < 0 {
 			x = x.left
 		} else {
 			x = x.right
@@ -105,7 +127,7 @@ func (this *RbTree) Insert(key, value interface{}) {
 		z.color = BLACK
 		this.root = z
 		return
-	} else if this.cmp(z.key, y.key) < 0 {
+	} else if this.keyCmp(z.key, y.key) < 0 {
 		y.left = z
 	} else {
 		y.right = z
@@ -306,10 +328,10 @@ func (this *RbTree) rightRotate(x *Node) {
 func (this *RbTree) findNode(key interface{}) *Node {
 	x := this.root
 	for x != nil {
-		if this.cmp(key, x.key) < 0 {
+		if this.keyCmp(key, x.key) < 0 {
 			x = x.left
 		} else {
-			if this.cmp(key, x.key) == 0 {
+			if this.keyCmp(key, x.key) == 0 {
 				return x
 			}
 			x = x.right
@@ -324,7 +346,7 @@ func (this *RbTree) findFirstNode(key interface{}) *Node {
 	if node == nil {
 		return nil
 	}
-	if this.cmp(node.key, key) == 0 {
+	if this.keyCmp(node.key, key) == 0 {
 		return node
 	}
 	return nil
@@ -339,12 +361,12 @@ func (this *RbTree) findLowerBoundNode(x *Node, key interface{}) *Node {
 	if x == nil {
 		return nil
 	}
-	if this.cmp(key, x.key) <= 0 {
+	if this.keyCmp(key, x.key) <= 0 {
 		ret := this.findLowerBoundNode(x.left, key)
 		if ret == nil {
 			return x
 		} else {
-			if this.cmp(ret.key, x.key) <= 0 {
+			if this.keyCmp(ret.key, x.key) <= 0 {
 				return ret
 			} else {
 				return x
