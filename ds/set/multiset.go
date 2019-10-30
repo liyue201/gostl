@@ -1,9 +1,9 @@
 package set
 
 import (
-	. "github.com/liyue201/gostl/comparator"
+	. "github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/ds/rbtree"
-	. "github.com/liyue201/gostl/iterator"
+	. "github.com/liyue201/gostl/utils/iterator"
 )
 
 type MultiSet struct {

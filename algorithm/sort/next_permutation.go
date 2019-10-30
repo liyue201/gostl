@@ -1,8 +1,8 @@
 package sort
 
 import (
-	"github.com/liyue201/gostl/iterator"
-	"github.com/liyue201/gostl/comparator"
+	"github.com/liyue201/gostl/utils/iterator"
+	"github.com/liyue201/gostl/utils/comparator"
 )
 
 //NextPermutation transform range [begin end) to next permutation,return true if success, or false if failure

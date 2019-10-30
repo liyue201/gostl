@@ -1,6 +1,6 @@
 package rbtree
 
-import . "github.com/liyue201/gostl/iterator"
+import . "github.com/liyue201/gostl/utils/iterator"
 
 type RbTreeIterator struct {
 	node *Node

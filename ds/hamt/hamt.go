@@ -122,12 +122,19 @@ func (this *BitmapNode) find(depth int, hash uint64, key Key) interface{} {
 	return nil
 }
 
-func (this *BitmapNode) traversal(f func(node *KvNode)) {
+type Visitor func(key, value interface{}) bool
+
+func (this *BitmapNode) traversal(visitor Visitor) {
 	for _, entry := range this.children {
 		if entry.Type() == BITMAP_NODE {
-			entry.(*BitmapNode).traversal(f)
+			entry.(*BitmapNode).traversal(visitor)
 		} else {
-			f(entry.(*KvNode))
+			node := entry.(*KvNode)
+			for kv := node.kvList; kv != nil; kv = kv.next {
+				if !visitor(kv.key, kv.value) {
+					return
+				}
+			}
 		}
 	}
 }
@@ -207,7 +214,7 @@ func (this *Hamt) Insert(key Key, value interface{}) {
 	keyHash := hash(key)
 	this.root.insert(0, keyHash, &KvPair{key: key, value: value})
 }
- 
+
 // Insert returns the value by the passed key, or nil if not found
 func (this *Hamt) Get(key Key) interface{} {
 	keyHash := hash(key)
@@ -223,10 +230,9 @@ func (this *Hamt) Erase(key Key) bool {
 // Keys returns the keys in Hamt
 func (this *Hamt) Keys() []Key {
 	keys := make([]Key, 0)
-	this.root.traversal(func(node *KvNode) {
-		for kv := node.kvList; kv != nil; kv = kv.next {
-			keys = append(keys, kv.key)
-		}
+	this.root.traversal(func(key, value interface{}) bool {
+		keys = append(keys, key.(Key))
+		return true
 	})
 	return keys
 }
@@ -234,12 +240,16 @@ func (this *Hamt) Keys() []Key {
 // StringKeys returns the keys in Hamt
 func (this *Hamt) StringKeys() []string {
 	keys := make([]string, 0)
-	this.root.traversal(func(node *KvNode) {
-		for kv := node.kvList; kv != nil; kv = kv.next {
-			keys = append(keys, string(kv.key))
-		}
+	this.root.traversal(func(key, value interface{}) bool {
+		keys = append(keys, string(key.(Key)))
+		return true
 	})
 	return keys
+}
+
+// Traversal traversals elements in Hamt, it will stop until to the end or visitor returns false
+func (this *Hamt) Traversal(visitor Visitor) {
+	this.root.traversal(visitor)
 }
 
 func hash(a []byte) uint64 {

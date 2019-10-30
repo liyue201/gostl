@@ -2,7 +2,7 @@ package ketama
 
 import (
 	"github.com/liyue201/gostl/algorithm/hash"
-	"github.com/liyue201/gostl/comparator"
+	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/ds/map"
 	"sync"
 )

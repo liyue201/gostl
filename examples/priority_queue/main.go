@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/liyue201/gostl/comparator"
+	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/ds/priority_queue"
 )
 

@@ -2,7 +2,7 @@ package priority_queue
 
 import (
 	"container/heap"
-	. "github.com/liyue201/gostl/comparator"
+	. "github.com/liyue201/gostl/utils/comparator"
 )
 
 var (

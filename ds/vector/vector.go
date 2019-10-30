@@ -3,7 +3,7 @@ package vector
 import (
 	"errors"
 	"fmt"
-	. "github.com/liyue201/gostl/iterator"
+	. "github.com/liyue201/gostl/utils/iterator"
 )
 
 var ErrOutOffRange = errors.New("out off range")

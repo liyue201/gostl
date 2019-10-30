@@ -11,6 +11,7 @@ func New() *Queue {
 		dq: deque.New(),
 	}
 }
+
 func (this *Queue) Size() int {
 	return this.dq.Size()
 }

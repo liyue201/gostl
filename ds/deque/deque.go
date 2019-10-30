@@ -26,6 +26,7 @@ func WithCapacity(capacity int) Options {
 	}
 }
 
+// New new a deque
 func New(opts ...Options) *Deque {
 	option := Option{}
 	for _, opt := range opts {

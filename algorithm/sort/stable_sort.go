@@ -1,8 +1,8 @@
 package sort
 
 import (
-	"github.com/liyue201/gostl/comparator"
-	"github.com/liyue201/gostl/iterator"
+	"github.com/liyue201/gostl/utils/comparator"
+	"github.com/liyue201/gostl/utils/iterator"
 )
   
 //Stable sort the container by using merge sort

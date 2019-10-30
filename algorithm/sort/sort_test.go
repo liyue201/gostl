@@ -2,7 +2,7 @@ package sort
 
 import (
 	"github.com/liyue201/gostl/ds/vector"
-	"github.com/liyue201/gostl/comparator"
+	"github.com/liyue201/gostl/utils/comparator"
 	"math/rand"
 	"testing"
 	"time"

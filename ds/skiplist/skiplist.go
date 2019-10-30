@@ -1,20 +1,23 @@
 package skiplist
 
 import (
-	"github.com/liyue201/gostl/comparator"
+	"github.com/liyue201/gostl/utils/comparator"
+	"github.com/liyue201/gostl/utils/sync"
 	"math/rand"
-	"sync"
+	gosync "sync"
 	"time"
 )
 
 var (
 	defaultKeyComparator = comparator.BuiltinTypeComparator
 	defaultMaxLevel      = 10
+	defaultLocker        sync.FakeLocker
 )
 
 type Option struct {
 	keyCmp   comparator.Comparator
 	maxLevel int
+	locker   sync.Locker
 }
 
 type Options func(option *Option)
@@ -22,6 +25,12 @@ type Options func(option *Option)
 func WithKeyComparator(cmp comparator.Comparator) Options {
 	return func(option *Option) {
 		option.keyCmp = cmp
+	}
+}
+
+func WithThreadSafe() Options {
+	return func(option *Option) {
+		option.locker = &gosync.RWMutex{}
 	}
 }
 
@@ -42,7 +51,7 @@ type Element struct {
 }
 
 type Skiplist struct {
-	sync.RWMutex
+	locker         sync.Locker
 	head           Node
 	maxLevel       int
 	keyCmp         comparator.Comparator
@@ -55,11 +64,13 @@ func New(opts ...Options) *Skiplist {
 	option := Option{
 		keyCmp:   defaultKeyComparator,
 		maxLevel: defaultMaxLevel,
+		locker:   defaultLocker,
 	}
 	for _, opt := range opts {
 		opt(&option)
 	}
 	l := &Skiplist{
+		locker:   option.locker,
 		maxLevel: option.maxLevel,
 		keyCmp:   option.keyCmp,
 		rander:   rand.New(rand.NewSource(time.Now().Unix())),
@@ -71,8 +82,8 @@ func New(opts ...Options) *Skiplist {
 
 // Insert inserts a key-value pair into skiplist
 func (this *Skiplist) Insert(key, value interface{}) {
-	this.Lock()
-	defer this.Unlock()
+	this.locker.Lock()
+	defer this.locker.Unlock()
 	prevs := this.findPrevNodes(key)
 
 	if prevs[0].next[0] != nil && this.keyCmp(prevs[0].next[0].key, key) == 0 {
@@ -101,8 +112,8 @@ func (this *Skiplist) Insert(key, value interface{}) {
 
 // Get gets the value associated with the key passed if exist, or nil if not exist
 func (this *Skiplist) Get(key interface{}) interface{} {
-	this.RLock()
-	defer this.RUnlock()
+	this.locker.RLock()
+	defer this.locker.RUnlock()
 
 	var pre = &this.head
 	for i := this.maxLevel - 1; i >= 0; i-- {
@@ -123,8 +134,8 @@ func (this *Skiplist) Get(key interface{}) interface{} {
 
 // Remove removes the element associated with the key passed and returns true if exist,or false if not exist
 func (this *Skiplist) Remove(key interface{}) bool {
-	this.Lock()
-	defer this.Unlock()
+	this.locker.Lock()
+	defer this.locker.Unlock()
 
 	prevs := this.findPrevNodes(key)
 	element := prevs[0].next[0]
@@ -144,8 +155,8 @@ func (this *Skiplist) Remove(key interface{}) bool {
 
 // Len returns the number of elements in the skiplist
 func (this *Skiplist) Len() int {
-	this.RLock()
-	defer this.RUnlock()
+	this.locker.RLock()
+	defer this.locker.RUnlock()
 	return this.len
 }
 
@@ -177,4 +188,28 @@ func (this *Skiplist) findPrevNodes(key interface{}) []*Node {
 		prevs[i] = prev
 	}
 	return prevs
+}
+
+type Visitor func(key, value interface{}) bool
+
+// Traversal traversals elements in Skiplist, it will stop until to the end or visitor returns false
+func (this *Skiplist) Traversal(visitor Visitor) {
+	this.locker.RLock()
+	defer this.locker.RUnlock()
+
+	for e := this.head.next[0]; e != nil; e = e.next[0] {
+		if !visitor(e.key, e.value) {
+			return
+		}
+	}
+}
+
+// Keys returns all keys in the Skiplist
+func (this *Skiplist) Keys() []interface{} {
+	var keys []interface{}
+	this.Traversal(func(key, value interface{}) bool {
+		keys = append(keys, key)
+		return false
+	})
+	return keys
 }
