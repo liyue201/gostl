@@ -3,6 +3,7 @@ package skiplist
 import (
 	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/utils/sync"
+	"github.com/liyue201/gostl/utils/visitor"
 	"math/rand"
 	gosync "sync"
 	"time"
@@ -190,10 +191,8 @@ func (this *Skiplist) findPrevNodes(key interface{}) []*Node {
 	return prevs
 }
 
-type Visitor func(key, value interface{}) bool
-
 // Traversal traversals elements in Skiplist, it will stop until to the end or visitor returns false
-func (this *Skiplist) Traversal(visitor Visitor) {
+func (this *Skiplist) Traversal(visitor visitor.KvVisitor) {
 	this.locker.RLock()
 	defer this.locker.RUnlock()
 

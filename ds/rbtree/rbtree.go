@@ -3,6 +3,7 @@ package rbtree
 import (
 	. "github.com/liyue201/gostl/utils/comparator"
 	. "github.com/liyue201/gostl/utils/iterator"
+	"github.com/liyue201/gostl/utils/visitor"
 )
 
 var (
@@ -374,6 +375,15 @@ func (this *RbTree) findLowerBoundNode(x *Node, key interface{}) *Node {
 		}
 	} else {
 		return this.findLowerBoundNode(x.right, key)
+	}
+}
+
+// Traversal traversals elements in rbtree, it will not stop until to the end or visitor returns false
+func (this *RbTree) Traversal(visitor visitor.KvVisitor) {
+	for node := this.First(); node != nil; node = node.Next() {
+		if visitor(node.key, node.value) {
+			break
+		}
 	}
 }
 

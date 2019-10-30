@@ -2,7 +2,6 @@ package ketama
 
 import (
 	"github.com/liyue201/gostl/algorithm/hash"
-	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/ds/map"
 	"sync"
 )
@@ -39,7 +38,7 @@ func New(opts ...Options) *Ketama {
 	}
 	this := &Ketama{
 		option: option,
-		m:      treemap.New(comparator.BuiltinTypeComparator),
+		m:      treemap.New(),
 	}
 	for _, opt := range opts {
 		opt(&this.option)

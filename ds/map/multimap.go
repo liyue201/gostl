@@ -4,6 +4,7 @@ import (
 	. "github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/ds/rbtree"
 	. "github.com/liyue201/gostl/utils/iterator"
+	"github.com/liyue201/gostl/utils/visitor"
 )
 
 type MultiMap struct {
@@ -90,4 +91,9 @@ func (this *MultiMap) Contains(value interface{}) bool {
 // Contains returns the size of Map
 func (this *MultiMap) Size() int {
 	return this.tree.Size()
+}
+
+// Traversal traversals elements in the map, it will not stop until to the end or visitor returns false
+func (this *MultiMap) Traversal(visitor visitor.KvVisitor) {
+	this.tree.Traversal(visitor)
 }

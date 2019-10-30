@@ -1,6 +1,7 @@
 package hamt
 
 import (
+	"github.com/liyue201/gostl/utils/visitor"
 	"hash/fnv"
 	"math/bits"
 )
@@ -122,9 +123,7 @@ func (this *BitmapNode) find(depth int, hash uint64, key Key) interface{} {
 	return nil
 }
 
-type Visitor func(key, value interface{}) bool
-
-func (this *BitmapNode) traversal(visitor Visitor) {
+func (this *BitmapNode) traversal(visitor visitor.KvVisitor) {
 	for _, entry := range this.children {
 		if entry.Type() == BITMAP_NODE {
 			entry.(*BitmapNode).traversal(visitor)
@@ -247,8 +246,8 @@ func (this *Hamt) StringKeys() []string {
 	return keys
 }
 
-// Traversal traversals elements in Hamt, it will stop until to the end or visitor returns false
-func (this *Hamt) Traversal(visitor Visitor) {
+// Traversal traversals elements in Hamt, it will not stop until to the end or visitor returns false
+func (this *Hamt) Traversal(visitor visitor.KvVisitor) {
 	this.root.traversal(visitor)
 }
 

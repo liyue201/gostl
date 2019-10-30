@@ -2,6 +2,7 @@ package list
 
 import (
 	"fmt"
+	"github.com/liyue201/gostl/utils/visitor"
 )
 
 type Node struct {
@@ -226,4 +227,13 @@ func (this *List) String() string {
 	}
 	str += "]"
 	return str
+}
+
+// Traversal traversals elements in list, it will not stop until to the end or visitor returns false
+func (this *List) Traversal(visitor visitor.Visitor) {
+	for node := this.head; node != nil; node = node.next {
+		if visitor(node.Value) {
+			break
+		}
+	}
 }

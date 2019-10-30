@@ -1,9 +1,10 @@
 package set
 
 import (
-	. "github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/ds/rbtree"
+	. "github.com/liyue201/gostl/utils/comparator"
 	. "github.com/liyue201/gostl/utils/iterator"
+	"github.com/liyue201/gostl/utils/visitor"
 )
 
 const (
@@ -100,4 +101,13 @@ func (this *Set) Contains(element interface{}) bool {
 // Contains returns the size of Set
 func (this *Set) Size() int {
 	return this.tree.Size()
+}
+
+// Traversal traversals elements in set, it will not stop until to the end or visitor returns false
+func (this *Set) Traversal(visitor visitor.Visitor) {
+	for node := this.tree.First(); node != nil; node = node.Next() {
+		if !visitor(node.Key()) {
+			break
+		}
+	}
 }

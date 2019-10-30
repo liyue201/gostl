@@ -1,9 +1,10 @@
 package treemap
 
 import (
-	. "github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/ds/rbtree"
+	. "github.com/liyue201/gostl/utils/comparator"
 	. "github.com/liyue201/gostl/utils/iterator"
+	"github.com/liyue201/gostl/utils/visitor"
 )
 
 var (
@@ -114,4 +115,9 @@ func (this *Map) Contains(key interface{}) bool {
 // Contains returns the size of Map
 func (this *Map) Size() int {
 	return this.tree.Size()
+}
+
+// Traversal traversals elements in map, it will not stop until to the end or visitor returns false
+func (this *Map) Traversal(visitor visitor.KvVisitor) {
+	this.tree.Traversal(visitor)
 }

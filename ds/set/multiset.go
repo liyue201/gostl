@@ -1,9 +1,10 @@
 package set
 
 import (
-	. "github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/ds/rbtree"
+	. "github.com/liyue201/gostl/utils/comparator"
 	. "github.com/liyue201/gostl/utils/iterator"
+	"github.com/liyue201/gostl/utils/visitor"
 )
 
 type MultiSet struct {
@@ -82,4 +83,13 @@ func (this *MultiSet) Contains(element interface{}) bool {
 // Contains returns the size of MultiSet
 func (this *MultiSet) Size() int {
 	return this.tree.Size()
+}
+
+// Traversal traversals elements in MultiSet, it will not stop until to the end or visitor returns false
+func (this *MultiSet) Traversal(visitor visitor.Visitor) {
+	for node := this.tree.First(); node != nil; node = node.Next() {
+		if !visitor(node.Key()) {
+			break
+		}
+	}
 }
