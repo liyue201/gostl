@@ -1,7 +1,7 @@
 package sort
 
 import (
-	"github.com/liyue201/gostl/containers/vector"
+	"github.com/liyue201/gostl/ds/vector"
 	"github.com/liyue201/gostl/comparator"
 	"math/rand"
 	"testing"

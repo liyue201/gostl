@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/liyue201/gostl/containers/list"
+	"github.com/liyue201/gostl/ds/list"
 )
 
 func main() {

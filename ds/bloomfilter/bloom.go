@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"github.com/liyue201/gostl/algorithm/hash"
-	"github.com/liyue201/gostl/containers/bitmap"
+	"github.com/liyue201/gostl/ds/bitmap"
 	"math"
 )
 

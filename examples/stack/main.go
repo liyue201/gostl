@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/liyue201/gostl/containers/stack"
+	"github.com/liyue201/gostl/ds/stack"
 	"fmt"
 )
 

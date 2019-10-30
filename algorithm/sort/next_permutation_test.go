@@ -1,7 +1,7 @@
 package sort
 
 import (
-	"github.com/liyue201/gostl/containers/slice"
+	"github.com/liyue201/gostl/ds/slice"
 	"github.com/liyue201/gostl/comparator"
 	"testing"
 )

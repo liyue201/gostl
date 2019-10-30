@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/liyue201/gostl/comparator"
-	"github.com/liyue201/gostl/containers/map"
+	"github.com/liyue201/gostl/ds/map"
 	"fmt"
 )
 

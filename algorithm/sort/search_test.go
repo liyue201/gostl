@@ -1,7 +1,7 @@
 package sort
 
 import (
-	"github.com/liyue201/gostl/containers/deque"
+	"github.com/liyue201/gostl/ds/deque"
 	"github.com/liyue201/gostl/comparator"
 	"testing"
 )  

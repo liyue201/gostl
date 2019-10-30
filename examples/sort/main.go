@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/liyue201/gostl/algorithm/sort"
 	"github.com/liyue201/gostl/comparator"
-	"github.com/liyue201/gostl/containers/slice"
+	"github.com/liyue201/gostl/ds/slice"
 	"fmt"
 )
 

@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/liyue201/gostl/containers/bloomfilter"
+	"github.com/liyue201/gostl/ds/bloomfilter"
 )
 
 func main() {

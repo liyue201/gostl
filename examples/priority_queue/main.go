@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/liyue201/gostl/comparator"
-	"github.com/liyue201/gostl/containers/priority_queue"
+	"github.com/liyue201/gostl/ds/priority_queue"
 )
 
 func main() {

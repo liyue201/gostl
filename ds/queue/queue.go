@@ -1,6 +1,6 @@
 package queue
 
-import "github.com/liyue201/gostl/containers/deque"
+import "github.com/liyue201/gostl/ds/deque"
 
 type Queue struct {
 	dq *deque.Deque

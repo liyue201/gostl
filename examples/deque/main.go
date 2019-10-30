@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/liyue201/gostl/algorithm/sort"
 	"github.com/liyue201/gostl/comparator"
-	"github.com/liyue201/gostl/containers/deque"
+	"github.com/liyue201/gostl/ds/deque"
 )
 
 func main() {
