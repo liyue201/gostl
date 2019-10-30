@@ -14,7 +14,7 @@ func TestNextPermutation(t *testing.T) {
 	sliceA := slice.IntSlice(a)
 	t.Logf("a : %v", a)
 	for {
-		ok := NextPermutation(sliceA.Begin(), sliceA.End(), comparator.BuiltinTypeComparator)
+		ok := NextPermutation(sliceA.Begin(), sliceA.End())
 		if !ok {
 			break
 		}

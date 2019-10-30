@@ -1,12 +1,20 @@
 package sort
 
 import (
-	"github.com/liyue201/gostl/utils/iterator"
 	"github.com/liyue201/gostl/utils/comparator"
+	"github.com/liyue201/gostl/utils/iterator"
 )
 
 //NextPermutation transform range [begin end) to next permutation,return true if success, or false if failure
-func NextPermutation(begin, end iterator.RandomAccessIterator, cmp comparator.Comparator) bool {
+func NextPermutation(begin, end iterator.RandomAccessIterator, cmp ...comparator.Comparator) bool {
+	if len(cmp) == 0 {
+		return nextPermutation(begin, end, comparator.BuiltinTypeComparator)
+	} else {
+		return nextPermutation(begin, end, cmp[0])
+	}
+}
+
+func nextPermutation(begin, end iterator.RandomAccessIterator, cmp comparator.Comparator) bool {
 	len := end.Position() - begin.Position()
 	endPos := begin.Position() + len - 1
 	cur := endPos

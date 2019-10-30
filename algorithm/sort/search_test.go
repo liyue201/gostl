@@ -7,7 +7,7 @@ import (
 )  
      
 func TestSearch(t *testing.T) {
-	a := deque.New(10)
+	a := deque.New()
 	a.PushBack(1)
 	a.PushBack(3)
 	a.PushFront(5)
@@ -16,7 +16,7 @@ func TestSearch(t *testing.T) {
 	a.PushFront(3)
 	a.PushBack(15)
 
-	Sort(a.Begin(), a.End(), comparator.BuiltinTypeComparator)
+	Sort(a.Begin(), a.End())
   
 	t.Logf("a: %v", a)
 	if !BinarySearch(a.Begin(), a.End(), 5, comparator.BuiltinTypeComparator) {

@@ -1,12 +1,20 @@
 package sort
-  
+
 import (
-	"github.com/liyue201/gostl/utils/iterator"
 	"github.com/liyue201/gostl/utils/comparator"
+	"github.com/liyue201/gostl/utils/iterator"
 )
 
-//LowerBound returns true if exist an element witch value is val in the range [begin, end), or false if not exist
-func BinarySearch(begin, end iterator.RandomAccessIterator, val interface{}, cmp comparator.Comparator) bool {
+//BinarySearch returns true if exist an element witch value is val in the range [begin, end), or false if not exist
+func BinarySearch(begin, end iterator.RandomAccessIterator, val interface{}, cmp ...comparator.Comparator) bool {
+	if len(cmp) == 0 {
+		return binarySearch(begin, end, val, comparator.BuiltinTypeComparator)
+	} else {
+		return binarySearch(begin, end, val, cmp[0])
+	}
+}
+
+func binarySearch(begin, end iterator.RandomAccessIterator, val interface{}, cmp comparator.Comparator) bool {
 	if !begin.IsValid() || begin.Position() >= end.Position() {
 		return false
 	}
@@ -29,7 +37,15 @@ func BinarySearch(begin, end iterator.RandomAccessIterator, val interface{}, cmp
 }
 
 //LowerBound returns the iterator pointing to the first element greater than or equal to value passed in the range [begin, end), or iterator end if not exist.
-func LowerBound(begin, end iterator.RandomAccessIterator, val interface{}, cmp comparator.Comparator) iterator.RandomAccessIterator {
+func LowerBound(begin, end iterator.RandomAccessIterator, val interface{}, cmp... comparator.Comparator) iterator.RandomAccessIterator {
+	if len(cmp) == 0 {
+		return lowerBound(begin, end, val, comparator.BuiltinTypeComparator)
+	} else {
+		return lowerBound(begin, end, val, cmp[0])
+	}
+}
+
+func lowerBound(begin, end iterator.RandomAccessIterator, val interface{}, cmp comparator.Comparator) iterator.RandomAccessIterator {
 	if !begin.IsValid() || begin.Position() >= end.Position() {
 		return end.Clone().(iterator.RandomAccessIterator)
 	}
@@ -53,8 +69,16 @@ func LowerBound(begin, end iterator.RandomAccessIterator, val interface{}, cmp c
 	return begin.IteratorAt(pos)
 }
 
-//LowerBound returns the iterator pointing to the first element greater than val in the range [begin, end), or iterator end if not exist.
-func UpperBound(begin, end iterator.RandomAccessIterator, val interface{}, cmp comparator.Comparator) iterator.RandomAccessIterator {
+//UpperBound returns the iterator pointing to the first element greater than val in the range [begin, end), or iterator end if not exist.
+func UpperBound(begin, end iterator.RandomAccessIterator, val interface{}, cmp... comparator.Comparator) iterator.RandomAccessIterator {
+	if len(cmp) == 0 {
+		return upperBound(begin, end, val, comparator.BuiltinTypeComparator)
+	} else {
+		return upperBound(begin, end, val, cmp[0])
+	}
+}
+
+func upperBound(begin, end iterator.RandomAccessIterator, val interface{}, cmp comparator.Comparator) iterator.RandomAccessIterator {
 	if !begin.IsValid() || begin.Position() >= end.Position() {
 		return end.Clone().(iterator.RandomAccessIterator)
 	}

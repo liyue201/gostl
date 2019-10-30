@@ -17,7 +17,7 @@ func main()  {
 	sliceA := slice.StringSlice(a)
 
 	////Sort in ascending order
-	sort.Sort(sliceA.Begin(), sliceA.End(), comparator.BuiltinTypeComparator)
+	sort.Sort(sliceA.Begin(), sliceA.End())
 	fmt.Printf("%v\n", a)
 
 	//Sort in descending order

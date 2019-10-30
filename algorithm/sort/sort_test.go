@@ -11,12 +11,12 @@ import (
 func TestSort(t *testing.T) {
 	// test size = 0
 	rand.Seed(time.Now().UnixNano())
-	v := vector.New(0)
+	v := vector.New()
 	Sort(v.Begin(), v.End(), comparator.BuiltinTypeComparator)
 	t.Logf("v: %v", v.String())
 
 	// test size = 1
-	v = vector.New(0)
+	v = vector.New()
 	for i := 0; i< 1 ; i++ {
 		v.PushBack(rand.Int() % 10)
 	}
@@ -30,7 +30,7 @@ func TestSort(t *testing.T) {
 	}
 
 	// test size = 2
-	v = vector.New(0)
+	v = vector.New()
 	for i := 0; i< 2; i++ {
 		v.PushBack(rand.Int() % 10)
 	}
@@ -44,7 +44,7 @@ func TestSort(t *testing.T) {
 	}
 
 	// test size = 10
-	v = vector.New(0)
+	v = vector.New()
 	for i := 0; i< 10; i++ {
 		v.PushBack(rand.Int() % 10)
 	}
@@ -58,7 +58,7 @@ func TestSort(t *testing.T) {
 	}
 
 	// test size = 31
-	v = vector.New(0)
+	v = vector.New()
 	for i := 0; i< 31; i++ {
 		v.PushBack(rand.Int() % 10)
 	}
@@ -73,7 +73,7 @@ func TestSort(t *testing.T) {
 
 
 	// test size = 50
-	v = vector.New(0)
+	v = vector.New()
 	for i := 0; i< 50; i++ {
 		v.PushBack(rand.Int() % 100)
 	}

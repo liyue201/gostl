@@ -4,11 +4,15 @@ import (
 	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/utils/iterator"
 )
-  
+
 //Stable sort the container by using merge sort
-func Stable(begin, end iterator.RandomAccessIterator, cmp comparator.Comparator) {
+func Stable(begin, end iterator.RandomAccessIterator, cmp ...comparator.Comparator) {
 	tempSlice := make([]interface{}, end.Position()-begin.Position(), end.Position()-begin.Position())
-	mergeSort(begin, end, cmp, tempSlice)
+	if len(cmp) == 0 {
+		mergeSort(begin, end, comparator.BuiltinTypeComparator, tempSlice)
+	}else{
+		mergeSort(begin, end, cmp[0], tempSlice)
+	}
 }
 
 func mergeSort(begin, end iterator.RandomAccessIterator, cmp comparator.Comparator, tempSlice []interface{}) {
