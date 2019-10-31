@@ -1,12 +1,11 @@
 package set
 
 import (
-	"github.com/liyue201/gostl/utils/comparator"
 	"testing"
-)
+) 
  
 func TestMultiSet(t *testing.T) {
-	mset := NewMultiSet(comparator.BuiltinTypeComparator)
+	mset := NewMultiSet()
 
 	mset.Insert(1)
 	mset.Insert(5)

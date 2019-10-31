@@ -1,12 +1,13 @@
 package set
 
 import (
-	. "github.com/liyue201/gostl/utils/comparator"
+	"math/rand"
 	"testing"
+	"time"
 )
- 
+
 func TestSet(t *testing.T) {
-	s := New(BuiltinTypeComparator)
+	s := New()
 	for i := 10; i >= 1; i-- {
 		s.Insert(i)
 	}
@@ -36,4 +37,20 @@ func TestSet(t *testing.T) {
 	if s.Size() != 9 {
 		t.Logf("s.Size() error: %v\n", s.Size())
 	}
+}
+
+func TestSet_Cal(t *testing.T) {
+	s1 := New()
+	s2 := New()
+	rand.Seed(time.Now().Unix())
+	for i := 0; i < 10; i++ {
+		s1.Insert(rand.Int() % 20)
+		s2.Insert(rand.Int() % 20)
+	}
+	t.Logf("s1: %v", s1)
+	t.Logf("s2: %v", s2)
+	t.Logf("s1 & s2: %v", s1.Intersect(s2))
+	t.Logf("s1 | s2: %v", s1.Union(s2))
+	t.Logf("s1 - s2: %v", s1.Diff(s2))
+	t.Logf("s2 - s1: %v", s2.Diff(s1))
 }

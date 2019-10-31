@@ -1,6 +1,7 @@
 package set
 
 import (
+	"fmt"
 	"github.com/liyue201/gostl/ds/rbtree"
 	. "github.com/liyue201/gostl/utils/comparator"
 	. "github.com/liyue201/gostl/utils/iterator"
@@ -92,4 +93,18 @@ func (this *MultiSet) Traversal(visitor visitor.Visitor) {
 			break
 		}
 	}
+}
+
+// String returns the set's elements in string format
+func (this *MultiSet) String() string {
+	str := "["
+	this.Traversal(func(value interface{}) bool {
+		if str != "[" {
+			str += " "
+		}
+		str += fmt.Sprintf("%v", value)
+		return true
+	})
+	str += "]"
+	return str
 }
