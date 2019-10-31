@@ -1,4 +1,4 @@
-package list
+package bid_list
 
 import "testing"
 

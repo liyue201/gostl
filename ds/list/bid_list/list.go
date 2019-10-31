@@ -1,4 +1,4 @@
-package list
+package bid_list
 
 import (
 	"fmt"
@@ -34,7 +34,7 @@ func (this *Node) Prev() *Node {
 	return this.prev
 }
 
-// List represents a doubly linked list:
+// List represents a bidirectional list:
 //
 //   head -> node1 -- node2 --  node3
 //            |                   |
@@ -216,7 +216,7 @@ func (l *List) PushFrontList(other *List) {
 	}
 }
 
-// String returns the list content by string format
+// String returns the list content in string format
 func (this *List) String() string {
 	str := "["
 	for n := this.Front(); n != nil; n = n.Next() {
