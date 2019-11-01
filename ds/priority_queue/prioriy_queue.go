@@ -3,58 +3,62 @@ package priority_queue
 import (
 	"container/heap"
 	. "github.com/liyue201/gostl/utils/comparator"
+	"github.com/liyue201/gostl/utils/sync"
+	gosync "sync"
 )
 
 var (
 	defaultComparator = BuiltinTypeComparator
+	defaultLocker     sync.FakeLocker
 )
 
-type ItemHolder struct {
-	items  []interface{}
-	cmpFun Comparator
+type ElementHolder struct {
+	elements []interface{}
+	cmpFun   Comparator
 }
 
-func (this *ItemHolder) Push(item interface{}) {
-	this.items = append(this.items, item)
+func (this *ElementHolder) Push(element interface{}) {
+	this.elements = append(this.elements, element)
 }
 
-func (this *ItemHolder) Pop() interface{} {
-	if len(this.items) == 0 {
+func (this *ElementHolder) Pop() interface{} {
+	if len(this.elements) == 0 {
 		return nil
 	}
-	item := this.items[this.Len()-1]
-	this.items = this.items[:this.Len()-1]
+	item := this.elements[this.Len()-1]
+	this.elements = this.elements[:this.Len()-1]
 	return item
 }
 
-func (this *ItemHolder) top() interface{} {
-	if len(this.items) == 0 {
+func (this *ElementHolder) top() interface{} {
+	if len(this.elements) == 0 {
 		return nil
 	}
-	return this.items[0]
+	return this.elements[0]
 }
 
-func (this *ItemHolder) Size() int {
-	return len(this.items)
+func (this *ElementHolder) Size() int {
+	return len(this.elements)
 }
 
-func (this *ItemHolder) Len() int {
-	return len(this.items)
+func (this *ElementHolder) Len() int {
+	return len(this.elements)
 }
 
-func (this *ItemHolder) Less(i, j int) bool {
-	if this.cmpFun(this.items[i], this.items[j]) < 0 {
+func (this *ElementHolder) Less(i, j int) bool {
+	if this.cmpFun(this.elements[i], this.elements[j]) < 0 {
 		return true
 	}
 	return false
 }
 
-func (this *ItemHolder) Swap(i, j int) {
-	this.items[i], this.items[j] = this.items[j], this.items[i]
+func (this *ElementHolder) Swap(i, j int) {
+	this.elements[i], this.elements[j] = this.elements[j], this.elements[i]
 }
 
 type Option struct {
-	cmp Comparator
+	cmp    Comparator
+	locker sync.Locker
 }
 
 type Options func(option *Option)
@@ -65,38 +69,59 @@ func WithComparator(cmp Comparator) Options {
 	}
 }
 
+func WithThreadSave() Options {
+	return func(option *Option) {
+		option.locker = &gosync.RWMutex{}
+	}
+}
+
 type PriorityQueue struct {
-	holder *ItemHolder
+	holder *ElementHolder
+	locker sync.Locker
 }
 
 func New(opts ...Options) *PriorityQueue {
 	option := Option{
-		cmp: defaultComparator,
+		cmp:    defaultComparator,
+		locker: defaultLocker,
 	}
 	for _, opt := range opts {
 		opt(&option)
 	}
-	holder := &ItemHolder{
-		items:  make([]interface{}, 0, 0),
-		cmpFun: option.cmp,
+	holder := &ElementHolder{
+		elements: make([]interface{}, 0, 0),
+		cmpFun:   option.cmp,
 	}
 	return &PriorityQueue{
 		holder: holder,
+		locker: option.locker,
 	}
 }
 
 func (this *PriorityQueue) Push(item interface{}) {
+	this.locker.Lock()
+	defer this.locker.Unlock()
+
 	heap.Push(this.holder, item)
 }
 
 func (this *PriorityQueue) Pop() interface{} {
+	this.locker.Lock()
+	defer this.locker.Unlock()
+
 	return heap.Pop(this.holder)
 }
 
 func (this *PriorityQueue) Top() interface{} {
+	this.locker.RLock()
+	defer this.locker.RLock()
+
 	return this.holder.top()
 }
 
 func (this *PriorityQueue) Empty() bool {
+	this.locker.RLock()
+	defer this.locker.RLock()
+
 	return this.holder.Size() == 0
 }

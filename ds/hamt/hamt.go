@@ -1,9 +1,11 @@
 package hamt
 
 import (
+	"github.com/liyue201/gostl/utils/sync"
 	"github.com/liyue201/gostl/utils/visitor"
 	"hash/fnv"
 	"math/bits"
+	gosync "sync"
 )
 
 const (
@@ -14,6 +16,22 @@ const (
 )
 
 type Key []byte
+
+var (
+	defaultLocker sync.FakeLocker
+)
+
+type Option struct {
+	locker sync.Locker
+}
+
+type Options func(option *Option)
+
+func WithThreadSave() Options {
+	return func(option *Option) {
+		option.locker = &gosync.RWMutex{}
+	}
+}
 
 type Entry interface {
 	Type() int
@@ -38,7 +56,8 @@ type KvNode struct {
 }
 
 type Hamt struct {
-	root BitmapNode
+	root   BitmapNode
+	locker sync.Locker
 }
 
 func (this *BitmapNode) Type() int {
@@ -204,25 +223,43 @@ func (this *KvNode) BitPos(depth int) uint64 {
 }
 
 // New new a Hamt(hash array map tree) instance
-func New() *Hamt {
-	return &Hamt{}
+func New(opts ...Options) *Hamt {
+	option := Option{
+		locker: defaultLocker,
+	}
+	for _, opt := range opts {
+		opt(&option)
+	}
+	return &Hamt{locker: option.locker}
 }
 
 // Insert insert a key-value pair into hamt
 func (this *Hamt) Insert(key Key, value interface{}) {
 	keyHash := hash(key)
+
+	this.locker.Lock()
+	defer this.locker.Unlock()
+
 	this.root.insert(0, keyHash, &KvPair{key: key, value: value})
 }
 
 // Insert returns the value by the passed key, or nil if not found
 func (this *Hamt) Get(key Key) interface{} {
 	keyHash := hash(key)
+
+	this.locker.RLock()
+	defer this.locker.RUnlock()
+
 	return this.root.find(0, keyHash, key)
 }
 
 // Insert erase the key-value pair in hamt, and returns true if succeed.
 func (this *Hamt) Erase(key Key) bool {
 	keyHash := hash(key)
+
+	this.locker.Lock()
+	defer this.locker.Unlock()
+
 	return this.root.erase(0, keyHash, key)
 }
 
@@ -248,6 +285,9 @@ func (this *Hamt) StringKeys() []string {
 
 // Traversal traversals elements in Hamt, it will not stop until to the end or visitor returns false
 func (this *Hamt) Traversal(visitor visitor.KvVisitor) {
+	this.locker.RLock()
+	defer this.locker.RUnlock()
+
 	this.root.traversal(visitor)
 }
 

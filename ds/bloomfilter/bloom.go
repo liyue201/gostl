@@ -5,23 +5,47 @@ import (
 	"encoding/binary"
 	"github.com/liyue201/gostl/algorithm/hash"
 	"github.com/liyue201/gostl/ds/bitmap"
+	"github.com/liyue201/gostl/utils/sync"
 	"math"
+	gosync "sync"
 )
 
 const Salt = "g9hmj2fhgr"
 
+var defaultLocker sync.FakeLocker
+
+type Option struct {
+	locker sync.Locker
+}
+
+type Options func(option *Option)
+
+func WithThreadSave() Options {
+	return func(option *Option) {
+		option.locker = &gosync.RWMutex{}
+	}
+}
+
 type BloomFilter struct {
-	m uint64
-	k uint64
-	b *bitmap.Bitmap
+	m      uint64
+	k      uint64
+	b      *bitmap.Bitmap
+	locker sync.Locker
 }
 
 // New new a BloomFilter with m bits and k hash functions
-func New(m, k uint64) *BloomFilter {
+func New(m, k uint64, opts ...Options) *BloomFilter {
+	option := Option{
+		locker: defaultLocker,
+	}
+	for _, opt := range opts {
+		opt(&option)
+	}
 	return &BloomFilter{
-		m: m,
-		k: k,
-		b: bitmap.New(m),
+		m:      m,
+		k:      k,
+		b:      bitmap.New(m),
+		locker: option.locker,
 	}
 }
 
@@ -51,6 +75,9 @@ func EstimateParameters(n uint64, p float64) (m uint64, k uint64) {
 
 // Add add a value to the BloomFilter
 func (this *BloomFilter) Add(val string) {
+	this.locker.Lock()
+	defer this.locker.Unlock()
+
 	hashs := hash.GenHashInts([]byte(Salt+val), int(this.k))
 	for i := uint64(0); i < this.k; i++ {
 		this.b.Set(hashs[i] % this.m)
@@ -59,6 +86,9 @@ func (this *BloomFilter) Add(val string) {
 
 // Contains returns true if value passed is (high probability) in the BloomFilter, or false if not.
 func (this *BloomFilter) Contains(val string) bool {
+	this.locker.RLock()
+	defer this.locker.RUnlock()
+
 	hashs := hash.GenHashInts([]byte(Salt+val), int(this.k))
 	for i := uint64(0); i < this.k; i++ {
 		if !this.b.IsSet(hashs[i] % this.m) {
@@ -70,6 +100,9 @@ func (this *BloomFilter) Contains(val string) bool {
 
 // Contains returns the data of BloomFilter, it can bee used to new a BloomFilter by using function 'NewFromData' .
 func (this *BloomFilter) Data() []byte {
+	this.locker.Lock()
+	defer this.locker.Unlock()
+
 	buf := new(bytes.Buffer)
 	binary.Write(buf, binary.LittleEndian, this.m)
 	binary.Write(buf, binary.LittleEndian, this.k)
