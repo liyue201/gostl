@@ -1,17 +1,21 @@
 package queue
 
 import (
+	"github.com/liyue201/gostl/ds/container"
 	"github.com/liyue201/gostl/ds/deque"
+	"github.com/liyue201/gostl/ds/list/bid_list"
 	"github.com/liyue201/gostl/utils/sync"
 	gosync "sync"
 )
 
 var (
-	defaultLocker sync.FakeLocker
+	defaultLocker    sync.FakeLocker
+	defaultContainer = deque.New()
 )
 
 type Option struct {
-	locker sync.Locker
+	locker    sync.Locker
+	container container.Container
 }
 
 type Options func(option *Option)
@@ -22,22 +26,35 @@ func WithThreadSave() Options {
 	}
 }
 
+func WithContainer(c container.Container) Options {
+	return func(option *Option) {
+		option.container = c
+	}
+}
+
+func WithListContainer() Options {
+	return func(option *Option) {
+		option.container = bid_list.New()
+	}
+}
+
 type Queue struct {
-	dq     *deque.Deque
-	locker sync.Locker
+	container container.Container
+	locker    sync.Locker
 }
 
 func New(opts ...Options) *Queue {
 	option := Option{
-		locker: defaultLocker,
+		locker:    defaultLocker,
+		container: defaultContainer,
 	}
 	for _, opt := range opts {
 		opt(&option)
 	}
 
 	return &Queue{
-		dq:     deque.New(),
-		locker: option.locker,
+		container: option.container,
+		locker:    option.locker,
 	}
 }
 
@@ -45,54 +62,54 @@ func (this *Queue) Size() int {
 	this.locker.RLock()
 	defer this.locker.RUnlock()
 
-	return this.dq.Size()
+	return this.container.Size()
 }
 
 func (this *Queue) Empty() bool {
 	this.locker.RLock()
 	defer this.locker.RUnlock()
 
-	return this.dq.Empty()
+	return this.container.Empty()
 }
 
 func (this *Queue) Push(value interface{}) {
 	this.locker.Lock()
 	defer this.locker.Unlock()
 
-	this.dq.PushBack(value)
+	this.container.PushBack(value)
 }
 
 func (this *Queue) Front() interface{} {
 	this.locker.RLock()
 	defer this.locker.RUnlock()
 
-	return this.dq.Front()
+	return this.container.Front()
 }
 
 func (this *Queue) Back() interface{} {
 	this.locker.RLock()
 	defer this.locker.RUnlock()
 
-	return this.dq.Back()
+	return this.container.Back()
 }
 
 func (this *Queue) Pop() interface{} {
 	this.locker.Lock()
 	defer this.locker.Unlock()
 
-	return this.dq.PopFront()
+	return this.container.PopFront()
 }
 
 func (this *Queue) Clear() {
 	this.locker.Lock()
 	defer this.locker.Unlock()
 
-	this.dq.Clear()
+	this.container.Clear()
 }
 
 func (this *Queue) String() string {
 	this.locker.RLock()
 	defer this.locker.RUnlock()
 
-	return this.dq.String()
+	return this.container.String()
 }

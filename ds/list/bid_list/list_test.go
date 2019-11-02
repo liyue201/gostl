@@ -5,8 +5,8 @@ import "testing"
 func TestList(t *testing.T) {
 	list := New()
 	list.PushBack(1)
-	if list.Front().Value != 1 || list.Back().Value != 1 {
-		t.Errorf("list data error: %d %d", list.Front().Value, list.Back().Value)
+	if list.FrontNode().Value != 1 || list.BackNode().Value != 1 {
+		t.Errorf("list data error: %d %d", list.FrontNode().Value, list.BackNode().Value)
 	}
 	list.PushFront(2)
 
@@ -15,47 +15,47 @@ func TestList(t *testing.T) {
 	}
 	list.PushBack(3)
 	list.PushFront(4)
-	if list.Front().Value != 4 || list.Back().Value != 3 {
-		t.Errorf("list data error: %d %d", list.Front().Value, list.Back().Value)
+	if list.FrontNode().Value != 4 || list.BackNode().Value != 3 {
+		t.Errorf("list data error: %d %d", list.FrontNode().Value, list.BackNode().Value)
 	}
 	t.Logf("list: %v", list)
 
-	list.Remove(list.Front())
+	list.Remove(list.FrontNode())
 	t.Logf("list: %v", list)
 	if list.String() != "[2 1 3]" {
 		t.Errorf("list data error: %s", list.String())
 	}
 
-	list.Remove(list.Back())
+	list.Remove(list.BackNode())
 	if list.String() != "[2 1]" {
 		t.Errorf("list data error: %s", list.String())
 	}
 	list.PushBack(5)
 	list.PushBack(6)
-	list.InsertAfter(7, list.Front())
+	list.InsertAfter(7, list.FrontNode())
 	t.Logf("list: %v", list)
 	if list.String() != "[2 7 1 5 6]" {
 		t.Errorf("list data error: %s", list.String())
 	}
-	list.InsertBefore(8, list.Back().Prev())
+	list.InsertBefore(8, list.BackNode().Prev())
 	t.Logf("list: %v", list)
 	if list.String() != "[2 7 1 8 5 6]" {
 		t.Errorf("list data error: %s", list.String())
 	}
 
-	list.Remove(list.Front().Next().Next())
+	list.Remove(list.FrontNode().Next().Next())
 	t.Logf("list: %v", list)
 	if list.String() != "[2 7 8 5 6]" {
 		t.Errorf("list data error: %s", list.String())
 	}
 
-	list.Remove(list.Front())
+	list.Remove(list.FrontNode())
 	t.Logf("list: %v", list)
 	if list.String() != "[7 8 5 6]" {
 		t.Errorf("list data error: %s", list.String())
 	}
 
-	list.Remove(list.Back())
+	list.Remove(list.BackNode())
 	t.Logf("list: %v", list)
 	if list.String() != "[7 8 5]" {
 		t.Errorf("list data error: %s", list.String())

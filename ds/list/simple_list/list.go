@@ -36,18 +36,18 @@ func (this *List) Len() int {
 	return this.len
 }
 
-// Front returns the front node of the list or nil if the list is empty
-func (this *List) Front() *Node {
+// FrontNode returns the front node of the list or nil if the list is empty
+func (this *List) FrontNode() *Node {
 	return this.head
 }
 
-// Front returns the lase node of the list or nil if the list is empty
-func (this *List) Back() *Node {
+// BackNode returns the lase node of the list or nil if the list is empty
+func (this *List) BackNode() *Node {
 	return this.tail
 }
 
-// PushFront inserts a new node n with value v at the front of the list and returns n.
-func (this *List) PushFront(v interface{}) *Node {
+// PushFront inserts a new node n with value v at the front of the list.
+func (this *List) PushFront(v interface{}) {
 	n := &Node{Value: v}
 	if this.len == 0 {
 		this.head = n
@@ -57,11 +57,10 @@ func (this *List) PushFront(v interface{}) *Node {
 		this.head = n
 	}
 	this.len++
-	return n
 }
 
-// PushBack inserts a new node n with value v at the back of the list and returns n.
-func (this *List) PushBack(v interface{}) *Node {
+// PushBack inserts a new node n with value v at the back of the list.
+func (this *List) PushBack(v interface{}) {
 	n := &Node{Value: v}
 	if this.len == 0 {
 		this.head = n
@@ -71,7 +70,6 @@ func (this *List) PushBack(v interface{}) *Node {
 		this.tail = n
 	}
 	this.len++
-	return n
 }
 
 // InsertAfter inserts a new node n with value v immediately after mark and returns n.
@@ -144,7 +142,7 @@ func (this *List) MoveToBack(pre, n *Node) {
 // String returns the list content in string format
 func (this *List) String() string {
 	str := "["
-	for n := this.Front(); n != nil; n = n.Next() {
+	for n := this.FrontNode(); n != nil; n = n.Next() {
 		if str != "[" {
 			str += " "
 		}

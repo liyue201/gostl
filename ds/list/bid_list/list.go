@@ -2,8 +2,12 @@ package bid_list
 
 import (
 	"fmt"
+	"github.com/liyue201/gostl/ds/container"
 	"github.com/liyue201/gostl/utils/visitor"
 )
+
+// List is an implementation of Container
+var _ container.Container = (*List)(nil)
 
 type Node struct {
 	prev  *Node
@@ -55,24 +59,52 @@ func (this *List) Len() int {
 	return this.len
 }
 
-// Front returns the front node of the list or nil if the list is empty
-func (this *List) Front() *Node {
-	if this.len == 0 {
-		return nil
-	}
+// Len returns the number of nodes of list.
+func (this *List) Size() int {
+	return this.len
+}
+
+// Len returns true if this List is empty
+func (this *List) Empty() bool {
+	return this.len == 0
+}
+
+// FrontNode returns the front node of the list or nil if the list is empty
+func (this *List) FrontNode() *Node {
 	return this.head
 }
 
-// Front returns the lase node of the list or nil if the list is empty
-func (this *List) Back() *Node {
-	if this.len == 0 {
+// BackNode returns the last node of the list or nil if the list is empty
+func (this *List) BackNode() *Node {
+	if this.head == nil {
 		return nil
 	}
 	return this.head.prev
 }
 
+// Front returns the value of front node
+func (this *List) Front() interface{} {
+	if this.len == 0 {
+		return nil
+	}
+	return this.head.Value
+}
+
+// Back returns the value of last node
+func (this *List) Back() interface{} {
+	if this.len == 0 {
+		return nil
+	}
+	return this.head.prev.Value
+}
+
+// PushBack inserts a new node n with value v at the back of the list
+func (this *List) PushBack(v interface{}) {
+	this.pushBack(v)
+}
+
 // PushBack inserts a new node n with value v at the back of the list and returns n.
-func (this *List) PushBack(v interface{}) *Node {
+func (this *List) pushBack(v interface{}) *Node {
 	n := &Node{Value: v, list: this}
 	if this.len == 0 {
 		n.prev = n
@@ -84,11 +116,10 @@ func (this *List) PushBack(v interface{}) *Node {
 	return this.insertAfter(n, this.head.prev)
 }
 
-// PushFront inserts a new node n with value v at the front of the list and returns n.
-func (this *List) PushFront(v interface{}) *Node {
-	n := this.PushBack(v)
+// PushFront inserts a new node n with value v at the front of the list.
+func (this *List) PushFront(v interface{}) {
+	n := this.pushBack(v)
 	this.head = n
-	return n
 }
 
 // InsertAfter inserts a new node n with value v immediately after mark and returns n.
@@ -150,6 +181,30 @@ func (this *List) remove(n *Node) *Node {
 	return n
 }
 
+// Clear remove all nodes
+func (this *List) Clear() {
+	this.head = nil
+	this.len = 0
+}
+
+// PopBack remove the last node in the list and returns it's value
+func (this *List) PopBack() interface{} {
+	n := this.BackNode()
+	if n != nil {
+		return this.Remove(n)
+	}
+	return nil
+}
+
+// PopBack remove the first node in the list and returns it's value
+func (this *List) PopFront() interface{} {
+	n := this.FrontNode()
+	if n != nil {
+		return this.Remove(n)
+	}
+	return nil
+}
+
 // MoveToFront moves node n to the front of this list.
 // If n is not a node of this list, the list is not modified.
 // The n must not be nil.
@@ -203,7 +258,7 @@ func (this *List) moveToAfter(n, at *Node) {
 // PushBackList inserts a copy of an other list at the back of this list.
 // The this list and other may be the same. They must not be nil.
 func (this *List) PushBackList(other *List) {
-	for i, n := other.Len(), other.Front(); i > 0; i, n = i-1, n.Next() {
+	for i, n := other.Len(), other.FrontNode(); i > 0; i, n = i-1, n.Next() {
 		this.InsertAfter(n.Value, this.head.prev)
 	}
 }
@@ -211,7 +266,7 @@ func (this *List) PushBackList(other *List) {
 // PushFrontList inserts a copy of an other list at the front of this list.
 // The this list and other may be the same. They must not be nil.
 func (l *List) PushFrontList(other *List) {
-	for i, e := other.Len(), other.Back(); i > 0; i, e = i-1, e.Prev() {
+	for i, e := other.Len(), other.BackNode(); i > 0; i, e = i-1, e.Prev() {
 		l.InsertBefore(e.Value, l.head)
 	}
 }
@@ -219,7 +274,7 @@ func (l *List) PushFrontList(other *List) {
 // String returns the list content in string format
 func (this *List) String() string {
 	str := "["
-	for n := this.Front(); n != nil; n = n.Next() {
+	for n := this.FrontNode(); n != nil; n = n.Next() {
 		if str != "[" {
 			str += " "
 		}

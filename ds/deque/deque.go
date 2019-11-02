@@ -3,9 +3,13 @@ package deque
 import (
 	"errors"
 	"fmt"
+	"github.com/liyue201/gostl/ds/container"
 )
 
 var ErrOutOffRange = errors.New("out off range")
+
+// Deque is an implementation of Container
+var _ container.Container = (*Deque)(nil)
 
 type Deque struct {
 	data  []interface{}
