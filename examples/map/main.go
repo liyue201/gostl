@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	m := treemap.New()
+	m := treemap.New(treemap.WithThreadSave())
 
 	m.Insert("a", "aaa")
 	m.Insert("b", "bbb")
@@ -14,4 +14,5 @@ func main() {
 	fmt.Printf("a = %v\n", m.Get("a"))
 	fmt.Printf("b = %v\n", m.Get("b"))
 
+	m.Erase("b")
 }

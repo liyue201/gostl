@@ -1,12 +1,11 @@
 package rbtree
 
 import (
-	. "github.com/liyue201/gostl/utils/comparator"
 	"testing"
 )
 
 func TestRbTee(t *testing.T) {
-	tree := New(BuiltinTypeComparator)
+	tree := New()
 	for i := 0; i < 10; i++ {
 		tree.Insert(i, i+10000)
 	} 
@@ -63,7 +62,7 @@ func TestRbTee(t *testing.T) {
 }
 
 func TestTravesal(t *testing.T) {
-	tree := New(BuiltinTypeComparator)
+	tree := New()
 	for i := 20; i >= 1; i-- {
 		tree.Insert(i, 0)
 	}
@@ -84,7 +83,7 @@ func TestTravesal(t *testing.T) {
 }
 
 func TestIterator(t *testing.T) {
-	tree := New(BuiltinTypeComparator)
+	tree := New()
 	for i := 10; i >= 1; i-- {
 		tree.Insert(i, i + 100)
 	}

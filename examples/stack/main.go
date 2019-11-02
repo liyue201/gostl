@@ -19,7 +19,7 @@ func example1() {
 	}
 }
 
-// using list as container
+// based on list
 func example2() {
 	fmt.Printf("example2:\n")
 

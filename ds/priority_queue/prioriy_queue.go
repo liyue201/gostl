@@ -114,14 +114,14 @@ func (this *PriorityQueue) Pop() interface{} {
 
 func (this *PriorityQueue) Top() interface{} {
 	this.locker.RLock()
-	defer this.locker.RLock()
+	defer this.locker.RUnlock()
 
 	return this.holder.top()
 }
 
 func (this *PriorityQueue) Empty() bool {
 	this.locker.RLock()
-	defer this.locker.RLock()
+	defer this.locker.RUnlock()
 
 	return this.holder.Size() == 0
 }

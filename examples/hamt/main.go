@@ -6,14 +6,11 @@ import (
 )
 
 func main() {
-	h := hamt.New()
+	h := hamt.New(hamt.WithThreadSave())
 	key := []byte("aaaaa")
 	val := "bbbbbbbbbbbbb"
 
 	h.Insert(key, val)
-	fmt.Printf("%v = %v\n", string(key), h.Get(key))
-
-	h.Insert(key, "hhhh")
 	fmt.Printf("%v = %v\n", string(key), h.Get(key))
 
 	h.Erase(key)

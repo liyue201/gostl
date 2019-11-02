@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/liyue201/gostl/algorithm/sort"
-	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/ds/deque"
 )
 
@@ -15,6 +14,9 @@ func main() {
 	q.PushFront(4)
 	fmt.Printf("%v\n", q)
 
-	sort.Sort(q.Begin(), q.End(), comparator.BuiltinTypeComparator)
+	sort.Sort(q.Begin(), q.End())
+	fmt.Printf("%v\n", q)
+	fmt.Printf("%v\n", q.PopBack())
+	fmt.Printf("%v\n", q.PopFront())
 	fmt.Printf("%v\n", q)
 }

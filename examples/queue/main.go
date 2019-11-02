@@ -18,6 +18,7 @@ func example1()  {
 	}
 }
 
+// using list as container
 func example2()  {
 	fmt.Printf("example2:\n")
 	q := queue.New(queue.WithListContainer())

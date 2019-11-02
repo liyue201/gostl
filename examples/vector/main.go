@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/liyue201/gostl/algorithm/sort"
-	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/ds/vector"
+	"github.com/liyue201/gostl/utils/comparator"
 )
 
 func main() {
@@ -13,9 +13,13 @@ func main() {
 	v.PushBack(2)
 	v.PushBack(3)
 	for i := 0; i < v.Size(); i++ {
-		fmt.Printf("%v\n", v.At(i))
+		fmt.Printf("%v ", v.At(i))
 	}
-	//reverse sort
+	fmt.Printf("\n")
+
+	// sort in descending
 	sort.Sort(v.Begin(), v.End(), comparator.Reverse(comparator.BuiltinTypeComparator))
-	fmt.Printf("%v", v)
+	for iter := v.Begin(); iter.IsValid(); iter.Next() {
+		fmt.Printf("%v ", iter.Value())
+	}
 }
