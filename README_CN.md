@@ -1,39 +1,38 @@
 # GoSTL
-GoSTL is a data structure and algorithm library for go,designed to provide functions similar to C++ STL,but more powerful.Combined with the characteristics of go language, most of the data structures have realized thread safety. When creating objects, you can specify whether to turn it on through configuration parameters.
 
-[简体中文](/README_CN.md)
+GoSTL是一个go语言数据结构和算法库，类似C++的STL，但功能更强大。结合go语言的特点，大部分数据结构都实现了线程安全，可以在创建对象的时候通过配置参数指定是否开启。
 
-## Function list
-- data structure
-    - [slice](#slice)
-    - [array](#array)
-    - [vector](#vector)
-    - [list](#list)
-    - [deque](#deque)
-    - [queue](#queue)
-    - [priority_queue](#priority_queue)
-    - [stack](#stack)
-    - [rbtree(red_black_tree)](#rbtree)
-    - [map/multimap](#map)
-    - [set/multiset](#set)
-    - [bitmap](#bitmap)
-    - [bloom_filter](#bloom_filter)
-    - [hamt(hash_array_map_tree)](#hamt)
-    - [ketama](#ketama)
-    - [skiplist](#skliplist)
-- algorithm
-    - [sort(quick_sort)](#sort)
-    - [stable_sort(merge_sort)](#sort)
-    - [binary_search](#sort)
-    - [lower_bound](#sort)
-    - [upper_bound](#sort)
-    - [next_permutation](#next_permutation)
+## 功能列表
+- 数据结构
+    - [切片（slice）](#slice)
+    - [数组（array）](#array)
+    - [向量（vector）](#vector)
+    - [列表（list）](#list)
+    - [双端队列（deque）](#deque)
+    - [队列（queue）](#queue)
+    - [优先队列（priority_queue）](#priority_queue)
+    - [栈（stack）](#stack)
+    - [红黑树（rbtree）](#rbtree)
+    - [映射（map/multimap）](#map)
+    - [集合（set/multiset）](#set)
+    - [位映射（bitmap）](#bitmap)
+    - [布隆过滤器（bloom_filter）](#bloom_filter)
+    - [哈希映射树（hamt）](#hamt)
+    - [一致性哈希（ketama）](#ketama)
+    - [跳表（skiplist）](#skliplist)
+- 算法
+    - [快排（sort）](#sort)
+    - [稳定排序（stable_sort）](#sort)
+    - [二分查找（binary_search）](#sort)
+    - [二分查找第一个元素的位置（lower_bound）](#sort)
+    - [二分查找第一个大于该元素的位置（upper_bound）](#sort)
+    - [下一个排列组合（next_permutation）](#next_permutation)
     
- ## Examples
+## 例子
 
- ### <a name="slice">slice</a>
-The slice in this library is a redefinition of go native slice.
-Here is an example of how to turn a go native slice into an Intslice and then sort it. 
+### <a name="slice">切片（slice）</a>
+这个库中的切片是对go原生切片的重定义。  
+下面是一个如何将go原生的切片转成IntSlice，然后对其排序的例子。
 
  ```go
 package main
@@ -62,8 +61,8 @@ func main() {
 }
  ```
  
-### <a name="array">array</a>
-Array is a data structure with fixed length once it is created, which supports random access and iterator access.
+### <a name="array">数组（array）</a>
+数组是一种一旦创建长度就固定的数据结构，支持随机访问和迭代器访问。
 
 ```go
 package main
@@ -91,7 +90,7 @@ func main() {
 ```
 
 ### <a name="vector">vector</a>
-Vector is a kind of data structure whose size can be automatically expanded, which is realized by slice internally. Supports random access and iterator access.
+向量是一种大小可以自动伸缩的数据结构，内部使用切片实现。支持随机访问和迭代器访问。
 
 ```go
 package main
@@ -122,9 +121,10 @@ func main() {
 ```
 
 
-### <a name="list">list</a>
-- simple list
-Simple list is a one directional list, which supports inserting data from the head and tail, and only traversing data from the head.
+### <a name="list">列表（list）</a>
+
+- 简单列表
+简单列表是一种单向列表，支持从头部和尾部插入数据，只支持从头部遍历数据。
 
 ```go
 package main
@@ -147,8 +147,8 @@ func main() {
 
 ```
   
-- bidirectional list
-Bidirectional list, supports inserting data from the head and tail, and traversing data from the head and tail.
+- 双向列表
+双向列表，支持从头部和尾部插入数据，支持从头部和尾部遍历数据。
 
 ```go
 package main
@@ -175,8 +175,8 @@ func main() {
 }
 ```
 
-### <a name="deque">deque</a>
-Deque supports efficient data insertion from the head and tail, random access and iterator access.
+### <a name="deque">双端队列（deque）</a>
+双端队列支持从头部和尾部高效的插入数据，支持随机访问和迭代器访问。
 
 ```go
 package main
@@ -204,8 +204,8 @@ func main() {
 
 ```
 
-### <a name="queue">queue</a>
-Queue is a first-in-first-out data structure. The bottom layer uses the deque or list as the container. By default, the deque is used. If you want to use the list, you can use the `queue.WithListContainer()` parameter when creating an object. Thread safety is supported.
+### <a name="queue">队列（queue）</a>
+队列是一种先进先出的数据结构，底层使用双端队列或者链表作为容器，默认使用双端队列，若想使用链表，可以在创建对象时使用queue.WithListContainer()参数。支持线程安全。
 
 ```go
 package main
@@ -228,7 +228,7 @@ func example1()  {
 	}
 }
 
-//  based on list
+//  基于链表
 func example2()  {
 	fmt.Printf("example2:\n")
 	q := queue.New(queue.WithListContainer())
@@ -240,8 +240,7 @@ func example2()  {
 	}
 }
 
-
-// thread-save
+// 线程安全
 func example3() {
 	fmt.Printf("example3:\n")
 
@@ -278,8 +277,8 @@ func main() {
 }
 ```
 
-### <a name="priority_queue">priority_queue</a>
-priority_queue is based on the  `container/heap`  package of go standard library, which supports thread safety.
+### <a name="priority_queue">优先队列（priority_queue）</a>
+优先队列基于go标准库的`container/heap`包实现，支持线程安全。
 
 ```go
 package main
@@ -305,8 +304,8 @@ func main() {
 }
 ```
 
-### <a name="stack">stack</a>
-Stack is a kind of last-in-first-out data structure. The bottom layer uses the deque or list as the container. By default, the deque is used. If you want to use the list, you can use the `queue.WithListContainer()` parameter when creating an object.  Thread safety is supported.
+### <a name="stack">栈（stack）</a>
+栈是一种后进先出的数据结构，底层使用双端队列或者链表作为容器，默认使用双端队列，若想使用链表，可以在创建对象时使用queue.WithListContainer()参数。支持线程安全。
 
 ```go
 package main
@@ -380,8 +379,8 @@ func main() {
 }
 ```
 
-### <a name="rbtree">rbtree</a>
-Red black tree is a balanced binary sort tree, which is used to insert and find data efficiently.
+### <a name="rbtree">红黑树（rbtree）</a>
+红黑树是一种平衡二叉排序树，用于高效的插入和查找数据。
 
 ```go
 package main
@@ -407,8 +406,8 @@ func main()  {
 
 ```
 
-### <a name="map">map</a>
-The Map bottom layer is implemented by using red black tree, and supports iterative access in key order, which is different from the go native map type (the go native map bottom layer is hash, and does not support iterative access in key order). Thread safety is supported.
+### <a name="map">映射（map）</a>
+映射底层使用红黑树实现，支持按key顺序迭代访问，有别于go原生的map类型（go原生的map底层是哈希，不支持按key顺序迭代访问）。支持线程安全。
 
 ```go
 package main
@@ -431,8 +430,8 @@ func main() {
 }
 ```
 
-### <a name="set">set</a>
-The Set bottom layer is implemented by red black tree, which supports thread safety. Support basic operations of set, such as union, intersection and difference. Thread safety is supported.
+### <a name="set">集合（set）</a>
+集合底层使用红黑树实现，支持线程安全。支持集合的基本运算，如求并集，交集，差集。支持线程安全。
 
 ```go
 package main
@@ -461,8 +460,8 @@ func main()  {
 }
 ```
 
-### <a name="bitmap">bitmap</a>
-Bitmap is used to quickly mark and find whether a non negative integer is in a set. It takes up less memory than map or array.
+### <a name="bitmap">位映射（bitmap）</a>
+位映射用于快速标记和查找一个非负整数是否集合中。相对于map或数组占用内存空间更小。
 
 ```go
 package main
@@ -483,8 +482,9 @@ func main() {
 	fmt.Printf("%v\n", bm.IsSet(6))
 }
 ```
-### <a name="bloom_filter">bloom_filter</a>
-Boomfilter is used to quickly determine whether the data is in the collection. The bottom layer is implemented with bitmap, which uses less memory than map. The disadvantage is that it does not support deletion and has a certain error rate. Thread safety is supported , supports data export and reconstruction through exported data.
+
+### <a name="bloom_filter">布隆过滤器（bloom_filter）</a>
+布隆过滤器用来快速判断数据是否在集合中，底层使用bitmap实现，相对于map占用内存空间更小。缺点是不支持删除和有一定的错误率。支持线程安全。支持数据导出和通过导出的数据重现构建。
 
 ```go
 package main
@@ -504,8 +504,8 @@ func main() {
 }
 ```
 
-### <a name="hamt">hamt</a>
-Compared with the traditional hash (open address method or linked list method hash), hamt has lower probability of hash conflict and higher space utilization. The time complexity of capacity expansion is low. Thread safety is supported.
+### <a name="hamt">哈希映射树（hamt）</a>
+哈希映射树相对于传统哈希（开放地址法或链表法哈希），出现哈希冲突的概率更小，空间利用率更高。扩容缩容性时间复杂度低。支持线程安全。
 
 ```go
 package main
@@ -529,8 +529,8 @@ func main() {
 }
 ```
 
-### <a name="ketama">ketama</a>
-Consistent hash Ketama algorithm, using 64 bit hash function and map storage, has less conflict probability. Thread safety is supported.
+### <a name="ketama">一致性哈希（ketama）</a>
+一致性哈希ketama算法，使用64位的哈希函数和map存储，出现冲突的概率更小。支持线程安全。
 
 ```go
 package main
@@ -551,8 +551,8 @@ func main() {
 }
 
 ```
-### <a name="skliplist">skliplist</a>
-Skliplist is a kind of data structure which can search quickly by exchanging space for time. Thread safety is supported.
+### <a name="skliplist">跳表（skliplist）</a>
+跳表是一种通过以空间换时间来实现快速查找的数据结构。支持线程安全。
 
 ```go
 package main
@@ -578,12 +578,12 @@ func main()  {
 }
 ```
 
-### <a name="sort">sort</a>
-Sort: quick sort algorithm is used internally.  
-Stable: stable sorting. Merge sorting is used internally.  
-Binarysearch: determine whether an element is in the scope of iterator by binary search.  
-Lowerbound: find the first data equal to the element and return the iterator by binary search.  
-Upperbound: find the first data larger than the element and return the iterator by binary search.  
+### <a name="sort">排序、稳定排序、二分查找</a>
+Sort: 内部使用的是快速排序算法。 
+Stable: 稳定排序，内部使用归并排序。   
+BinarySearch: 通过二分查找，判断一个元素是否在迭代器范围中。
+LowerBound: 通过二分查找，找到第一个等于该元素的数据返回该迭代器。
+UpperBound：  通过二分查找，找到第一个大于该元素的数据返回该迭代器。
 
 ```go
 package main
@@ -629,8 +629,8 @@ func main()  {
 }
 ```
 
-### <a name="next_permutation">next_permutation</a>
-This function modifies the data in the iterator range to the next sort combination.
+### <a name="next_permutation">下个排序组合（next_permutation）</a>
+这个函数修改迭代器范围内的数据为下一个排序组合。
 
 ```go
 package main

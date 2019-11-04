@@ -11,6 +11,7 @@ var ErrOutOffRange = errors.New("out off range")
 // Deque is an implementation of Container
 var _ container.Container = (*Deque)(nil)
 
+// Todo: Deque need to be optimized
 type Deque struct {
 	data  []interface{}
 	begin int
