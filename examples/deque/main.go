@@ -4,19 +4,24 @@ import (
 	"fmt"
 	"github.com/liyue201/gostl/algorithm/sort"
 	"github.com/liyue201/gostl/ds/deque"
+	"math/rand"
 )
 
 func main() {
 	q := deque.New()
-	q.PushBack(2)
-	q.PushFront(1)
-	q.PushBack(3)
-	q.PushFront(4)
+	for i := 0; i < 100; i++ {
+		r := rand.Int() % 100
+		q.PushBack(r)
+		q.PushFront(r)
+	}
 	fmt.Printf("%v\n", q)
 
 	sort.Sort(q.Begin(), q.End())
 	fmt.Printf("%v\n", q)
-	fmt.Printf("%v\n", q.PopBack())
-	fmt.Printf("%v\n", q.PopFront())
+
+	for !q.Empty(){
+		r := rand.Int() % q.Size()
+		q.EraseAt(r)
+	}
 	fmt.Printf("%v\n", q)
 }

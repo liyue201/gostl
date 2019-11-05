@@ -3,43 +3,32 @@ package deque
 import (
 	"errors"
 	"fmt"
-	"github.com/liyue201/gostl/ds/container"
+)
+
+const (
+	SegmentCapacity = 7
+	//SegmentCapacity = 64
 )
 
 var ErrOutOffRange = errors.New("out off range")
 
-// Deque is an implementation of Container
-var _ container.Container = (*Deque)(nil)
-
-// Todo: Deque need to be optimized
+//Deque is a ring
 type Deque struct {
-	data  []interface{}
-	begin int
-	end   int
-	size  int
+	segs    [] *Segment
+	begin   int
+	end     int
+	segUsed int
+	size    int
 }
 
-type Option struct {
-	capacity int
-}
-
-type Options func(option *Option)
-
-func WithCapacity(capacity int) Options {
-	return func(option *Option) {
-		option.capacity = capacity
+func New() *Deque {
+	dq := &Deque{
+		segs:    make([]*Segment, 1),
+		end:     1,
+		segUsed: 1,
 	}
-}
-
-// New new a deque
-func New(opts ...Options) *Deque {
-	option := Option{}
-	for _, opt := range opts {
-		opt(&option)
-	}
-	return &Deque{
-		data: make([]interface{}, option.capacity),
-	}
+	dq.segs[0] = NewSegment(SegmentCapacity)
+	return dq
 }
 
 //Size returns the size of deque
@@ -47,218 +36,262 @@ func (this *Deque) Size() int {
 	return this.size
 }
 
-//Capacity returns the capacity of deque
-func (this *Deque) Capacity() int {
-	return len(this.data)
-}
-
-//Capacity returns true if the Deque is empty,otherwise returns false.
+//Empty returns true if the Deque is empty,otherwise returns false.
 func (this *Deque) Empty() bool {
-	if this.Size() == 0 {
-		return true
-	}
-	return false
-}
-
-//expandIfNeeded expand the Deque if full.
-func (this *Deque) expandIfNeeded() {
-	if this.size == this.Capacity() {
-		newCapacity := this.size * 2
-		if newCapacity == 0 {
-			newCapacity = 1
-		}
-		data := make([]interface{}, newCapacity, newCapacity)
-		for i := 0; i < this.size; i++ {
-			data[i] = this.data[(this.begin+i)%this.Capacity()]
-		}
-		this.data = data
-		this.begin = 0
-		this.end = this.size
-	}
-}
-
-// shrinkIfNeeded shrink the Deque if is has too many unused space .
-func (this *Deque) shrinkIfNeeded() {
-	if int(float64(this.size*2)*1.2) < this.Capacity() {
-		newCapacity := this.Capacity() / 2
-		data := make([]interface{}, newCapacity, newCapacity)
-		for i := 0; i < this.size; i++ {
-			data[i] = this.data[(this.begin+i)%this.Capacity()]
-		}
-		this.data = data
-		this.begin = 0
-		this.end = this.size
-	}
-}
-
-func (this *Deque) PushBack(value interface{}) {
-	this.expandIfNeeded()
-	this.data[this.end] = value
-	this.end = this.nextIndex(this.end)
-	this.size++
+	return this.size == 0
 }
 
 func (this *Deque) PushFront(value interface{}) {
-	this.expandIfNeeded()
-	this.begin = this.preIndex(this.begin)
-	this.data[this.begin] = value
+	this.firstAvailableSegment().PushFront(value)
 	this.size++
 }
 
-func (this *Deque) Insert(position int, value interface{}) error {
+func (this *Deque) PushBack(value interface{}) {
+	this.lastAvailableSegment().PushBack(value)
+	this.size++
+}
+
+func (this *Deque) Insert(position int, value interface{}) {
 	if position < 0 || position > this.size {
-		return ErrOutOffRange
+		return
 	}
 	if position == 0 {
 		this.PushFront(value)
-		return nil
+		return
 	}
 	if position == this.size {
 		this.PushBack(value)
-		return nil
+		return
 	}
-
-	this.expandIfNeeded()
-	if position < this.size-position {
-		//move the front pos items
-		idx := this.preIndex(this.begin)
-		for i := 0; i < position; i++ {
-			this.data[idx] = this.data[this.nextIndex(idx)]
-			idx = this.nextIndex(idx)
+	seg, pos := this.pos(position)
+	if seg < this.segUsed-seg {
+		if this.firstSegment().Full() {
+			if this.segUsed == cap(this.segs) {
+				this.expand()
+			}
+			if pos == 0 {
+				pos = SegmentCapacity - 1
+			} else {
+				seg++
+				pos--
+			}
+			s := NewSegment(SegmentCapacity)
+			this.begin = this.preIndex(this.begin)
+			this.segs[this.begin] = s
+			this.segUsed++
 		}
-		this.data[idx] = value
-		this.begin = this.preIndex(this.begin)
+		for i := 0; i < seg; i++ {
+			cur := this.segmentAt(i)
+			next := this.segmentAt(i + 1)
+			cur.PushBack(next.PopFront())
+		}
+		this.segmentAt(seg).Insert(pos, value)
 	} else {
-		//move the back pos items
-		idx := this.end
-		for i := 0; i < this.size-position; i++ {
-			this.data[idx] = this.data[this.preIndex(idx)]
-			idx = this.preIndex(idx)
+		// move back
+		if this.lastSegment().Full() {
+			if this.segUsed == len(this.segs) {
+				this.expand()
+			}
+			s := NewSegment(SegmentCapacity)
+			this.segs[this.end] = s
+			this.end = this.nextIndex(this.end)
+			this.segUsed++
 		}
-		this.data[idx] = value
-		this.end = this.nextIndex(this.end)
+		for i := this.segUsed - 1; i > seg; i-- {
+			cur := this.segmentAt(i)
+			pre := this.segmentAt(i - 1)
+			cur.PushFront(pre.PopBack())
+		}
+		this.segmentAt(seg).Insert(pos, value)
 	}
 	this.size++
-	return nil
-}
-
-func (this *Deque) PopBack() interface{} {
-	if this.Empty() {
-		return nil
-	}
-	index := this.preIndex(this.end)
-	val := this.data[index]
-	this.data[index] = nil
-	this.end = index
-	this.size--
-	this.shrinkIfNeeded()
-	return val
-}
-
-func (this *Deque) PopFront() interface{} {
-	if this.Empty() {
-		return nil
-	}
-	val := this.data[this.begin ]
-	this.data[this.begin] = nil
-	this.begin = this.nextIndex(this.begin)
-	this.size--
-	this.shrinkIfNeeded()
-	return val
-}
-
-func (this *Deque) At(position int) interface{} {
-	if position < 0 || position >= this.size {
-		return nil
-	}
-	return this.data[(position+this.begin)%this.Capacity()]
-}
-
-func (this *Deque) Set(position int, val interface{}) error {
-	if position < 0 || position >= len(this.data) {
-		return ErrOutOffRange
-	}
-	this.data[(position+this.begin)%this.Capacity()] = val
-	return nil
-}
-
-func (this *Deque) Back() interface{} {
-	return this.At(this.size - 1)
 }
 
 func (this *Deque) Front() interface{} {
-	return this.At(0)
+	return this.firstSegment().Front()
+}
+
+func (this *Deque) Back() interface{} {
+	return this.lastSegment().Back()
+}
+
+func (this *Deque) At(position int) interface{} {
+	if position < 0 || position >= this.Size() {
+		return nil
+	}
+	seg, pos := this.pos(position)
+	return this.segmentAt(seg).At(pos)
+}
+
+func (this *Deque) Set(position int, val interface{}) error {
+	if position < 0 || position >= this.size {
+		return ErrOutOffRange
+	}
+	seg, pos := this.pos(position)
+	this.segmentAt(seg).Set(pos, val)
+	return nil
+}
+
+func (this *Deque) PopFront() interface{} {
+	if this.size == 0 {
+		return nil
+	}
+	s := this.segs[this.begin]
+	if s.Size() == 1 {
+		this.segs[this.begin] = nil
+		this.begin = this.nextIndex(this.begin)
+	}
+	this.size--
+	this.shrinkIfNeeded()
+	return s.PopFront()
+}
+
+func (this *Deque) PopBack() interface{} {
+	if this.size == 0 {
+		return nil
+	}
+	seg := this.preIndex(this.end)
+	s := this.segs[seg]
+	if s.Size() == 1 {
+		this.segs[seg] = nil
+		this.end = seg
+	}
+	this.size--
+	this.shrinkIfNeeded()
+	return s.PopBack()
+}
+
+func (this *Deque) EraseAt(position int) {
+	if position < 0 || position >= this.size {
+		return
+	}
+	seg, pos := this.pos(position)
+	this.segmentAt(seg).EraseAt(pos)
+	if seg < this.size-seg-1 {
+		for i := seg; i > 0; i-- {
+			cur := this.segmentAt(i)
+			pre := this.segmentAt(i - 1)
+			cur.PushFront(pre.PopBack())
+		}
+		if this.firstSegment().Empty() {
+			this.segs[this.begin] = nil
+			this.begin = this.nextIndex(this.begin)
+			this.segUsed--
+			this.shrinkIfNeeded()
+		}
+	} else {
+		for i := seg; i < this.segUsed-1; i++ {
+			cur := this.segmentAt(i)
+			next := this.segmentAt(i + 1)
+			cur.PushBack(next.PopFront())
+		}
+		if this.lastSegment().Empty() {
+			this.segs[this.preIndex(this.end)] = nil
+			this.end = this.preIndex(this.end)
+			this.segUsed--
+			this.shrinkIfNeeded()
+		}
+	}
+	this.size--
+}
+
+// todo:
+func (this *Deque) EraseRange(firstPos, lastPos int) {
+
+}
+
+func (this *Deque) firstAvailableSegment() *Segment {
+	if !this.firstSegment().Full() {
+		return this.firstSegment()
+	}
+	if this.segUsed == len(this.segs) {
+		this.expand()
+	}
+	this.begin = this.preIndex(this.begin)
+	s := NewSegment(SegmentCapacity)
+	this.segs[this.begin] = s
+	this.segUsed++
+	return s
+}
+
+func (this *Deque) lastAvailableSegment() *Segment {
+	if !this.lastSegment().Full() {
+		return this.lastSegment()
+	}
+	if this.segUsed == len(this.segs) {
+		this.expand()
+	}
+	s := NewSegment(SegmentCapacity)
+	this.segs[this.end] = s
+	this.end = this.nextIndex(this.end)
+	this.segUsed++
+	return s
+}
+
+func (this *Deque) firstSegment() *Segment {
+	return this.segs[this.begin]
+}
+
+func (this *Deque) lastSegment() *Segment {
+	return this.segs[this.preIndex(this.end)]
+}
+
+func (this *Deque) segmentAt(seg int) *Segment {
+	return this.segs[(seg+this.begin)%cap(this.segs)]
+}
+
+//pos returns the segment number and position in segment
+func (this *Deque) pos(position int) (int, int) {
+	if position <= this.firstSegment().Size()-1 {
+		return 0, position
+	}
+	position -= this.firstSegment().Size()
+	return position/SegmentCapacity + 1, position % SegmentCapacity
+}
+
+func (this *Deque) expand() {
+	newCapacity := this.segUsed * 2
+	seg := make([]*Segment, newCapacity)
+	for i := 0; i < this.segUsed; i++ {
+		seg[i] = this.segs[(this.begin+i)%this.segUsed]
+	}
+	this.segs = seg
+	this.begin = 0
+	this.end = this.segUsed
+}
+
+//shrinkIfNeeded shrinks the Deque if is has too many unused space .
+func (this *Deque) shrinkIfNeeded() {
+	if int(float64(this.segUsed*2)*1.2) < cap(this.segs) {
+		newCapacity := cap(this.segs) / 2
+		seg := make([]*Segment, newCapacity)
+		for i := 0; i < this.segUsed; i++ {
+			seg[i] = this.segs[(this.begin+i)%cap(this.segs)]
+		}
+		this.segs = seg
+		this.begin = 0
+		this.end = this.segUsed
+	}
 }
 
 func (this *Deque) nextIndex(index int) int {
-	return (index + 1) % this.Capacity()
+	return (index + 1) % cap(this.segs)
 }
 
 func (this *Deque) preIndex(index int) int {
-	return (index - 1 + this.Capacity()) % this.Capacity()
-}
-
-func (this *Deque) Erase(pos int) error {
-	return this.EraseRange(pos, pos+1)
-}
-
-func (this *Deque) Clear() {
-	this.EraseRange(0, this.size)
-}
-
-//EraseRange erase the data in the range [firstPos, lastPos), not include lastPos.
-func (this *Deque) EraseRange(firstPos, lastPos int) error {
-	if firstPos < 0 || lastPos > this.size {
-		return ErrOutOffRange
-	}
-	if firstPos >= lastPos {
-		return nil
-	}
-	eraseNum := lastPos - firstPos
-	leftNum := firstPos
-	rightNum := this.size - lastPos
-
-	if leftNum <= rightNum {
-		//move left data
-		idx := (this.begin + this.preIndex(lastPos)) % this.Capacity()
-		for i := 0; i < leftNum; i++ {
-			tempIndex := (idx - eraseNum + this.Capacity()) % this.Capacity()
-			this.data[idx] = this.data[tempIndex]
-			idx = this.preIndex(idx)
-		}
-		this.begin = this.nextIndex(idx)
-		for i := 0; i < eraseNum; i++ {
-			this.data[idx] = nil
-			idx = this.preIndex(idx)
-		}
-
-	} else {
-		idx := (this.begin + firstPos) % this.Capacity()
-		for i := 0; i < rightNum; i++ {
-			tempIndex := (idx + eraseNum + this.Capacity()) % this.Capacity()
-			this.data[idx] = this.data[tempIndex]
-			idx = this.nextIndex(idx)
-		}
-		this.end = idx
-		for i := 0; i < eraseNum; i++ {
-			this.data[idx] = nil
-			idx = this.nextIndex(idx)
-		}
-	}
-	this.size -= eraseNum
-	this.shrinkIfNeeded()
-	return nil
+	return (index - 1 + cap(this.segs)) % cap(this.segs)
 }
 
 func (this *Deque) String() string {
 	str := "["
-	for i := 0; i < this.size; i++ {
-		if i > 0 {
+	for i := 0; i < this.Size(); i++ {
+		if str != "[" {
 			str += " "
 		}
-		str += fmt.Sprintf("%v", this.data[(this.begin+i)%this.Capacity()])
+		str += fmt.Sprintf("%v", this.At(i))
 	}
 	str += "]"
+
 	return str
 }
 
