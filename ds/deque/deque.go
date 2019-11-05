@@ -6,14 +6,14 @@ import (
 )
 
 const (
-	SegmentCapacity = 7
-	//SegmentCapacity = 64
+	SegmentCapacity = 64
 )
 
 var ErrOutOffRange = errors.New("out off range")
 
 //Deque is a ring
 type Deque struct {
+	pool    *Pool
 	segs    [] *Segment
 	begin   int
 	end     int
@@ -23,11 +23,12 @@ type Deque struct {
 
 func New() *Deque {
 	dq := &Deque{
+		pool:    NewPool(),
 		segs:    make([]*Segment, 1),
 		end:     1,
 		segUsed: 1,
 	}
-	dq.segs[0] = NewSegment(SegmentCapacity)
+	dq.segs[0] = dq.pool.Get()
 	return dq
 }
 
@@ -75,9 +76,8 @@ func (this *Deque) Insert(position int, value interface{}) {
 				seg++
 				pos--
 			}
-			s := NewSegment(SegmentCapacity)
 			this.begin = this.preIndex(this.begin)
-			this.segs[this.begin] = s
+			this.segs[this.begin] = this.pool.Get()
 			this.segUsed++
 		}
 		for i := 0; i < seg; i++ {
@@ -92,8 +92,7 @@ func (this *Deque) Insert(position int, value interface{}) {
 			if this.segUsed == len(this.segs) {
 				this.expand()
 			}
-			s := NewSegment(SegmentCapacity)
-			this.segs[this.end] = s
+			this.segs[this.end] = this.pool.Get()
 			this.end = this.nextIndex(this.end)
 			this.segUsed++
 		}
@@ -138,6 +137,7 @@ func (this *Deque) PopFront() interface{} {
 	}
 	s := this.segs[this.begin]
 	if s.Size() == 1 {
+		this.putToPool(this.segs[this.begin])
 		this.segs[this.begin] = nil
 		this.begin = this.nextIndex(this.begin)
 	}
@@ -153,6 +153,7 @@ func (this *Deque) PopBack() interface{} {
 	seg := this.preIndex(this.end)
 	s := this.segs[seg]
 	if s.Size() == 1 {
+		this.putToPool(this.segs[seg])
 		this.segs[seg] = nil
 		this.end = seg
 	}
@@ -174,6 +175,7 @@ func (this *Deque) EraseAt(position int) {
 			cur.PushFront(pre.PopBack())
 		}
 		if this.firstSegment().Empty() {
+			this.putToPool(this.firstSegment())
 			this.segs[this.begin] = nil
 			this.begin = this.nextIndex(this.begin)
 			this.segUsed--
@@ -186,6 +188,7 @@ func (this *Deque) EraseAt(position int) {
 			cur.PushBack(next.PopFront())
 		}
 		if this.lastSegment().Empty() {
+			this.putToPool(this.lastSegment())
 			this.segs[this.preIndex(this.end)] = nil
 			this.end = this.preIndex(this.end)
 			this.segUsed--
@@ -195,9 +198,80 @@ func (this *Deque) EraseAt(position int) {
 	this.size--
 }
 
-// todo:
+// EraseRange erases data in range [firstPos, lastPos)
 func (this *Deque) EraseRange(firstPos, lastPos int) {
+	if firstPos < 0 || firstPos >= lastPos || lastPos > this.size {
+		return
+	}
+	s1, p1 := this.pos(firstPos)
+	s2, p2 := this.pos(lastPos - 1)
+	segDelFrom := s1 + 1
+	segDelTo := s2 - 1
+	if p1 == 0 {
+		segDelFrom = s1
+	}
+	if p2 == SegmentCapacity-1 {
+		segDelTo = s2
+	}
+	num := segDelTo - segDelFrom + 1
 
+	if this.segUsed-segDelFrom < segDelTo {
+		// move back
+		pos := segDelFrom
+		count := 0
+		for ; pos < this.segUsed-num; pos++ {
+			index := (this.begin + pos) % len(this.segs)
+			nextIndex := (this.begin + pos + num) % len(this.segs)
+			if count < num {
+				this.segs[index].Clear()
+				this.putToPool(this.segs[index])
+			}
+			count++
+			this.segs[index] = this.segs[nextIndex]
+		}
+
+		for ; pos < this.segUsed; pos++ {
+			index := (this.begin + pos) % len(this.segs)
+			this.segs[index] = nil
+		}
+		this.end = (this.end - num + len(this.segs)) % len(this.segs)
+
+	} else {
+		// move front
+		pos := segDelTo
+		count := 0
+		for ; pos >= num; pos-- {
+			index := (this.begin + pos) % len(this.segs)
+			preIndex := (this.begin + pos - num) % len(this.segs)
+			if count < num {
+				this.segs[index].Clear()
+				this.putToPool(this.segs[index])
+			}
+			count++
+
+			this.segs[index] = this.segs[preIndex]
+		}
+		for ; pos >= 0; pos-- {
+			index := (this.begin + pos) % len(this.segs)
+			this.segs[index] = nil
+		}
+		this.begin = (this.begin + num) % len(this.segs)
+	}
+	this.segUsed -= num
+	this.size -= num * SegmentCapacity
+
+	left := lastPos - firstPos - num*SegmentCapacity
+	erasePos := firstPos
+	for ; left > 0; left-- {
+		this.EraseAt(erasePos)
+	}
+}
+
+func (this *Deque) putToPool(s *Segment) {
+	this.pool.Put(s)
+	if this.pool.Size()*6/5 > this.segUsed {
+		this.pool.ShrinkToSize(this.segUsed / 5)
+	}
 }
 
 func (this *Deque) firstAvailableSegment() *Segment {
@@ -208,7 +282,7 @@ func (this *Deque) firstAvailableSegment() *Segment {
 		this.expand()
 	}
 	this.begin = this.preIndex(this.begin)
-	s := NewSegment(SegmentCapacity)
+	s := this.pool.Get()
 	this.segs[this.begin] = s
 	this.segUsed++
 	return s
@@ -221,7 +295,7 @@ func (this *Deque) lastAvailableSegment() *Segment {
 	if this.segUsed == len(this.segs) {
 		this.expand()
 	}
-	s := NewSegment(SegmentCapacity)
+	s := this.pool.Get()
 	this.segs[this.end] = s
 	this.end = this.nextIndex(this.end)
 	this.segUsed++

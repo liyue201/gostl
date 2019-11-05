@@ -131,3 +131,14 @@ func (this *Segment) Back() interface{} {
 func (this *Segment) Front() interface{} {
 	return this.At(0)
 }
+
+func (this *Segment) Clear() {
+	if this.size > 0 {
+		for i := this.begin; i != this.end; i = (i + 1) % len(this.data) {
+			this.data[i] = nil
+		}
+	}
+	this.begin = 0
+	this.end = 0
+	this.size = 0
+}
