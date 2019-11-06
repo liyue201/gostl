@@ -203,67 +203,23 @@ func (this *Deque) EraseRange(firstPos, lastPos int) {
 	if firstPos < 0 || firstPos >= lastPos || lastPos > this.size {
 		return
 	}
-	s1, p1 := this.pos(firstPos)
-	s2, p2 := this.pos(lastPos - 1)
-	segDelFrom := s1 + 1
-	segDelTo := s2 - 1
-	if p1 == 0 {
-		segDelFrom = s1
-	}
-	if p2 == SegmentCapacity-1 {
-		segDelTo = s2
-	}
-	num := segDelTo - segDelFrom + 1
-
-	if this.segUsed-segDelFrom < segDelTo {
+	num := lastPos - firstPos
+	if this.size-firstPos < lastPos {
 		// move back
-		pos := segDelFrom
-		count := 0
-		for ; pos < this.segUsed-num; pos++ {
-			index := (this.begin + pos) % len(this.segs)
-			nextIndex := (this.begin + pos + num) % len(this.segs)
-			if count < num {
-				this.segs[index].Clear()
-				this.putToPool(this.segs[index])
-			}
-			count++
-			this.segs[index] = this.segs[nextIndex]
+		for pos := firstPos; pos+num < this.size; pos++ {
+			this.Set(pos, this.At(pos+num))
 		}
-
-		for ; pos < this.segUsed; pos++ {
-			index := (this.begin + pos) % len(this.segs)
-			this.segs[index] = nil
+		for ; num > 0; num-- {
+			this.PopBack()
 		}
-		this.end = (this.end - num + len(this.segs)) % len(this.segs)
-
 	} else {
 		// move front
-		pos := segDelTo
-		count := 0
-		for ; pos >= num; pos-- {
-			index := (this.begin + pos) % len(this.segs)
-			preIndex := (this.begin + pos - num) % len(this.segs)
-			if count < num {
-				this.segs[index].Clear()
-				this.putToPool(this.segs[index])
-			}
-			count++
-
-			this.segs[index] = this.segs[preIndex]
+		for pos := lastPos - 1; pos-num >= 0; pos-- {
+			this.Set(pos, this.At(pos-num))
 		}
-		for ; pos >= 0; pos-- {
-			index := (this.begin + pos) % len(this.segs)
-			this.segs[index] = nil
+		for ; num > 0; num-- {
+			this.PopFront()
 		}
-		this.begin = (this.begin + num) % len(this.segs)
-	}
-	this.segUsed -= num
-	this.size -= num * SegmentCapacity
-
-	left := lastPos - firstPos - num*SegmentCapacity
-	erasePos := firstPos
-	for ; left > 0; left-- {
-		this.EraseAt(erasePos)
 	}
 }
 
