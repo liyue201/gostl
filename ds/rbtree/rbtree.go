@@ -1,6 +1,8 @@
 package rbtree
 
 import (
+	"errors"
+	"fmt"
 	. "github.com/liyue201/gostl/utils/comparator"
 	. "github.com/liyue201/gostl/utils/iterator"
 	"github.com/liyue201/gostl/utils/visitor"
@@ -385,6 +387,58 @@ func (this *RbTree) Traversal(visitor visitor.KvVisitor) {
 			break
 		}
 	}
+}
+
+// function for test
+func (this *RbTree) IsRbTree() (bool, error) {
+	// Properties:
+	// 1. Each node is either red or black.
+	// 2. The root is black.
+	// 3. All leaves (NIL) are black.
+	// 4. If a node is red, then both its children are black.
+	// 5. Every path from a given node to any of its descendant NIL nodes contains the same number of black nodes.
+	_, property, ok := this.test(this.root)
+	if !ok {
+		return false, errors.New(fmt.Sprintf("violate property %v", property))
+	}
+	return true, nil
+}
+
+func (this *RbTree) test(n *Node) (int, int, bool) {
+
+	if n == nil { // property 3:
+		return 1, 0, true
+	}
+
+	if n == this.root && n.color != BLACK { // property 2:
+		return 1, 2, false
+	}
+	leftBlackCount, property, ok := this.test(n.left)
+	if !ok {
+		return leftBlackCount, property, ok
+	}
+	rightBlackCount, property, ok := this.test(n.right)
+	if !ok {
+		return rightBlackCount, property, ok
+	}
+
+	if rightBlackCount != leftBlackCount { // property 5:
+		return leftBlackCount, 5, false
+	}
+	blackCount := leftBlackCount
+
+	if n.color == RED {
+		if getColor(n.left) != BLACK || getColor(n.right) != BLACK { // property 4:
+			return 0, 4, false
+		}
+	} else {
+		blackCount ++
+	}
+
+	if n == this.root {
+		//fmt.Printf("blackCount:%v \n", blackCount)
+	}
+	return blackCount, 0, true
 }
 
 // getColor gets color of the Node.
