@@ -4,29 +4,29 @@ import (
 	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/utils/iterator"
 )
-
+ 
 //Stable sort the container by using merge sort
-func Stable(begin, end iterator.RandomAccessIterator, cmp ...comparator.Comparator) {
-	tempSlice := make([]interface{}, end.Position()-begin.Position(), end.Position()-begin.Position())
+func Stable(first, last iterator.RandomAccessIterator, cmp ...comparator.Comparator) {
+	tempSlice := make([]interface{}, last.Position()-first.Position(), last.Position()-first.Position())
 	if len(cmp) == 0 {
-		mergeSort(begin, end, comparator.BuiltinTypeComparator, tempSlice)
+		mergeSort(first, last, comparator.BuiltinTypeComparator, tempSlice)
 	}else{
-		mergeSort(begin, end, cmp[0], tempSlice)
+		mergeSort(first, last, cmp[0], tempSlice)
 	}
 }
 
-func mergeSort(begin, end iterator.RandomAccessIterator, cmp comparator.Comparator, tempSlice []interface{}) {
-	if begin.Position()+1 == end.Position() {
+func mergeSort(first, last iterator.RandomAccessIterator, cmp comparator.Comparator, tempSlice []interface{}) {
+	if first.Position()+1 == last.Position() {
 		return
 	}
-	mid := begin.IteratorAt((begin.Position() + end.Position()) >> 1)
-	mergeSort(begin, mid, cmp, tempSlice)
-	mergeSort(mid, end, cmp, tempSlice)
-	merge(begin, mid, end, cmp, tempSlice)
+	mid := first.IteratorAt((first.Position() + last.Position()) >> 1)
+	mergeSort(first, mid, cmp, tempSlice)
+	mergeSort(mid, last, cmp, tempSlice)
+	merge(first, mid, last, cmp, tempSlice)
 }
 
-func merge(begin, mid, end iterator.RandomAccessIterator, cmp comparator.Comparator, tempSlice []interface{}) {
-	firstIter := (begin.Clone()).(iterator.RandomAccessIterator)
+func merge(first, mid, end iterator.RandomAccessIterator, cmp comparator.Comparator, tempSlice []interface{}) {
+	firstIter := (first.Clone()).(iterator.RandomAccessIterator)
 	secondIter := (mid.Clone()).(iterator.RandomAccessIterator)
 	pos := 0
 
@@ -50,7 +50,7 @@ func merge(begin, mid, end iterator.RandomAccessIterator, cmp comparator.Compara
 		pos++
 	}
 
-	iter := begin.Clone().(iterator.RandomAccessIterator)
+	iter := first.Clone().(iterator.RandomAccessIterator)
 	for idx := 0; idx < pos; idx++ {
 		iter.SetValue(tempSlice[idx])
 		iter.Next()

@@ -4,35 +4,35 @@ import (
 	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/utils/iterator"
 )
-
-//NextPermutation transform range [begin end) to next permutation,return true if success, or false if failure
-func NextPermutation(begin, end iterator.RandomAccessIterator, cmp ...comparator.Comparator) bool {
+ 
+//NextPermutation transform range [first last) to next permutation,return true if success, or false if failure
+func NextPermutation(first, last iterator.RandomAccessIterator, cmp ...comparator.Comparator) bool {
 	if len(cmp) == 0 {
-		return nextPermutation(begin, end, comparator.BuiltinTypeComparator)
+		return nextPermutation(first, last, comparator.BuiltinTypeComparator)
 	} else {
-		return nextPermutation(begin, end, cmp[0])
+		return nextPermutation(first, last, cmp[0])
 	}
 }
 
-func nextPermutation(begin, end iterator.RandomAccessIterator, cmp comparator.Comparator) bool {
-	len := end.Position() - begin.Position()
-	endPos := begin.Position() + len - 1
+func nextPermutation(first, last iterator.RandomAccessIterator, cmp comparator.Comparator) bool {
+	len := last.Position() - first.Position()
+	endPos := first.Position() + len - 1
 	cur := endPos
 	pre := cur - 1
 
-	endIter := begin.IteratorAt(endPos)
-	for cur > begin.Position() && cmp(begin.IteratorAt(pre).Value(), begin.IteratorAt(cur).Value()) >= 0 {
+	endIter := first.IteratorAt(endPos)
+	for cur > first.Position() && cmp(first.IteratorAt(pre).Value(), first.IteratorAt(cur).Value()) >= 0 {
 		cur--
 		pre--
 	}
-	if cur <= begin.Position() {
+	if cur <= first.Position() {
 		return false
 	}
-	for cur = endPos; cmp(begin.IteratorAt(cur).Value(),
-		begin.IteratorAt(pre).Value()) <= 0; cur-- {
+	for cur = endPos; cmp(first.IteratorAt(cur).Value(),
+		first.IteratorAt(pre).Value()) <= 0; cur-- {
 	}
-	swapValue(begin.IteratorAt(cur), begin.IteratorAt(pre))
-	reverse(begin.IteratorAt(pre+1), endIter)
+	swapValue(first.IteratorAt(cur), first.IteratorAt(pre))
+	reverse(first.IteratorAt(pre+1), endIter)
 	return true
 }
 
