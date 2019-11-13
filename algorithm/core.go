@@ -63,3 +63,13 @@ func FindIf(first, last iterator.ConstIterator, f func(iterator.ConstIterator) b
 	return last
 }
 
+// Reverse reverse the elements in the range [first, last]
+func Reverse(first, last iterator.BidIterator) {
+	left := first.Clone().(iterator.BidIterator)
+	right := last.Clone().(iterator.BidIterator).Prev().(iterator.BidIterator)
+	for !left.Equal(right) {
+		Swap(left, right)
+		left.Next()
+		right.Prev()
+	}
+}
