@@ -27,7 +27,9 @@ GoSTL是一个go语言数据结构和算法库，类似C++的STL，但功能更�
     - [二分查找第一个元素的位置（lower_bound）](#sort)
     - [二分查找第一个大于该元素的位置（upper_bound）](#sort)
     - [下一个排列组合（next_permutation）](#next_permutation)
-    
+    - [第n个元素（nth_element](#nth_element)
+    - [交换/翻转（swap/reverse）](#algo_op)
+    - [统计/查找（Count/CountIf/Find/FindIf）](#algo_op_const)
 ## 例子
 
 ### <a name="slice">切片（slice）</a>
@@ -663,4 +665,112 @@ func main()  {
 		}
 	}
 }
+```
+
+### <a name="nth_element">第n个元素（nth_element）</a>
+将迭代器范围内的第n个元素放在n的位置，并将小于或等于它的元素放在左边，大于或等于它的元素放在右边。
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/liyue201/gostl/algorithm/sort"
+	"github.com/liyue201/gostl/ds/deque"
+)
+
+func main() {
+	a := deque.New()
+	a.PushBack(9)
+	a.PushBack(8)
+	a.PushBack(7)
+	a.PushBack(6)
+	a.PushBack(5)
+	a.PushBack(4)
+	a.PushBack(3)
+	a.PushBack(2)
+	a.PushBack(1)
+	fmt.Printf("%v\n", a)
+	sort.NthElement(a.Begin(), a.End(), 3)
+	fmt.Printf("%v\n", a.At(3))
+	fmt.Printf("%v\n", a)
+}
+```
+
+### <a name="algo_op"> 交换/翻转 </a>
+- 交换（swap):  交换两个迭代器的值  
+- 翻转(reverse): 翻转两个迭代器区间范围内的值  
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/liyue201/gostl/algorithm"
+	"github.com/liyue201/gostl/ds/deque"
+)
+
+func main() {
+	a := deque.New()
+	for i := 0; i < 9; i++ {
+		a.PushBack(i)
+	}
+	fmt.Printf("%v\n", a)
+
+	algorithm.Swap(a.First(), a.Last())
+	fmt.Printf("%v\n", a)
+
+	algorithm.Reverse(a.Begin(), a.End())
+	fmt.Printf("%v\n", a)
+}
+
+```
+
+### <a name="algo_op_const"> Count/CountIf/Find/FindIf </a>
+- Count : 在迭代器区间内统计等于指定值的数量
+- CountIf： 在迭代器区间内统计等于满足函数f的数量
+- Find：在迭代器区间内找到第一个等于指定值的元素，返回其迭代器
+- FindIf：在迭代器区间内找到第一个满足函数f的元素，返回其迭代器
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/liyue201/gostl/algorithm"
+	"github.com/liyue201/gostl/ds/deque"
+	"github.com/liyue201/gostl/utils/iterator"
+)
+
+func isEven(iter iterator.ConstIterator) bool {
+	return iter.Value().(int)%2 == 0
+}
+
+func greaterThan5(iter iterator.ConstIterator) bool {
+	return iter.Value().(int) > 5
+}
+
+func main() {
+	a := deque.New()
+	for i := 0; i < 10; i++ {
+		a.PushBack(i)
+	}
+	for i := 0; i < 5; i++ {
+		a.PushBack(i)
+	}
+	fmt.Printf("%v\n", a)
+
+	fmt.Printf("Count 2: %v\n", algorithm.Count(a.Begin(), a.End(), 2))
+	fmt.Printf("Count 2: %v\n", algorithm.CountIf(a.Begin(), a.End(), isEven))
+
+	iter := algorithm.Find(a.Begin(), a.End(), 2)
+	if !iter.Equal(a.End()) {
+		fmt.Printf("Fund %v\n", iter.Value())
+	}
+	iter = algorithm.FindIf(a.Begin(), a.End(), greaterThan5)
+	if !iter.Equal(a.End()) {
+		fmt.Printf("FindIf greaterThan5 : %v\n", iter.Value())
+	}
+}
+
 ```

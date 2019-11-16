@@ -28,6 +28,9 @@ GoSTL is a data structure and algorithm library for go,designed to provide funct
     - [lower_bound](#sort)
     - [upper_bound](#sort)
     - [next_permutation](#next_permutation)
+    - [nth_element](#nth_element)
+    - [swap/reverse](#algo_op)
+    - [Count/CountIf/Find/FindIf](#algo_op_const)
     
  ## Examples
 
@@ -663,4 +666,112 @@ func main()  {
 		}
 	}
 }
+```
+
+### <a name="nth_element">nth_element</a>
+Place the nth element in the scope of the iterator in the position of N, and put the element less than or equal to it on the left, and the element greater than or equal to it on the right.
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/liyue201/gostl/algorithm/sort"
+	"github.com/liyue201/gostl/ds/deque"
+)
+
+func main() {
+	a := deque.New()
+	a.PushBack(9)
+	a.PushBack(8)
+	a.PushBack(7)
+	a.PushBack(6)
+	a.PushBack(5)
+	a.PushBack(4)
+	a.PushBack(3)
+	a.PushBack(2)
+	a.PushBack(1)
+	fmt.Printf("%v\n", a)
+	sort.NthElement(a.Begin(), a.End(), 3)
+	fmt.Printf("%v\n", a.At(3))
+	fmt.Printf("%v\n", a)
+}
+```
+
+### <a name="algo_op"> swap/reverse </a>
+- swap: swap the values of two iterators
+- reverse: Reverse values in the range of two iterators
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/liyue201/gostl/algorithm"
+	"github.com/liyue201/gostl/ds/deque"
+)
+
+func main() {
+	a := deque.New()
+	for i := 0; i < 9; i++ {
+		a.PushBack(i)
+	}
+	fmt.Printf("%v\n", a)
+
+	algorithm.Swap(a.First(), a.Last())
+	fmt.Printf("%v\n", a)
+
+	algorithm.Reverse(a.Begin(), a.End())
+	fmt.Printf("%v\n", a)
+}
+
+```
+
+### <a name="algo_op_const"> Count/CountIf/Find/FindIf </a>
+- Count : Count the number of elements equal to the specified value in the iterator interval
+- CountIf: Count the number of elements that satisfy the function f in the iterator interval
+- Find: Find the first element equal to the specified value in the iterator interval and returns its iterator
+- FindIf：Find the first element satisfying function f in the iterator interval and return its iterator
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/liyue201/gostl/algorithm"
+	"github.com/liyue201/gostl/ds/deque"
+	"github.com/liyue201/gostl/utils/iterator"
+)
+
+func isEven(iter iterator.ConstIterator) bool {
+	return iter.Value().(int)%2 == 0
+}
+
+func greaterThan5(iter iterator.ConstIterator) bool {
+	return iter.Value().(int) > 5
+}
+
+func main() {
+	a := deque.New()
+	for i := 0; i < 10; i++ {
+		a.PushBack(i)
+	}
+	for i := 0; i < 5; i++ {
+		a.PushBack(i)
+	}
+	fmt.Printf("%v\n", a)
+
+	fmt.Printf("Count 2: %v\n", algorithm.Count(a.Begin(), a.End(), 2))
+	fmt.Printf("Count 2: %v\n", algorithm.CountIf(a.Begin(), a.End(), isEven))
+
+	iter := algorithm.Find(a.Begin(), a.End(), 2)
+	if !iter.Equal(a.End()) {
+		fmt.Printf("Fund %v\n", iter.Value())
+	}
+	iter = algorithm.FindIf(a.Begin(), a.End(), greaterThan5)
+	if !iter.Equal(a.End()) {
+		fmt.Printf("FindIf greaterThan5 : %v\n", iter.Value())
+	}
+}
+
 ```
