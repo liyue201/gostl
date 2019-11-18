@@ -29,8 +29,10 @@ GoSTL is a data structure and algorithm library for go,designed to provide funct
     - [upper_bound](#sort)
     - [next_permutation](#next_permutation)
     - [nth_element](#nth_element)
-    - [swap/reverse](#algo_op)
-    - [Count/CountIf/Find/FindIf](#algo_op_const)
+    - [swap](#algo_op)
+    - [reverse](#algo_op)
+    - [count/count_if](#algo_op_const)
+    - [find/find_if](#algo_op_const)
     
  ## Examples
 
@@ -727,7 +729,7 @@ func main() {
 
 ```
 
-### <a name="algo_op_const"> Count/CountIf/Find/FindIf </a>
+### <a name="algo_op_const"> count/count_if/find/find_if </a>
 - Count : Count the number of elements equal to the specified value in the iterator interval
 - CountIf: Count the number of elements that satisfy the function f in the iterator interval
 - Find: Find the first element equal to the specified value in the iterator interval and returns its iterator

@@ -27,9 +27,13 @@ GoSTL是一个go语言数据结构和算法库，类似C++的STL，但功能更�
     - [二分查找第一个元素的位置（lower_bound）](#sort)
     - [二分查找第一个大于该元素的位置（upper_bound）](#sort)
     - [下一个排列组合（next_permutation）](#next_permutation)
-    - [第n个元素（nth_element](#nth_element)
-    - [交换/翻转（swap/reverse）](#algo_op)
-    - [统计/查找（Count/CountIf/Find/FindIf）](#algo_op_const)
+    - [第n个元素（nth_element)](#nth_element)
+    - [交换（swap）](#algo_op)
+    - [翻转（reverse）](#algo_op)
+    - [统计（count/count_if）](#algo_op_const)
+    - [查找（find/find_if）](#algo_op_const)
+  
+      
 ## 例子
 
 ### <a name="slice">切片（slice）</a>
@@ -726,7 +730,7 @@ func main() {
 
 ```
 
-### <a name="algo_op_const"> Count/CountIf/Find/FindIf </a>
+### <a name="algo_op_const"> count/count_if/find/find_if </a>
 - Count : 在迭代器区间内统计等于指定值的数量
 - CountIf： 在迭代器区间内统计等于满足函数f的数量
 - Find：在迭代器区间内找到第一个等于指定值的元素，返回其迭代器
