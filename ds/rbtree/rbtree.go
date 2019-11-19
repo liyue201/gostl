@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	. "github.com/liyue201/gostl/utils/comparator"
-	. "github.com/liyue201/gostl/utils/iterator"
 	"github.com/liyue201/gostl/utils/visitor"
 )
 
@@ -87,12 +86,12 @@ func (this *RbTree) Last() *Node {
 }
 
 // IterFirst returns the iterator of first Node
-func (this *RbTree) IterFirst() KvBidIterator {
+func (this *RbTree) IterFirst() *RbTreeIterator {
 	return NewIterator(this.First())
 }
 
 // IterLast returns the iterator of first Node
-func (this *RbTree) IterLast() KvBidIterator {
+func (this *RbTree) IterLast() *RbTreeIterator {
 	return NewIterator(this.Last())
 }
 

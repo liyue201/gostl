@@ -3,7 +3,6 @@ package treemap
 import (
 	"github.com/liyue201/gostl/ds/rbtree"
 	. "github.com/liyue201/gostl/utils/comparator"
-	. "github.com/liyue201/gostl/utils/iterator"
 	"github.com/liyue201/gostl/utils/sync"
 	"github.com/liyue201/gostl/utils/visitor"
 )
@@ -61,8 +60,8 @@ func (this *MultiMap) Erase(key interface{}) {
 	}
 }
 
-//Begin returns the ConstIterator related to key in the set, or an invalid iterator if not exist.
-func (this *MultiMap) Find(key interface{}) ConstKvIterator {
+//Begin returns the iterator related to key in the set, or an invalid iterator if not exist.
+func (this *MultiMap) Find(key interface{}) *MapIterator {
 	this.locker.RLock()
 	defer this.locker.RUnlock()
 
@@ -70,8 +69,8 @@ func (this *MultiMap) Find(key interface{}) ConstKvIterator {
 	return &MapIterator{node: node}
 }
 
-//LowerBound returns the first ConstIterator that equal or greater than key in the Map
-func (this *MultiMap) LowerBound(key interface{}) ConstKvIterator {
+//LowerBound returns the first iterator that equal or greater than key in the Map
+func (this *MultiMap) LowerBound(key interface{}) *MapIterator {
 	this.locker.RLock()
 	defer this.locker.RUnlock()
 
@@ -79,24 +78,24 @@ func (this *MultiMap) LowerBound(key interface{}) ConstKvIterator {
 	return &MapIterator{node: node}
 }
 
-//Begin returns the ConstIterator with the minimum key in the Map, return nil if empty.
-func (this *MultiMap) Begin() KvIterator {
+//Begin returns the iterator with the minimum key in the Map, return nil if empty.
+func (this *MultiMap) Begin() *MapIterator {
 	this.locker.RLock()
 	defer this.locker.RUnlock()
 
 	return this.First()
 }
 
-//First returns the ConstIterator with the minimum key in the Map, return nil if empty.
-func (this *MultiMap) First() KvIterator {
+//First returns the iterator with the minimum key in the Map, return nil if empty.
+func (this *MultiMap) First() *MapIterator {
 	this.locker.RLock()
 	defer this.locker.RUnlock()
 
 	return &MapIterator{node: this.tree.First()}
 }
 
-//Last returns the ConstIterator with the maximum key in the Map, return nil if empty.
-func (this *MultiMap) Last() KvIterator {
+//Last returns the iterator with the maximum key in the Map, return nil if empty.
+func (this *MultiMap) Last() *MapIterator {
 	this.locker.RLock()
 	defer this.locker.RUnlock()
 

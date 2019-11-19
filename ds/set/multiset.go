@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/liyue201/gostl/ds/rbtree"
 	. "github.com/liyue201/gostl/utils/comparator"
-	. "github.com/liyue201/gostl/utils/iterator"
 	"github.com/liyue201/gostl/utils/sync"
 	"github.com/liyue201/gostl/utils/visitor"
 )
@@ -51,8 +50,8 @@ func (this *MultiSet) Erase(element interface{}) {
 	}
 }
 
-// Begin returns the ConstIterator related to element in the MultiSet,or an invalid iterator if not exist.
-func (this *MultiSet) Find(element interface{}) ConstIterator {
+// Begin returns the iterator related to element in the MultiSet,or an invalid iterator if not exist.
+func (this *MultiSet) Find(element interface{}) *SetIterator {
 	this.locker.RLock()
 	defer this.locker.RUnlock()
 
@@ -60,8 +59,8 @@ func (this *MultiSet) Find(element interface{}) ConstIterator {
 	return &SetIterator{node: node}
 }
 
-//LowerBound returns the first ConstIterator that equal or greater than element in the MultiSet
-func (this *MultiSet) LowerBound(element interface{}) ConstIterator {
+//LowerBound returns the first iterator that equal or greater than element in the MultiSet
+func (this *MultiSet) LowerBound(element interface{}) *SetIterator {
 	this.locker.RLock()
 	defer this.locker.RUnlock()
 
@@ -69,24 +68,24 @@ func (this *MultiSet) LowerBound(element interface{}) ConstIterator {
 	return &SetIterator{node: node}
 }
 
-// Begin returns the ConstIterator with the minimum element in the Set, return nil if empty.
-func (this *MultiSet) Begin() ConstIterator {
+// Begin returns the iterator with the minimum element in the Set, return nil if empty.
+func (this *MultiSet) Begin() *SetIterator {
 	this.locker.RLock()
 	defer this.locker.RUnlock()
 
 	return this.First()
 }
 
-// First returns the ConstIterator with the minimum element in the MultiSet, return nil if empty.
-func (this *MultiSet) First() ConstBidIterator {
+// First returns the iterator with the minimum element in the MultiSet, return nil if empty.
+func (this *MultiSet) First() *SetIterator {
 	this.locker.RLock()
 	defer this.locker.RUnlock()
 
 	return &SetIterator{node: this.tree.First()}
 }
 
-//Last returns the ConstIterator with the maximum element in the MultiSet, return nil if empty.
-func (this *MultiSet) Last() ConstBidIterator {
+//Last returns the iterator with the maximum element in the MultiSet, return nil if empty.
+func (this *MultiSet) Last() *SetIterator {
 	this.locker.RLock()
 	defer this.locker.RUnlock()
 

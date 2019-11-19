@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/liyue201/gostl/ds/rbtree"
 	. "github.com/liyue201/gostl/utils/comparator"
-	. "github.com/liyue201/gostl/utils/iterator"
 	"github.com/liyue201/gostl/utils/sync"
 	"github.com/liyue201/gostl/utils/visitor"
 	gosync "sync"
@@ -84,8 +83,8 @@ func (this *Set) Erase(element interface{}) {
 	}
 }
 
-// Begin returns the ConstIterator related to element in the Set,or an invalid iterator if not exist.
-func (this *Set) Find(element interface{}) ConstIterator {
+// Begin returns the iterator related to element in the Set,or an invalid iterator if not exist.
+func (this *Set) Find(element interface{}) *SetIterator {
 	this.locker.RLock()
 	defer this.locker.RUnlock()
 
@@ -93,8 +92,8 @@ func (this *Set) Find(element interface{}) ConstIterator {
 	return &SetIterator{node: node}
 }
 
-// LowerBound returns the first ConstIterator that equal or greater than element in the Set
-func (this *Set) LowerBound(element interface{}) ConstIterator {
+// LowerBound returns the first iterator that equal or greater than element in the Set
+func (this *Set) LowerBound(element interface{}) *SetIterator {
 	this.locker.RLock()
 	defer this.locker.RUnlock()
 
@@ -102,21 +101,21 @@ func (this *Set) LowerBound(element interface{}) ConstIterator {
 	return &SetIterator{node: node}
 }
 
-// Begin returns the ConstIterator with the minimum element in the Set, return nil if empty.
-func (this *Set) Begin() ConstIterator {
+// Begin returns the iterator with the minimum element in the Set, return nil if empty.
+func (this *Set) Begin() *SetIterator {
 	return this.First()
 }
 
-// First returns the ConstIterator with the minimum element in the Set, return nil if empty.
-func (this *Set) First() ConstBidIterator {
+// First returns the iterator with the minimum element in the Set, return nil if empty.
+func (this *Set) First() *SetIterator {
 	this.locker.RLock()
 	defer this.locker.RUnlock()
 
 	return &SetIterator{node: this.tree.First()}
 }
 
-// Last returns the ConstIterator with the maximum element in the Set, return nil if empty.
-func (this *Set) Last() ConstBidIterator {
+// Last returns the iterator with the maximum element in the Set, return nil if empty.
+func (this *Set) Last() *SetIterator {
 	this.locker.RLock()
 	defer this.locker.RUnlock()
 

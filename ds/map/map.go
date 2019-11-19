@@ -100,8 +100,8 @@ func (this *Map) EraseIter(iter ConstKvIterator) {
 	}
 }
 
-//Begin returns the ConstIterator related to value in the map, or an invalid iterator if not exist.
-func (this *Map) Find(key interface{}) ConstKvIterator {
+//Begin returns the iterator related to value in the map, or an invalid iterator if not exist.
+func (this *Map) Find(key interface{}) *MapIterator {
 	this.locker.RUnlock()
 	defer this.locker.RUnlock()
 
@@ -109,8 +109,8 @@ func (this *Map) Find(key interface{}) ConstKvIterator {
 	return &MapIterator{node: node}
 }
 
-//LowerBound returns the first ConstIterator that equal or greater than key in the Map
-func (this *Map) LowerBound(key interface{}) ConstKvIterator {
+//LowerBound returns the first iterator that equal or greater than key in the Map
+func (this *Map) LowerBound(key interface{}) *MapIterator {
 	this.locker.RLock()
 	defer this.locker.RUnlock()
 
@@ -118,24 +118,24 @@ func (this *Map) LowerBound(key interface{}) ConstKvIterator {
 	return &MapIterator{node: node}
 }
 
-//Begin returns the ConstIterator with the minimum key in the Map, return nil if empty.
-func (this *Map) Begin() KvIterator {
+//Begin returns the iterator with the minimum key in the Map, return nil if empty.
+func (this *Map) Begin() *MapIterator {
 	this.locker.RLock()
 	defer this.locker.RUnlock()
 
 	return this.First()
 }
 
-//First returns the ConstIterator with the minimum key in the Map, return nil if empty.
-func (this *Map) First() KvIterator {
+//First returns the iterator with the minimum key in the Map, return nil if empty.
+func (this *Map) First() *MapIterator {
 	this.locker.RLock()
 	defer this.locker.RUnlock()
 
 	return &MapIterator{node: this.tree.First()}
 }
 
-//Last returns the ConstIterator with the maximum key in the Map, return nil if empty.
-func (this *Map) Last() KvIterator {
+//Last returns the iterator with the maximum key in the Map, return nil if empty.
+func (this *Map) Last() *MapIterator {
 	this.locker.RLock()
 	defer this.locker.RUnlock()
 
