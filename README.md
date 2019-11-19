@@ -128,7 +128,7 @@ func main() {
 
 
 ### <a name="list">list</a>
-- simple list
+- simple list  
 Simple list is a one directional list, which supports inserting data from the head and tail, and only traversing data from the head.
 
 ```go
@@ -152,8 +152,8 @@ func main() {
 
 ```
   
-- bidirectional list
-Bidirectional list, supports inserting data from the head and tail, and traversing data from the head and tail.
+- bidirectional list  
+Bidirectional list supports inserting data from the head and tail, and traversing data from the head and tail.
 
 ```go
 package main
