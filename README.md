@@ -38,7 +38,7 @@ GoSTL is a data structure and algorithm library for go,designed to provide funct
 
  ### <a name="slice">slice</a>
 The slice in this library is a redefinition of go native slice.
-Here is an example of how to turn a go native slice into an Intslice and then sort it. 
+Here is an example of how to turn a go native slice into an Intslice and sort it. 
 
  ```go
 package main

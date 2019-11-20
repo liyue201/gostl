@@ -1,5 +1,5 @@
 package slice
- 
+
 // Interface of Slice for iterator
 type ISlice interface {
 	Len() int
@@ -114,7 +114,7 @@ func (this IntSlice) First() *SliceIterator {
 
 func (this IntSlice) Last() *SliceIterator {
 	return &SliceIterator{s: this,
-		position: this.Len(),
+		position: this.Len() - 1,
 	}
 }
 
@@ -156,7 +156,7 @@ func (this UIntSlice) First() *SliceIterator {
 
 func (this UIntSlice) Last() *SliceIterator {
 	return &SliceIterator{s: this,
-		position: this.Len(),
+		position: this.Len() - 1,
 	}
 }
 
@@ -198,7 +198,7 @@ func (this Int8Slice) First() *SliceIterator {
 
 func (this Int8Slice) Last() *SliceIterator {
 	return &SliceIterator{s: this,
-		position: this.Len(),
+		position: this.Len() - 1,
 	}
 }
 
@@ -240,7 +240,7 @@ func (this UInt8Slice) First() *SliceIterator {
 
 func (this UInt8Slice) Last() *SliceIterator {
 	return &SliceIterator{s: this,
-		position: this.Len(),
+		position: this.Len() - 1,
 	}
 }
 
@@ -270,7 +270,7 @@ func (this Int32Slice) Begin() *SliceIterator {
 
 func (this Int32Slice) End() *SliceIterator {
 	return &SliceIterator{s: this,
-		position: this.Len(),
+		position: this.Len() - 1,
 	}
 }
 
@@ -282,7 +282,7 @@ func (this Int32Slice) First() *SliceIterator {
 
 func (this Int32Slice) Last() *SliceIterator {
 	return &SliceIterator{s: this,
-		position: this.Len(),
+		position: this.Len() - 1,
 	}
 }
 
@@ -324,7 +324,7 @@ func (this UInt32Slice) First() *SliceIterator {
 
 func (this UInt32Slice) Last() *SliceIterator {
 	return &SliceIterator{s: this,
-		position: this.Len(),
+		position: this.Len() - 1,
 	}
 }
 
@@ -366,7 +366,7 @@ func (this Int64Slice) First() *SliceIterator {
 
 func (this Int64Slice) Last() *SliceIterator {
 	return &SliceIterator{s: this,
-		position: this.Len(),
+		position: this.Len() - 1,
 	}
 }
 
@@ -408,7 +408,7 @@ func (this UInt64Slice) First() *SliceIterator {
 
 func (this UInt64Slice) Last() *SliceIterator {
 	return &SliceIterator{s: this,
-		position: this.Len(),
+		position: this.Len() - 1,
 	}
 }
 
@@ -450,7 +450,7 @@ func (this Float32Slice) First() *SliceIterator {
 
 func (this Float32Slice) Last() *SliceIterator {
 	return &SliceIterator{s: this,
-		position: this.Len(),
+		position: this.Len() - 1,
 	}
 }
 
@@ -492,7 +492,7 @@ func (this Float64Slice) First() *SliceIterator {
 
 func (this Float64Slice) Last() *SliceIterator {
 	return &SliceIterator{s: this,
-		position: this.Len(),
+		position: this.Len() - 1,
 	}
 }
 
@@ -534,6 +534,6 @@ func (this StringSlice) First() *SliceIterator {
 
 func (this StringSlice) Last() *SliceIterator {
 	return &SliceIterator{s: this,
-		position: this.Len(),
+		position: this.Len() - 1,
 	}
 }
