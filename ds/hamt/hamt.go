@@ -265,6 +265,9 @@ func (this *Hamt) Erase(key Key) bool {
 
 // Keys returns the keys in Hamt
 func (this *Hamt) Keys() []Key {
+	this.locker.RLock()
+	defer this.locker.RUnlock()
+
 	keys := make([]Key, 0)
 	this.root.traversal(func(key, value interface{}) bool {
 		keys = append(keys, key.(Key))
@@ -275,6 +278,9 @@ func (this *Hamt) Keys() []Key {
 
 // StringKeys returns the keys in Hamt
 func (this *Hamt) StringKeys() []string {
+	this.locker.RLock()
+	defer this.locker.RUnlock()
+
 	keys := make([]string, 0)
 	this.root.traversal(func(key, value interface{}) bool {
 		keys = append(keys, string(key.(Key)))

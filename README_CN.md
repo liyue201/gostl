@@ -585,11 +585,11 @@ func main()  {
 ```
 
 ### <a name="sort">排序、稳定排序、二分查找</a>
-Sort: 内部使用的是快速排序算法。 
-Stable: 稳定排序，内部使用归并排序。    
-BinarySearch: 通过二分查找，判断一个元素是否在迭代器范围中。  
-LowerBound: 通过二分查找，找到第一个等于该元素的数据返回该迭代器。  
-UpperBound：  通过二分查找，找到第一个大于该元素的数据返回该迭代器。  
+- Sort: 内部使用的是快速排序算法。 
+- Stable: 稳定排序，内部使用归并排序。    
+- BinarySearch: 通过二分查找，判断一个元素是否在迭代器范围中。  
+- LowerBound: 通过二分查找，找到第一个等于该元素的数据返回该迭代器。  
+- UpperBound：  通过二分查找，找到第一个大于该元素的数据返回该迭代器。  
 
 ```go
 package main
@@ -635,8 +635,8 @@ func main()  {
 }
 ```
 
-### <a name="next_permutation">下个排序组合（next_permutation）</a>
-这个函数修改迭代器范围内的数据为下一个排序组合。
+### <a name="next_permutation">下个排列组合（next_permutation）</a>
+这个函数修改迭代器范围内的数据为下一个排列组合。
 
 ```go
 package main

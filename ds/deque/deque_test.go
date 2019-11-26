@@ -1,7 +1,7 @@
 package deque
 
 import "testing"
- 
+  
 func TestPushPop(t *testing.T) {
 	q := New()
 
@@ -71,9 +71,10 @@ func TestErase(t *testing.T) {
 	if q.String() != "[8 6 3 4 5 7]" {
 		t.Fatalf("Push error: %v", q.String())
 	}
-	//q.EraseRange(3, 5)
-	//t.Logf("q: %v", q)
-	//if q.String() != "[8 6 3 7]" {
-	//	t.Fatalf("Push error: %v", q.String())
-	//}
+
+	q.EraseRange(3, 5)
+	t.Logf("q: %v", q)
+	if q.String() != "[8 6 3 7]" {
+		t.Fatalf("Push error: %v", q.String())
+	}
 }
