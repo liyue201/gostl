@@ -431,7 +431,7 @@ func (this *RbTree) test(n *Node) (int, int, bool) {
 			return 0, 4, false
 		}
 	} else {
-		blackCount ++
+		blackCount++
 	}
 
 	if n == this.root {

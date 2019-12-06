@@ -5,7 +5,7 @@ import (
 	"github.com/liyue201/gostl/ds/skiplist"
 )
 
-func main()  {
+func main() {
 	list := skiplist.New(skiplist.WithMaxLevel(15))
 	list.Insert("aaa", "1111")
 	list.Insert("bbb", "2222")

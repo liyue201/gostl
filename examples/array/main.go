@@ -8,7 +8,7 @@ import (
 func main() {
 	a := array.New(5)
 	for i := 0; i < a.Size(); i++ {
-		a.Set(i, i + 1)
+		a.Set(i, i+1)
 	}
 	for i := 0; i < a.Size(); i++ {
 		fmt.Printf("%v ", a.At(i))

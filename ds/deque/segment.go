@@ -52,7 +52,7 @@ func (this *Segment) Insert(position int, value interface{}) {
 func (this *Segment) PopBack() interface{} {
 	this.end = this.preIndex(this.end)
 	val := this.data[this.end]
-	this.data[this.end ] = nil
+	this.data[this.end] = nil
 	this.size--
 	return val
 }
@@ -83,7 +83,7 @@ func (this *Segment) EraseAt(position int) {
 		this.data[this.preIndex(this.end)] = nil
 		this.end = this.preIndex(this.end)
 	}
-	this.size --
+	this.size--
 }
 
 func (this *Segment) Size() int {

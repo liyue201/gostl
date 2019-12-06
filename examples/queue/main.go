@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func example1()  {
+func example1() {
 	fmt.Printf("example1:\n")
 	q := queue.New()
 	for i := 0; i < 5; i++ {
@@ -19,7 +19,7 @@ func example1()  {
 }
 
 // using list as container
-func example2()  {
+func example2() {
 	fmt.Printf("example2:\n")
 	q := queue.New(queue.WithListContainer())
 	for i := 0; i < 5; i++ {
@@ -29,7 +29,6 @@ func example2()  {
 		fmt.Printf("%v\n", q.Pop())
 	}
 }
-
 
 // thread-save
 func example3() {

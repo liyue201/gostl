@@ -1,13 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"github.com/liyue201/gostl/algorithm/sort"
 	"github.com/liyue201/gostl/ds/slice"
 	"github.com/liyue201/gostl/utils/comparator"
-	"fmt"
 )
 
-func main()  {
+func main() {
 	a := slice.IntSlice(make([]int, 0))
 
 	for i := 1; i <= 3; i++ {

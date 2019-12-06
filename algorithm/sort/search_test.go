@@ -4,8 +4,8 @@ import (
 	"github.com/liyue201/gostl/ds/deque"
 	"github.com/liyue201/gostl/utils/comparator"
 	"testing"
-)  
-     
+)
+
 func TestSearch(t *testing.T) {
 	a := deque.New()
 	a.PushBack(1)
@@ -17,7 +17,7 @@ func TestSearch(t *testing.T) {
 	a.PushBack(15)
 
 	Sort(a.Begin(), a.End())
-  
+
 	t.Logf("a: %v", a)
 	if !BinarySearch(a.Begin(), a.End(), 5, comparator.BuiltinTypeComparator) {
 		t.Fatalf("BinarySearch 5 error: expect true,but get flase")

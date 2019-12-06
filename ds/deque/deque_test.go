@@ -1,13 +1,13 @@
 package deque
 
 import "testing"
-  
+
 func TestPushPop(t *testing.T) {
 	q := New()
 
 	q.PushBack(1)  //[1]
 	q.PushFront(2) //[2 1]
-	q.PushBack(3)  //[2 1 3] 
+	q.PushBack(3)  //[2 1 3]
 
 	t.Logf("q: %v", q)
 
@@ -23,9 +23,9 @@ func TestPushPop(t *testing.T) {
 	if q.At(1) != 1 {
 		t.Fatalf("at 1 error: %v", q.At(1))
 	}
-	q.Insert(0, 5) //[5 2 1 3]  
+	q.Insert(0, 5) //[5 2 1 3]
 	q.Insert(3, 6) //[5 2 1 6 3]
-	q.Insert(2, 7) //[5 2 7 1 6 3]  
+	q.Insert(2, 7) //[5 2 7 1 6 3]
 	t.Logf("q: %v", q)
 
 	if q.String() != "[5 2 7 1 6 3]" {
@@ -48,7 +48,7 @@ func TestErase(t *testing.T) {
 	for i := 0; i < 5; i++ {
 		q.PushBack(i + 1)
 	}
-   //[1 2 3 4 5]
+	//[1 2 3 4 5]
 
 	t.Logf("q: %v", q)
 

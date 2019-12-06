@@ -1,5 +1,5 @@
 package slice
- 
+
 import (
 	"github.com/liyue201/gostl/algorithm/sort"
 	"github.com/liyue201/gostl/utils/comparator"

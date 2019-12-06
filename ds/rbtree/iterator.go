@@ -58,4 +58,3 @@ func (this *RbTreeIterator) Equal(other ConstIterator) bool {
 	}
 	return false
 }
-

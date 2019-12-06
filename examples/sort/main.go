@@ -1,13 +1,13 @@
 package main
 
 import (
-	"github.com/liyue201/gostl/algorithm/sort"
-	"github.com/liyue201/gostl/utils/comparator"
-	"github.com/liyue201/gostl/ds/slice"
 	"fmt"
+	"github.com/liyue201/gostl/algorithm/sort"
+	"github.com/liyue201/gostl/ds/slice"
+	"github.com/liyue201/gostl/utils/comparator"
 )
 
-func main()  {
+func main() {
 	a := make([]string, 0)
 	a = append(a, "bbbb")
 	a = append(a, "ccc")

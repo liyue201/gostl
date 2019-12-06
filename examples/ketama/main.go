@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/liyue201/gostl/ds/ketama"
 	"fmt"
+	"github.com/liyue201/gostl/ds/ketama"
 )
 
 func main() {

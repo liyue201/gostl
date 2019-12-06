@@ -14,7 +14,7 @@ var ErrOutOffRange = errors.New("out off range")
 //Deque is a ring
 type Deque struct {
 	pool  *Pool
-	segs  [] *Segment
+	segs  []*Segment
 	begin int
 	end   int
 	size  int

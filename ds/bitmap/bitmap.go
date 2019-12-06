@@ -74,7 +74,6 @@ func (this *Bitmap) Clear() {
 	this.data = make([]byte, this.size/8, this.size/8)
 }
 
-
 func (this *Bitmap) Data() []byte {
 	return this.data
 }

@@ -5,7 +5,7 @@ import (
 	"github.com/liyue201/gostl/ds/set"
 )
 
-func main()  {
+func main() {
 	s := set.New(set.WithThreadSave())
 	s.Insert(1)
 	s.Insert(5)

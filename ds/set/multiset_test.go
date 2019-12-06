@@ -2,8 +2,8 @@ package set
 
 import (
 	"testing"
-) 
- 
+)
+
 func TestMultiSet(t *testing.T) {
 	mset := NewMultiSet()
 

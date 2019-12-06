@@ -1,5 +1,5 @@
 package hash
- 
+
 import (
 	"bytes"
 	"crypto/sha512"

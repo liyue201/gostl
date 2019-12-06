@@ -5,7 +5,7 @@ import (
 	"github.com/liyue201/gostl/utils/iterator"
 	"math/rand"
 	"time"
-)  
+)
 
 var randTable [256]uint64
 var seedChan chan uint64
@@ -17,9 +17,9 @@ func init() {
 	for i := 0; i < len(randTable); i++ {
 		randTable[i] = r.Uint64()
 		seedChan <- r.Uint64()
-	}    
-} 
-   
+	}
+}
+
 func getSeed() uint64 {
 	id := <-seedChan
 	seedChan <- id + 78431
@@ -76,7 +76,7 @@ func quickSort(first, last iterator.RandomAccessIterator, cmp comparator.Compara
 	if cmp(leftIter.Value(), first.Value()) < 0 {
 		swapValue(first, leftIter)
 	}
- 
+
 	quickSort(first, first.IteratorAt(m), cmp, randNum+uint64(pos))
 	quickSort(first.IteratorAt(m).Next().(iterator.RandomAccessIterator), last, cmp, randNum+uint64(pos+1))
 }

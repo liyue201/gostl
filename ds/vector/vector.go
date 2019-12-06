@@ -156,7 +156,7 @@ func (this *Vector) Clear() {
 	this.data = this.data[:0]
 }
 
-func (this *Vector) Data() [] interface{} {
+func (this *Vector) Data() []interface{} {
 	return this.data
 }
 

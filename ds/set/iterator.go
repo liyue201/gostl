@@ -48,4 +48,3 @@ func (this *SetIterator) Equal(other ConstIterator) bool {
 	}
 	return false
 }
-

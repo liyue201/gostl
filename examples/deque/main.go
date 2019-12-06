@@ -19,7 +19,7 @@ func main() {
 	sort.Sort(q.Begin(), q.End())
 	fmt.Printf("%v\n", q)
 
-	for !q.Empty(){
+	for !q.Empty() {
 		r := rand.Int() % q.Size()
 		q.EraseAt(r)
 	}

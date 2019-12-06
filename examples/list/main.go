@@ -15,7 +15,7 @@ func simpleList() {
 	for n := l.FrontNode(); n != nil; n = n.Next() {
 		fmt.Printf("%v ", n.Value)
 	}
-	fmt.Printf("\n===============\n", )
+	fmt.Printf("\n===============\n")
 }
 
 func bidList() {
@@ -27,7 +27,7 @@ func bidList() {
 	for n := l.FrontNode(); n != nil; n = n.Next() {
 		fmt.Printf("%v ", n.Value)
 	}
-	fmt.Printf("\n", )
+	fmt.Printf("\n")
 
 	for n := l.BackNode(); n != nil; n = n.Prev() {
 		fmt.Printf("%v ", n.Value)

@@ -5,13 +5,13 @@ import (
 	"github.com/liyue201/gostl/utils/comparator"
 	"testing"
 )
-  
+
 func TestArray(t *testing.T) {
 	a := New(10)
 	if a.Size() != 10 {
 		t.Fatalf("array size error")
 	}
- 
+
 	va := 10
 	a.Fill(va)
 	for i := 0; i < a.Size(); i++ {
@@ -59,13 +59,13 @@ func TestArray(t *testing.T) {
 	}
 }
 
-func TestSort(t *testing.T)  {
+func TestSort(t *testing.T) {
 	a := New(10)
 	if a.Size() != 10 {
 		t.Fatalf("array size error")
 	}
 	for i := 0; i < 10; i++ {
-		a.Set(i, 10 - i)
+		a.Set(i, 10-i)
 	}
 	sort.Stable(a.Begin(), a.End(), comparator.BuiltinTypeComparator)
 	t.Logf("a: %v", a.String())

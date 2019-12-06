@@ -8,7 +8,7 @@ func TestRbTee(t *testing.T) {
 	tree := New()
 	for i := 0; i < 10; i++ {
 		tree.Insert(i, i+10000)
-	} 
+	}
 	for i := 0; i < 10; i++ {
 		val := tree.Find(i)
 		if val == nil || val.(int) != i+10000 {
@@ -85,9 +85,9 @@ func TestTravesal(t *testing.T) {
 func TestIterator(t *testing.T) {
 	tree := New()
 	for i := 10; i >= 1; i-- {
-		tree.Insert(i, i + 100)
+		tree.Insert(i, i+100)
 	}
-	for iter := tree.IterFirst(); iter.IsValid(); iter.Next(){
+	for iter := tree.IterFirst(); iter.IsValid(); iter.Next() {
 		t.Logf("found: %v, %v", iter.Key(), iter.Value())
 	}
 }

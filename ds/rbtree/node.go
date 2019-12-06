@@ -6,7 +6,7 @@ const (
 	RED   = false
 	BLACK = true
 )
- 
+
 type Node struct {
 	parent *Node
 	left   *Node
