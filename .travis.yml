@@ -9,7 +9,7 @@ install:
   - go get github.com/liyue201/gostl
 
 script:
-  - go test -v ./... -covermode=count -coverprofile=coverage.out && $HOME/gopath/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
+  - go test  ./... -v -covermode=count -coverprofile=coverage.out && $HOME/gopath/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken ef3Yw4z5EMJtC9BYVssMbjQXoHHlZeZHU
 
 env:
   global:
