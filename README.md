@@ -1,5 +1,6 @@
 # GoSTL
 [![GoDoc](https://godoc.org/github.com/liyue201/gostl?status.svg)](https://godoc.org/github.com/liyue201/gostl)
+[![](https://goreportcard.com/badge/github.com/liyue201/gostl)](https://goreportcard.com/report/github.com/liyue201/gostl)
 
 GoSTL is a data structure and algorithm library for go,designed to provide functions similar to C++ STL,but more powerful.Combined with the characteristics of go language, most of the data structures have realized thread safety. When creating objects, you can specify whether to turn it on through configuration parameters.
 
