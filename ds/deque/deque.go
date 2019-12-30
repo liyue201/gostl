@@ -225,6 +225,11 @@ func (this *Deque) EraseRange(firstPos, lastPos int) {
 	}
 }
 
+// Clear erases all elements in deque
+func (this *Deque) Clear() {
+	this.EraseRange(0, this.size)
+}
+
 func (this *Deque) putToPool(s *Segment) {
 	this.pool.Put(s)
 	if this.pool.Size()*6/5 > this.segUsed() {
