@@ -10,7 +10,6 @@ notifications:
 go:
   - 1.11
   - 1.12
-  - 1.13
 
 install:
   - go get github.com/mattn/goveralls
