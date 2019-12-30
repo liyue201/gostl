@@ -1,17 +1,24 @@
 language: go
 
+notifications:
+  email:
+    recipients:
+      - liyue201@126.com
+  on_success: change
+  on_failure: always
+
 go:
   - 1.11
   - 1.12
   - 1.13
 
 install:
-  - go get github.com/liyue201/gostl
+  - go get github.com/mattn/goveralls
 
 script:
-  - go test  ./... -v -covermode=count -coverprofile=coverage.out && $HOME/gopath/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken ef3Yw4z5EMJtC9BYVssMbjQXoHHlZeZHU
+  -  go test ./... -v -covermode=count -coverprofile=coverage.out
+  -  $GOPATH/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
 
 env:
   global:
-    - secure: "YEQn+IQnJ4jl1azFEmvHXV8lpjEBmWLeojI5IoKwruOmqjvSgElHLi3TUjp+0j0JEhDAQGq5fVgI+gZ/L7ExVWSCg0eRskkgYvcx7pew9Mz/zLPQyoywMq0sgTDP4ppPJYzIT+NDdz4LtX1ynQ1qFxcGfSmv7wsJZt71T0RRD/1/L8+S3OSs10iekBi7D1MZ9Asf6/VGuIlzlysgRhmjiDM+4hmP9Qaz9XNoOE6SN1F4m1QLget7WKgGaj0JJGKilIZoDrs1oqpf3iEmh33BxlGZNvQRSL6/fUSIcPCswXDX2zyM8RpePxe1fqq742TmW6KTlR5YvSAqa7HgO/G2U0mDOx6mQnspk4CcR9wlHqTK2UlpWK2GQQbBiMLIbN7r6TK/7W2GOPerrymBSodenhv2BkGH9Y7EWWw/D8FvN1jRNcUgKIEOWHpLZmMoZZy3EkECRYfMDbPBLIhT6+zuyKXPYVIcIWoe+JrwM7ua4CrTES5kCtLNe9SWu5vIIidb75jR32Oef1V4HVkDmCcDxDZ5X5tEjA3b5+1ra/xW14zD/7nHGgpQFw5U92+oyAnU0c1CUA6r9y3Lk1d3NnCDEuvrUWhh5BfDB2fDZTUNNkUTtVU5+w6XTbnp8H/V7AyDV4dQm7EtQAWbsD5TfnouhZnJpsAvP8jbkw/ARgizOUM="
     - GO111MODULE=on
