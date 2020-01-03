@@ -41,14 +41,14 @@ func (s Slice) Len() int {
 }
 
 func (s Slice) At(position int) interface{} {
-	if position < 0 || position > s.Len() {
+	if position < 0 || position >= s.Len() {
 		return nil
 	}
 	return s[position]
 }
 
 func (s Slice) Set(position int, val interface{}) {
-	if position < 0 || position > s.Len() {
+	if position < 0 || position >= s.Len() {
 		return
 	}
 	s[position] = val
@@ -83,14 +83,14 @@ func (s IntSlice) Len() int {
 }
 
 func (s IntSlice) At(position int) interface{} {
-	if position < 0 || position > s.Len() {
+	if position < 0 || position >= s.Len() {
 		return nil
 	}
 	return s[position]
 }
 
 func (s IntSlice) Set(position int, val interface{}) {
-	if position < 0 || position > s.Len() {
+	if position < 0 || position >= s.Len() {
 		return
 	}
 	s[position] = val.(int)
@@ -125,14 +125,14 @@ func (s UIntSlice) Len() int {
 }
 
 func (s UIntSlice) At(position int) interface{} {
-	if position < 0 || position > s.Len() {
+	if position < 0 || position >= s.Len() {
 		return nil
 	}
 	return s[position]
 }
 
 func (s UIntSlice) Set(position int, val interface{}) {
-	if position < 0 || position > s.Len() {
+	if position < 0 || position >= s.Len() {
 		return
 	}
 	s[position] = val.(uint)
@@ -167,14 +167,14 @@ func (s Int8Slice) Len() int {
 }
 
 func (s Int8Slice) At(position int) interface{} {
-	if position < 0 || position > s.Len() {
+	if position < 0 || position >= s.Len() {
 		return nil
 	}
 	return s[position]
 }
 
 func (s Int8Slice) Set(position int, val interface{}) {
-	if position < 0 || position > s.Len() {
+	if position < 0 || position >= s.Len() {
 		return
 	}
 	s[position] = val.(int8)
@@ -209,14 +209,14 @@ func (s UInt8Slice) Len() int {
 }
 
 func (s UInt8Slice) At(position int) interface{} {
-	if position < 0 || position > s.Len() {
+	if position < 0 || position >= s.Len() {
 		return nil
 	}
 	return s[position]
 }
 
 func (s UInt8Slice) Set(position int, val interface{}) {
-	if position < 0 || position > s.Len() {
+	if position < 0 || position >= s.Len() {
 		return
 	}
 	s[position] = val.(uint8)
@@ -251,14 +251,14 @@ func (s Int32Slice) Len() int {
 }
 
 func (s Int32Slice) At(position int) interface{} {
-	if position < 0 || position > s.Len() {
+	if position < 0 || position >= s.Len() {
 		return nil
 	}
 	return s[position]
 }
 
 func (s Int32Slice) Set(position int, val interface{}) {
-	if position < 0 || position > s.Len() {
+	if position < 0 || position >= s.Len() {
 		return
 	}
 	s[position] = val.(int32)
@@ -293,14 +293,14 @@ func (s UInt32Slice) Len() int {
 }
 
 func (s UInt32Slice) At(position int) interface{} {
-	if position < 0 || position > s.Len() {
+	if position < 0 || position >= s.Len() {
 		return nil
 	}
 	return s[position]
 }
 
 func (s UInt32Slice) Set(position int, val interface{}) {
-	if position < 0 || position > s.Len() {
+	if position < 0 || position >= s.Len() {
 		return
 	}
 	s[position] = val.(uint32)
@@ -335,14 +335,14 @@ func (s Int64Slice) Len() int {
 }
 
 func (s Int64Slice) At(position int) interface{} {
-	if position < 0 || position > s.Len() {
+	if position < 0 || position >= s.Len() {
 		return nil
 	}
 	return s[position]
 }
 
 func (s Int64Slice) Set(position int, val interface{}) {
-	if position < 0 || position > s.Len() {
+	if position < 0 || position >= s.Len() {
 		return
 	}
 	s[position] = val.(int64)
@@ -377,14 +377,14 @@ func (s UInt64Slice) Len() int {
 }
 
 func (s UInt64Slice) At(position int) interface{} {
-	if position < 0 || position > s.Len() {
+	if position < 0 || position >= s.Len() {
 		return nil
 	}
 	return s[position]
 }
 
 func (s UInt64Slice) Set(position int, val interface{}) {
-	if position < 0 || position > s.Len() {
+	if position < 0 || position >= s.Len() {
 		return
 	}
 	s[position] = val.(uint64)
@@ -419,14 +419,14 @@ func (s Float32Slice) Len() int {
 }
 
 func (s Float32Slice) At(position int) interface{} {
-	if position < 0 || position > s.Len() {
+	if position < 0 || position >= s.Len() {
 		return nil
 	}
 	return s[position]
 }
 
 func (s Float32Slice) Set(position int, val interface{}) {
-	if position < 0 || position > s.Len() {
+	if position < 0 || position >= s.Len() {
 		return
 	}
 	s[position] = val.(float32)
@@ -461,14 +461,14 @@ func (s Float64Slice) Len() int {
 }
 
 func (s Float64Slice) At(position int) interface{} {
-	if position < 0 || position > s.Len() {
+	if position < 0 || position >= s.Len() {
 		return nil
 	}
 	return s[position]
 }
 
 func (s Float64Slice) Set(position int, val interface{}) {
-	if position < 0 || position > s.Len() {
+	if position < 0 || position >= s.Len() {
 		return
 	}
 	s[position] = val.(float64)
@@ -503,14 +503,14 @@ func (s StringSlice) Len() int {
 }
 
 func (s StringSlice) At(position int) interface{} {
-	if position < 0 || position > s.Len() {
+	if position < 0 || position >= s.Len() {
 		return nil
 	}
 	return s[position]
 }
 
 func (s StringSlice) Set(position int, val interface{}) {
-	if position < 0 || position > s.Len() {
+	if position < 0 || position >= s.Len() {
 		return
 	}
 	s[position] = val.(string)

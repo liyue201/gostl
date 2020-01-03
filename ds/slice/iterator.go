@@ -56,8 +56,8 @@ func (iter *SliceIterator) Equal(other ConstIterator) bool {
 	otherIter, ok := other.(*SliceIterator)
 	if !ok {
 		return false
-	}
-	if otherIter.s == iter.s && otherIter.position == iter.position {
+	} 
+	if otherIter.position == iter.position {
 		return true
 	}
 	return false

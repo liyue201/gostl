@@ -29,9 +29,9 @@ func TestBitmap(t *testing.T) {
 			t.Fatalf("%d is unset", k)
 		}
 	}
-
+	bm.Set(10)
 	bm.Clear()
-	if bm.Size() != 0 {
-		t.Fatalf("bm size error")
+	if bm.IsSet(10) {
+		t.Fatalf("bitmap has been cleared")
 	}
 }

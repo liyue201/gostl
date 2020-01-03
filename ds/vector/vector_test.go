@@ -10,7 +10,7 @@ func TestVectorBase(t *testing.T) {
 	v := New(WithCapacity(10))
 
 	if !v.Empty() {
-		t.Fatalf("is not emtpy")
+		t.Fatalf("is not empty")
 	}
 	if v.Capacity() != 10 {
 		t.Fatalf("capacity error")
@@ -18,7 +18,7 @@ func TestVectorBase(t *testing.T) {
 	v.PushBack(1)
 	v.PushBack(2)
 	if v.Empty() {
-		t.Fatalf("v is emtpy")
+		t.Fatalf("v is empty")
 	}
 	if v.Size() != 2 {
 		t.Fatalf("size error")
