@@ -60,38 +60,38 @@ type Hamt struct {
 	locker sync.Locker
 }
 
-func (this *BitmapNode) Type() int {
+func (h *BitmapNode) Type() int {
 	return BITMAP_NODE
 }
 
-func (this *BitmapNode) BitPos(depth int) uint64 {
-	return uint64(1) << this.pos
+func (h *BitmapNode) BitPos(depth int) uint64 {
+	return uint64(1) << h.pos
 }
 
-func (this *BitmapNode) Index(bitPos uint64) int {
-	return bits.OnesCount64((bitPos - 1) & this.bitmap)
+func (h *BitmapNode) Index(bitPos uint64) int {
+	return bits.OnesCount64((bitPos - 1) & h.bitmap)
 }
 
-func (this *BitmapNode) insert(depth int, hash uint64, kv *KvPair) {
+func (h *BitmapNode) insert(depth int, hash uint64, kv *KvPair) {
 	pos := pos(hash, depth) //hash in current node's position
 	bitPos := bitPos(pos)   //hash in current bitmap's position in bit
-	if bitPos&this.bitmap == 0 {
-		this.bitmap |= bitPos
-		newChildren := make([]Entry, len(this.children)+1)
+	if bitPos&h.bitmap == 0 {
+		h.bitmap |= bitPos
+		newChildren := make([]Entry, len(h.children)+1)
 		kvNode := &KvNode{
 			hash:   hash,
 			kvList: kv,
 		}
-		index := this.Index(bitPos)
+		index := h.Index(bitPos)
 		newChildren[index] = kvNode
-		for _, entry := range this.children {
-			index = this.Index(entry.BitPos(depth))
+		for _, entry := range h.children {
+			index = h.Index(entry.BitPos(depth))
 			newChildren[index] = entry
 		}
-		this.children = newChildren
+		h.children = newChildren
 	} else {
-		index := this.Index(bitPos)
-		entry := this.children[index]
+		index := h.Index(bitPos)
+		entry := h.children[index]
 		if entry.Type() == KV_NODE {
 			kvNode := entry.(*KvNode)
 			if kvNode.hash == hash {
@@ -109,7 +109,7 @@ func (this *BitmapNode) insert(depth int, hash uint64, kv *KvPair) {
 				}
 				bitmapNode.insert(depth+1, kvNode.hash, kvNode.kvList)
 				bitmapNode.insert(depth+1, hash, kv)
-				this.children[index] = bitmapNode
+				h.children[index] = bitmapNode
 			}
 		} else {
 			entry.(*BitmapNode).insert(depth+1, hash, kv)
@@ -117,14 +117,14 @@ func (this *BitmapNode) insert(depth int, hash uint64, kv *KvPair) {
 	}
 }
 
-func (this *BitmapNode) find(depth int, hash uint64, key Key) interface{} {
+func (h *BitmapNode) find(depth int, hash uint64, key Key) interface{} {
 	pos := pos(hash, depth) //hash in current node's position
 	bitPos := bitPos(pos)   //hash in current bitmap's position in bit
-	if bitPos&this.bitmap == 0 {
+	if bitPos&h.bitmap == 0 {
 		return nil
 	}
-	index := this.Index(bitPos)
-	entry := this.children[index]
+	index := h.Index(bitPos)
+	entry := h.children[index]
 	if entry.Type() == KV_NODE {
 		kvNode := entry.(*KvNode)
 		if kvNode.hash != hash {
@@ -142,8 +142,8 @@ func (this *BitmapNode) find(depth int, hash uint64, key Key) interface{} {
 	return nil
 }
 
-func (this *BitmapNode) traversal(visitor visitor.KvVisitor) {
-	for _, entry := range this.children {
+func (h *BitmapNode) traversal(visitor visitor.KvVisitor) {
+	for _, entry := range h.children {
 		if entry.Type() == BITMAP_NODE {
 			entry.(*BitmapNode).traversal(visitor)
 		} else {
@@ -157,14 +157,14 @@ func (this *BitmapNode) traversal(visitor visitor.KvVisitor) {
 	}
 }
 
-func (this *BitmapNode) erase(depth int, hash uint64, key Key) bool {
+func (h *BitmapNode) erase(depth int, hash uint64, key Key) bool {
 	pos := pos(hash, depth) //hash in current node's position
 	bitPos := bitPos(pos)   //hash in current bitmap's position in bit
-	if bitPos&this.bitmap == 0 {
+	if bitPos&h.bitmap == 0 {
 		return false
 	}
-	index := this.Index(bitPos)
-	entry := this.children[index]
+	index := h.Index(bitPos)
+	entry := h.children[index]
 	if entry.Type() == KV_NODE {
 		kvNode := entry.(*KvNode)
 		if kvNode.hash != hash {
@@ -188,16 +188,16 @@ func (this *BitmapNode) erase(depth int, hash uint64, key Key) bool {
 				kvNode.kvList = iter.next
 			}
 			if kvNode.kvList == nil {
-				this.children[index] = nil
-				this.bitmap &= ^bitPos
-				newChildren := make([]Entry, len(this.children)-1)
-				for _, entry := range this.children {
+				h.children[index] = nil
+				h.bitmap &= ^bitPos
+				newChildren := make([]Entry, len(h.children)-1)
+				for _, entry := range h.children {
 					if entry != nil {
-						newIndex := this.Index(entry.BitPos(depth))
+						newIndex := h.Index(entry.BitPos(depth))
 						newChildren[newIndex] = entry
 					}
 				}
-				this.children = newChildren
+				h.children = newChildren
 			}
 			return true
 		}
@@ -208,18 +208,18 @@ func (this *BitmapNode) erase(depth int, hash uint64, key Key) bool {
 		// change bitmapNode to kvNode, if the a bitmapNode has only one kvNode
 		if ok && len(bitmapNode.children) == 1 && bitmapNode.children[0].Type() == KV_NODE {
 			child := bitmapNode.children[0].(*KvNode)
-			this.children[index] = child
+			h.children[index] = child
 		}
 		return ok
 	}
 }
 
-func (this *KvNode) Type() int {
+func (h *KvNode) Type() int {
 	return KV_NODE
 }
 
-func (this *KvNode) BitPos(depth int) uint64 {
-	return uint64(1) << pos(this.hash, depth)
+func (h *KvNode) BitPos(depth int) uint64 {
+	return uint64(1) << pos(h.hash, depth)
 }
 
 // New new a Hamt(hash array map tree) instance
@@ -234,42 +234,42 @@ func New(opts ...Options) *Hamt {
 }
 
 // Insert insert a key-value pair into hamt
-func (this *Hamt) Insert(key Key, value interface{}) {
+func (h *Hamt) Insert(key Key, value interface{}) {
 	keyHash := hash(key)
 
-	this.locker.Lock()
-	defer this.locker.Unlock()
+	h.locker.Lock()
+	defer h.locker.Unlock()
 
-	this.root.insert(0, keyHash, &KvPair{key: key, value: value})
+	h.root.insert(0, keyHash, &KvPair{key: key, value: value})
 }
 
 // Insert returns the value by the passed key, or nil if not found
-func (this *Hamt) Get(key Key) interface{} {
+func (h *Hamt) Get(key Key) interface{} {
 	keyHash := hash(key)
 
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+	h.locker.RLock()
+	defer h.locker.RUnlock()
 
-	return this.root.find(0, keyHash, key)
+	return h.root.find(0, keyHash, key)
 }
 
 // Insert erase the key-value pair in hamt, and returns true if succeed.
-func (this *Hamt) Erase(key Key) bool {
+func (h *Hamt) Erase(key Key) bool {
 	keyHash := hash(key)
 
-	this.locker.Lock()
-	defer this.locker.Unlock()
+	h.locker.Lock()
+	defer h.locker.Unlock()
 
-	return this.root.erase(0, keyHash, key)
+	return h.root.erase(0, keyHash, key)
 }
 
 // Keys returns the keys in Hamt
-func (this *Hamt) Keys() []Key {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (h *Hamt) Keys() []Key {
+	h.locker.RLock()
+	defer h.locker.RUnlock()
 
 	keys := make([]Key, 0)
-	this.root.traversal(func(key, value interface{}) bool {
+	h.root.traversal(func(key, value interface{}) bool {
 		keys = append(keys, key.(Key))
 		return true
 	})
@@ -277,12 +277,12 @@ func (this *Hamt) Keys() []Key {
 }
 
 // StringKeys returns the keys in Hamt
-func (this *Hamt) StringKeys() []string {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (h *Hamt) StringKeys() []string {
+	h.locker.RLock()
+	defer h.locker.RUnlock()
 
 	keys := make([]string, 0)
-	this.root.traversal(func(key, value interface{}) bool {
+	h.root.traversal(func(key, value interface{}) bool {
 		keys = append(keys, string(key.(Key)))
 		return true
 	})
@@ -290,11 +290,11 @@ func (this *Hamt) StringKeys() []string {
 }
 
 // Traversal traversals elements in Hamt, it will not stop until to the end or visitor returns false
-func (this *Hamt) Traversal(visitor visitor.KvVisitor) {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (h *Hamt) Traversal(visitor visitor.KvVisitor) {
+	h.locker.RLock()
+	defer h.locker.RUnlock()
 
-	this.root.traversal(visitor)
+	h.root.traversal(visitor)
 }
 
 func hash(a []byte) uint64 {

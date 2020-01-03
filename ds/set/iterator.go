@@ -9,41 +9,41 @@ type SetIterator struct {
 	node *rbtree.Node
 }
 
-func (this *SetIterator) IsValid() bool {
-	if this.node != nil {
+func (iter *SetIterator) IsValid() bool {
+	if iter.node != nil {
 		return true
 	}
 	return false
 }
 
-func (this *SetIterator) Next() ConstIterator {
-	if this.IsValid() {
-		this.node = this.node.Next()
+func (iter *SetIterator) Next() ConstIterator {
+	if iter.IsValid() {
+		iter.node = iter.node.Next()
 	}
-	return this
+	return iter
 }
 
-func (this *SetIterator) Prev() ConstBidIterator {
-	if this.IsValid() {
-		this.node = this.node.Prev()
+func (iter *SetIterator) Prev() ConstBidIterator {
+	if iter.IsValid() {
+		iter.node = iter.node.Prev()
 	}
-	return this
+	return iter
 }
 
-func (this *SetIterator) Value() interface{} {
-	return this.node.Key()
+func (iter *SetIterator) Value() interface{} {
+	return iter.node.Key()
 }
 
-func (this *SetIterator) Clone() ConstIterator {
-	return &SetIterator{this.node}
+func (iter *SetIterator) Clone() ConstIterator {
+	return &SetIterator{iter.node}
 }
 
-func (this *SetIterator) Equal(other ConstIterator) bool {
+func (iter *SetIterator) Equal(other ConstIterator) bool {
 	otherIter, ok := other.(*SetIterator)
 	if !ok {
 		return false
 	}
-	if otherIter.node == this.node {
+	if otherIter.node == iter.node {
 		return true
 	}
 	return false

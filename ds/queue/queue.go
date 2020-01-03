@@ -58,58 +58,58 @@ func New(opts ...Options) *Queue {
 	}
 }
 
-func (this *Queue) Size() int {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (q *Queue) Size() int {
+	q.locker.RLock()
+	defer q.locker.RUnlock()
 
-	return this.container.Size()
+	return q.container.Size()
 }
 
-func (this *Queue) Empty() bool {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (q *Queue) Empty() bool {
+	q.locker.RLock()
+	defer q.locker.RUnlock()
 
-	return this.container.Empty()
+	return q.container.Empty()
 }
 
-func (this *Queue) Push(value interface{}) {
-	this.locker.Lock()
-	defer this.locker.Unlock()
+func (q *Queue) Push(value interface{}) {
+	q.locker.Lock()
+	defer q.locker.Unlock()
 
-	this.container.PushBack(value)
+	q.container.PushBack(value)
 }
 
-func (this *Queue) Front() interface{} {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (q *Queue) Front() interface{} {
+	q.locker.RLock()
+	defer q.locker.RUnlock()
 
-	return this.container.Front()
+	return q.container.Front()
 }
 
-func (this *Queue) Back() interface{} {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (q *Queue) Back() interface{} {
+	q.locker.RLock()
+	defer q.locker.RUnlock()
 
-	return this.container.Back()
+	return q.container.Back()
 }
 
-func (this *Queue) Pop() interface{} {
-	this.locker.Lock()
-	defer this.locker.Unlock()
+func (q *Queue) Pop() interface{} {
+	q.locker.Lock()
+	defer q.locker.Unlock()
 
-	return this.container.PopFront()
+	return q.container.PopFront()
 }
 
-func (this *Queue) Clear() {
-	this.locker.Lock()
-	defer this.locker.Unlock()
+func (q *Queue) Clear() {
+	q.locker.Lock()
+	defer q.locker.Unlock()
 
-	this.container.Clear()
+	q.container.Clear()
 }
 
-func (this *Queue) String() string {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (q *Queue) String() string {
+	q.locker.RLock()
+	defer q.locker.RUnlock()
 
-	return this.container.String()
+	return q.container.String()
 }

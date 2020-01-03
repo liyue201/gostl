@@ -12,54 +12,54 @@ type VectorIterator struct {
 	position int
 }
 
-func (this *VectorIterator) IsValid() bool {
-	if this.position >= 0 && this.position < this.vec.Size() {
+func (iter *VectorIterator) IsValid() bool {
+	if iter.position >= 0 && iter.position < iter.vec.Size() {
 		return true
 	}
 	return false
 }
 
-func (this *VectorIterator) Value() interface{} {
-	val := this.vec.At(this.position)
+func (iter *VectorIterator) Value() interface{} {
+	val := iter.vec.At(iter.position)
 	return val
 }
 
-func (this *VectorIterator) SetValue(val interface{}) error {
-	return this.vec.SetAt(this.position, val)
+func (iter *VectorIterator) SetValue(val interface{}) error {
+	return iter.vec.SetAt(iter.position, val)
 }
 
-func (this *VectorIterator) Next() ConstIterator {
-	if this.position < this.vec.Size() {
-		this.position++
+func (iter *VectorIterator) Next() ConstIterator {
+	if iter.position < iter.vec.Size() {
+		iter.position++
 	}
-	return this
+	return iter
 }
 
-func (this *VectorIterator) Prev() ConstBidIterator {
-	if this.position >= 0 {
-		this.position--
+func (iter *VectorIterator) Prev() ConstBidIterator {
+	if iter.position >= 0 {
+		iter.position--
 	}
-	return this
+	return iter
 }
 
-func (this *VectorIterator) Clone() ConstIterator {
-	return &VectorIterator{vec: this.vec, position: this.position}
+func (iter *VectorIterator) Clone() ConstIterator {
+	return &VectorIterator{vec: iter.vec, position: iter.position}
 }
 
-func (this *VectorIterator) IteratorAt(position int) RandomAccessIterator {
-	return &VectorIterator{vec: this.vec, position: position}
+func (iter *VectorIterator) IteratorAt(position int) RandomAccessIterator {
+	return &VectorIterator{vec: iter.vec, position: position}
 }
 
-func (this *VectorIterator) Position() int {
-	return this.position
+func (iter *VectorIterator) Position() int {
+	return iter.position
 }
 
-func (this *VectorIterator) Equal(other ConstIterator) bool {
+func (iter *VectorIterator) Equal(other ConstIterator) bool {
 	otherIter, ok := other.(*VectorIterator)
 	if !ok {
 		return false
 	}
-	if otherIter.vec == this.vec && otherIter.position == this.position {
+	if otherIter.vec == iter.vec && otherIter.position == iter.position {
 		return true
 	}
 	return false

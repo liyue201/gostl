@@ -36,504 +36,504 @@ var _ ISlice = StringSlice(nil)
 
 ///////////////////////////////////////////////////
 // Slice functions
-func (this Slice) Len() int {
-	return len(this)
+func (s Slice) Len() int {
+	return len(s)
 }
 
-func (this Slice) At(position int) interface{} {
-	if position < 0 || position > this.Len() {
+func (s Slice) At(position int) interface{} {
+	if position < 0 || position > s.Len() {
 		return nil
 	}
-	return this[position]
+	return s[position]
 }
 
-func (this Slice) Set(position int, val interface{}) {
-	if position < 0 || position > this.Len() {
+func (s Slice) Set(position int, val interface{}) {
+	if position < 0 || position > s.Len() {
 		return
 	}
-	this[position] = val
+	s[position] = val
 }
 
-func (this Slice) Begin() *SliceIterator {
-	return this.First()
+func (s Slice) Begin() *SliceIterator {
+	return s.First()
 }
 
-func (this Slice) End() *SliceIterator {
-	return &SliceIterator{s: this,
-		position: this.Len(),
+func (s Slice) End() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len(),
 	}
 }
 
-func (this Slice) First() *SliceIterator {
-	return &SliceIterator{s: this,
+func (s Slice) First() *SliceIterator {
+	return &SliceIterator{s: s,
 		position: 0,
 	}
 }
 
-func (this Slice) Last() *SliceIterator {
-	return &SliceIterator{s: this,
-		position: this.Len(),
+func (s Slice) Last() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len(),
 	}
 }
 
 ///////////////////////////////////////////
 // IntSlice functions
-func (this IntSlice) Len() int {
-	return len(this)
+func (s IntSlice) Len() int {
+	return len(s)
 }
 
-func (this IntSlice) At(position int) interface{} {
-	if position < 0 || position > this.Len() {
+func (s IntSlice) At(position int) interface{} {
+	if position < 0 || position > s.Len() {
 		return nil
 	}
-	return this[position]
+	return s[position]
 }
 
-func (this IntSlice) Set(position int, val interface{}) {
-	if position < 0 || position > this.Len() {
+func (s IntSlice) Set(position int, val interface{}) {
+	if position < 0 || position > s.Len() {
 		return
 	}
-	this[position] = val.(int)
+	s[position] = val.(int)
 }
 
-func (this IntSlice) Begin() *SliceIterator {
-	return this.First()
+func (s IntSlice) Begin() *SliceIterator {
+	return s.First()
 }
 
-func (this IntSlice) End() *SliceIterator {
-	return &SliceIterator{s: this,
-		position: this.Len(),
+func (s IntSlice) End() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len(),
 	}
 }
 
-func (this IntSlice) First() *SliceIterator {
-	return &SliceIterator{s: this,
+func (s IntSlice) First() *SliceIterator {
+	return &SliceIterator{s: s,
 		position: 0,
 	}
 }
 
-func (this IntSlice) Last() *SliceIterator {
-	return &SliceIterator{s: this,
-		position: this.Len() - 1,
+func (s IntSlice) Last() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len() - 1,
 	}
 }
 
 ///////////////////////////////////////
 // UIntSlice functions
-func (this UIntSlice) Len() int {
-	return len(this)
+func (s UIntSlice) Len() int {
+	return len(s)
 }
 
-func (this UIntSlice) At(position int) interface{} {
-	if position < 0 || position > this.Len() {
+func (s UIntSlice) At(position int) interface{} {
+	if position < 0 || position > s.Len() {
 		return nil
 	}
-	return this[position]
+	return s[position]
 }
 
-func (this UIntSlice) Set(position int, val interface{}) {
-	if position < 0 || position > this.Len() {
+func (s UIntSlice) Set(position int, val interface{}) {
+	if position < 0 || position > s.Len() {
 		return
 	}
-	this[position] = val.(uint)
+	s[position] = val.(uint)
 }
 
-func (this UIntSlice) Begin() *SliceIterator {
-	return this.First()
+func (s UIntSlice) Begin() *SliceIterator {
+	return s.First()
 }
 
-func (this UIntSlice) End() *SliceIterator {
-	return &SliceIterator{s: this,
-		position: this.Len(),
+func (s UIntSlice) End() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len(),
 	}
 }
 
-func (this UIntSlice) First() *SliceIterator {
-	return &SliceIterator{s: this,
+func (s UIntSlice) First() *SliceIterator {
+	return &SliceIterator{s: s,
 		position: 0,
 	}
 }
 
-func (this UIntSlice) Last() *SliceIterator {
-	return &SliceIterator{s: this,
-		position: this.Len() - 1,
+func (s UIntSlice) Last() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len() - 1,
 	}
 }
 
 ///////////////////////////////////////
 // Int8Slice functions
-func (this Int8Slice) Len() int {
-	return len(this)
+func (s Int8Slice) Len() int {
+	return len(s)
 }
 
-func (this Int8Slice) At(position int) interface{} {
-	if position < 0 || position > this.Len() {
+func (s Int8Slice) At(position int) interface{} {
+	if position < 0 || position > s.Len() {
 		return nil
 	}
-	return this[position]
+	return s[position]
 }
 
-func (this Int8Slice) Set(position int, val interface{}) {
-	if position < 0 || position > this.Len() {
+func (s Int8Slice) Set(position int, val interface{}) {
+	if position < 0 || position > s.Len() {
 		return
 	}
-	this[position] = val.(int8)
+	s[position] = val.(int8)
 }
 
-func (this Int8Slice) Begin() *SliceIterator {
-	return this.First()
+func (s Int8Slice) Begin() *SliceIterator {
+	return s.First()
 }
 
-func (this Int8Slice) End() *SliceIterator {
-	return &SliceIterator{s: this,
-		position: this.Len(),
+func (s Int8Slice) End() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len(),
 	}
 }
 
-func (this Int8Slice) First() *SliceIterator {
-	return &SliceIterator{s: this,
+func (s Int8Slice) First() *SliceIterator {
+	return &SliceIterator{s: s,
 		position: 0,
 	}
 }
 
-func (this Int8Slice) Last() *SliceIterator {
-	return &SliceIterator{s: this,
-		position: this.Len() - 1,
+func (s Int8Slice) Last() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len() - 1,
 	}
 }
 
 ///////////////////////////////////////
 // UInt8Slice functions
-func (this UInt8Slice) Len() int {
-	return len(this)
+func (s UInt8Slice) Len() int {
+	return len(s)
 }
 
-func (this UInt8Slice) At(position int) interface{} {
-	if position < 0 || position > this.Len() {
+func (s UInt8Slice) At(position int) interface{} {
+	if position < 0 || position > s.Len() {
 		return nil
 	}
-	return this[position]
+	return s[position]
 }
 
-func (this UInt8Slice) Set(position int, val interface{}) {
-	if position < 0 || position > this.Len() {
+func (s UInt8Slice) Set(position int, val interface{}) {
+	if position < 0 || position > s.Len() {
 		return
 	}
-	this[position] = val.(uint8)
+	s[position] = val.(uint8)
 }
 
-func (this UInt8Slice) Begin() *SliceIterator {
-	return this.First()
+func (s UInt8Slice) Begin() *SliceIterator {
+	return s.First()
 }
 
-func (this UInt8Slice) End() *SliceIterator {
-	return &SliceIterator{s: this,
-		position: this.Len(),
+func (s UInt8Slice) End() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len(),
 	}
 }
 
-func (this UInt8Slice) First() *SliceIterator {
-	return &SliceIterator{s: this,
+func (s UInt8Slice) First() *SliceIterator {
+	return &SliceIterator{s: s,
 		position: 0,
 	}
 }
 
-func (this UInt8Slice) Last() *SliceIterator {
-	return &SliceIterator{s: this,
-		position: this.Len() - 1,
+func (s UInt8Slice) Last() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len() - 1,
 	}
 }
 
 ///////////////////////////////////////
 // Int32Slice functions
-func (this Int32Slice) Len() int {
-	return len(this)
+func (s Int32Slice) Len() int {
+	return len(s)
 }
 
-func (this Int32Slice) At(position int) interface{} {
-	if position < 0 || position > this.Len() {
+func (s Int32Slice) At(position int) interface{} {
+	if position < 0 || position > s.Len() {
 		return nil
 	}
-	return this[position]
+	return s[position]
 }
 
-func (this Int32Slice) Set(position int, val interface{}) {
-	if position < 0 || position > this.Len() {
+func (s Int32Slice) Set(position int, val interface{}) {
+	if position < 0 || position > s.Len() {
 		return
 	}
-	this[position] = val.(int32)
+	s[position] = val.(int32)
 }
 
-func (this Int32Slice) Begin() *SliceIterator {
-	return this.First()
+func (s Int32Slice) Begin() *SliceIterator {
+	return s.First()
 }
 
-func (this Int32Slice) End() *SliceIterator {
-	return &SliceIterator{s: this,
-		position: this.Len() - 1,
+func (s Int32Slice) End() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len() - 1,
 	}
 }
 
-func (this Int32Slice) First() *SliceIterator {
-	return &SliceIterator{s: this,
+func (s Int32Slice) First() *SliceIterator {
+	return &SliceIterator{s: s,
 		position: 0,
 	}
 }
 
-func (this Int32Slice) Last() *SliceIterator {
-	return &SliceIterator{s: this,
-		position: this.Len() - 1,
+func (s Int32Slice) Last() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len() - 1,
 	}
 }
 
 ///////////////////////////////////////
 // UInt32Slice functions
-func (this UInt32Slice) Len() int {
-	return len(this)
+func (s UInt32Slice) Len() int {
+	return len(s)
 }
 
-func (this UInt32Slice) At(position int) interface{} {
-	if position < 0 || position > this.Len() {
+func (s UInt32Slice) At(position int) interface{} {
+	if position < 0 || position > s.Len() {
 		return nil
 	}
-	return this[position]
+	return s[position]
 }
 
-func (this UInt32Slice) Set(position int, val interface{}) {
-	if position < 0 || position > this.Len() {
+func (s UInt32Slice) Set(position int, val interface{}) {
+	if position < 0 || position > s.Len() {
 		return
 	}
-	this[position] = val.(uint32)
+	s[position] = val.(uint32)
 }
 
-func (this UInt32Slice) Begin() *SliceIterator {
-	return this.First()
+func (s UInt32Slice) Begin() *SliceIterator {
+	return s.First()
 }
 
-func (this UInt32Slice) End() *SliceIterator {
-	return &SliceIterator{s: this,
-		position: this.Len(),
+func (s UInt32Slice) End() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len(),
 	}
 }
 
-func (this UInt32Slice) First() *SliceIterator {
-	return &SliceIterator{s: this,
+func (s UInt32Slice) First() *SliceIterator {
+	return &SliceIterator{s: s,
 		position: 0,
 	}
 }
 
-func (this UInt32Slice) Last() *SliceIterator {
-	return &SliceIterator{s: this,
-		position: this.Len() - 1,
+func (s UInt32Slice) Last() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len() - 1,
 	}
 }
 
 ///////////////////////////////////////
 // Int64Slice functions
-func (this Int64Slice) Len() int {
-	return len(this)
+func (s Int64Slice) Len() int {
+	return len(s)
 }
 
-func (this Int64Slice) At(position int) interface{} {
-	if position < 0 || position > this.Len() {
+func (s Int64Slice) At(position int) interface{} {
+	if position < 0 || position > s.Len() {
 		return nil
 	}
-	return this[position]
+	return s[position]
 }
 
-func (this Int64Slice) Set(position int, val interface{}) {
-	if position < 0 || position > this.Len() {
+func (s Int64Slice) Set(position int, val interface{}) {
+	if position < 0 || position > s.Len() {
 		return
 	}
-	this[position] = val.(int64)
+	s[position] = val.(int64)
 }
 
-func (this Int64Slice) Begin() *SliceIterator {
-	return this.First()
+func (s Int64Slice) Begin() *SliceIterator {
+	return s.First()
 }
 
-func (this Int64Slice) End() *SliceIterator {
-	return &SliceIterator{s: this,
-		position: this.Len(),
+func (s Int64Slice) End() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len(),
 	}
 }
 
-func (this Int64Slice) First() *SliceIterator {
-	return &SliceIterator{s: this,
+func (s Int64Slice) First() *SliceIterator {
+	return &SliceIterator{s: s,
 		position: 0,
 	}
 }
 
-func (this Int64Slice) Last() *SliceIterator {
-	return &SliceIterator{s: this,
-		position: this.Len() - 1,
+func (s Int64Slice) Last() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len() - 1,
 	}
 }
 
 ///////////////////////////////////////
 // UInt64Slice functions
-func (this UInt64Slice) Len() int {
-	return len(this)
+func (s UInt64Slice) Len() int {
+	return len(s)
 }
 
-func (this UInt64Slice) At(position int) interface{} {
-	if position < 0 || position > this.Len() {
+func (s UInt64Slice) At(position int) interface{} {
+	if position < 0 || position > s.Len() {
 		return nil
 	}
-	return this[position]
+	return s[position]
 }
 
-func (this UInt64Slice) Set(position int, val interface{}) {
-	if position < 0 || position > this.Len() {
+func (s UInt64Slice) Set(position int, val interface{}) {
+	if position < 0 || position > s.Len() {
 		return
 	}
-	this[position] = val.(uint64)
+	s[position] = val.(uint64)
 }
 
-func (this UInt64Slice) Begin() *SliceIterator {
-	return this.First()
+func (s UInt64Slice) Begin() *SliceIterator {
+	return s.First()
 }
 
-func (this UInt64Slice) End() *SliceIterator {
-	return &SliceIterator{s: this,
-		position: this.Len(),
+func (s UInt64Slice) End() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len(),
 	}
 }
 
-func (this UInt64Slice) First() *SliceIterator {
-	return &SliceIterator{s: this,
+func (s UInt64Slice) First() *SliceIterator {
+	return &SliceIterator{s: s,
 		position: 0,
 	}
 }
 
-func (this UInt64Slice) Last() *SliceIterator {
-	return &SliceIterator{s: this,
-		position: this.Len() - 1,
+func (s UInt64Slice) Last() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len() - 1,
 	}
 }
 
 ///////////////////////////////////////
 // Float32Slice functions
-func (this Float32Slice) Len() int {
-	return len(this)
+func (s Float32Slice) Len() int {
+	return len(s)
 }
 
-func (this Float32Slice) At(position int) interface{} {
-	if position < 0 || position > this.Len() {
+func (s Float32Slice) At(position int) interface{} {
+	if position < 0 || position > s.Len() {
 		return nil
 	}
-	return this[position]
+	return s[position]
 }
 
-func (this Float32Slice) Set(position int, val interface{}) {
-	if position < 0 || position > this.Len() {
+func (s Float32Slice) Set(position int, val interface{}) {
+	if position < 0 || position > s.Len() {
 		return
 	}
-	this[position] = val.(float32)
+	s[position] = val.(float32)
 }
 
-func (this Float32Slice) Begin() *SliceIterator {
-	return this.First()
+func (s Float32Slice) Begin() *SliceIterator {
+	return s.First()
 }
 
-func (this Float32Slice) End() *SliceIterator {
-	return &SliceIterator{s: this,
-		position: this.Len(),
+func (s Float32Slice) End() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len(),
 	}
 }
 
-func (this Float32Slice) First() *SliceIterator {
-	return &SliceIterator{s: this,
+func (s Float32Slice) First() *SliceIterator {
+	return &SliceIterator{s: s,
 		position: 0,
 	}
 }
 
-func (this Float32Slice) Last() *SliceIterator {
-	return &SliceIterator{s: this,
-		position: this.Len() - 1,
+func (s Float32Slice) Last() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len() - 1,
 	}
 }
 
 ///////////////////////////////////////
 // Float64Slice functions
-func (this Float64Slice) Len() int {
-	return len(this)
+func (s Float64Slice) Len() int {
+	return len(s)
 }
 
-func (this Float64Slice) At(position int) interface{} {
-	if position < 0 || position > this.Len() {
+func (s Float64Slice) At(position int) interface{} {
+	if position < 0 || position > s.Len() {
 		return nil
 	}
-	return this[position]
+	return s[position]
 }
 
-func (this Float64Slice) Set(position int, val interface{}) {
-	if position < 0 || position > this.Len() {
+func (s Float64Slice) Set(position int, val interface{}) {
+	if position < 0 || position > s.Len() {
 		return
 	}
-	this[position] = val.(float64)
+	s[position] = val.(float64)
 }
 
-func (this Float64Slice) Begin() *SliceIterator {
-	return this.First()
+func (s Float64Slice) Begin() *SliceIterator {
+	return s.First()
 }
 
-func (this Float64Slice) End() *SliceIterator {
-	return &SliceIterator{s: this,
-		position: this.Len(),
+func (s Float64Slice) End() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len(),
 	}
 }
 
-func (this Float64Slice) First() *SliceIterator {
-	return &SliceIterator{s: this,
+func (s Float64Slice) First() *SliceIterator {
+	return &SliceIterator{s: s,
 		position: 0,
 	}
 }
 
-func (this Float64Slice) Last() *SliceIterator {
-	return &SliceIterator{s: this,
-		position: this.Len() - 1,
+func (s Float64Slice) Last() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len() - 1,
 	}
 }
 
 ///////////////////////////////////////
 // StringSlice functions
-func (this StringSlice) Len() int {
-	return len(this)
+func (s StringSlice) Len() int {
+	return len(s)
 }
 
-func (this StringSlice) At(position int) interface{} {
-	if position < 0 || position > this.Len() {
+func (s StringSlice) At(position int) interface{} {
+	if position < 0 || position > s.Len() {
 		return nil
 	}
-	return this[position]
+	return s[position]
 }
 
-func (this StringSlice) Set(position int, val interface{}) {
-	if position < 0 || position > this.Len() {
+func (s StringSlice) Set(position int, val interface{}) {
+	if position < 0 || position > s.Len() {
 		return
 	}
-	this[position] = val.(string)
+	s[position] = val.(string)
 }
 
-func (this StringSlice) Begin() *SliceIterator {
-	return this.First()
+func (s StringSlice) Begin() *SliceIterator {
+	return s.First()
 }
 
-func (this StringSlice) End() *SliceIterator {
-	return &SliceIterator{s: this,
-		position: this.Len(),
+func (s StringSlice) End() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len(),
 	}
 }
 
-func (this StringSlice) First() *SliceIterator {
-	return &SliceIterator{s: this,
+func (s StringSlice) First() *SliceIterator {
+	return &SliceIterator{s: s,
 		position: 0,
 	}
 }
 
-func (this StringSlice) Last() *SliceIterator {
-	return &SliceIterator{s: this,
-		position: this.Len() - 1,
+func (s StringSlice) Last() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len() - 1,
 	}
 }

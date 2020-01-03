@@ -49,70 +49,70 @@ func New(opts ...Options) *Ketama {
 	for _, opt := range opts {
 		opt(&option)
 	}
-	this := &Ketama{
+	k := &Ketama{
 		replicas: option.replicas,
 		locker:   option.locker,
 		m:        treemap.New(),
 	}
-	return this
+	return k
 }
 
 // Empty returns true if  Ketama is empty, or false if not empty
-func (this *Ketama) Empty() bool {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (k *Ketama) Empty() bool {
+	k.locker.RLock()
+	defer k.locker.RUnlock()
 
-	return this.m.Size() == 0
+	return k.m.Size() == 0
 }
 
 // Add add nodes to ketama ring
-func (this *Ketama) Add(nodes ...string) {
-	this.locker.Lock()
-	defer this.locker.Unlock()
+func (k *Ketama) Add(nodes ...string) {
+	k.locker.Lock()
+	defer k.locker.Unlock()
 
 	for _, node := range nodes {
-		hashs := hash.GenHashInts([]byte(Salt+node), this.replicas)
-		for i := 0; i < this.replicas; i++ {
+		hashs := hash.GenHashInts([]byte(Salt+node), k.replicas)
+		for i := 0; i < k.replicas; i++ {
 			key := hashs[i]
-			if !this.m.Contains(key) {
-				this.m.Insert(key, node)
+			if !k.m.Contains(key) {
+				k.m.Insert(key, node)
 			}
 		}
 	}
 }
 
 // Get remove nodes from ketama ring
-func (this *Ketama) Remove(nodes ...string) {
-	this.locker.Lock()
-	defer this.locker.Unlock()
+func (k *Ketama) Remove(nodes ...string) {
+	k.locker.Lock()
+	defer k.locker.Unlock()
 
 	for _, node := range nodes {
-		hashs := hash.GenHashInts([]byte(Salt+node), this.replicas)
-		for i := 0; i < this.replicas; i++ {
+		hashs := hash.GenHashInts([]byte(Salt+node), k.replicas)
+		for i := 0; i < k.replicas; i++ {
 			key := hashs[i]
-			iter := this.m.Find(key)
+			iter := k.m.Find(key)
 			if iter.IsValid() && iter.Value() == node {
-				this.m.EraseIter(iter)
+				k.m.EraseIter(iter)
 			}
 		}
 	}
 }
 
 // Get returns the node which closest to key in the clockwise direction
-func (this *Ketama) Get(key string) (string, bool) {
-	if this.Empty() {
+func (k *Ketama) Get(key string) (string, bool) {
+	if k.Empty() {
 		return "", false
 	}
 
 	hashs := hash.GenHashInts([]byte(Salt+key), 1)
 	hash := hashs[0]
 
-	this.locker.Lock()
-	defer this.locker.Unlock()
+	k.locker.Lock()
+	defer k.locker.Unlock()
 
-	iter := this.m.LowerBound(hash)
+	iter := k.m.LowerBound(hash)
 	if iter.IsValid() {
 		return iter.Value().(string), true
 	}
-	return this.m.First().Value().(string), true
+	return k.m.First().Value().(string), true
 }

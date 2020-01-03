@@ -16,12 +16,12 @@ type Node struct {
 	value  interface{}
 }
 
-func (this *Node) Key() interface{} {
-	return this.key
+func (n *Node) Key() interface{} {
+	return n.key
 }
 
-func (this *Node) Value() interface{} {
-	return this.value
+func (n *Node) Value() interface{} {
+	return n.value
 }
 
 func (n *Node) SetValue(val interface{}) {

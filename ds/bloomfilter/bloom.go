@@ -74,24 +74,24 @@ func EstimateParameters(n uint64, p float64) (m uint64, k uint64) {
 }
 
 // Add add a value to the BloomFilter
-func (this *BloomFilter) Add(val string) {
-	this.locker.Lock()
-	defer this.locker.Unlock()
+func (bf *BloomFilter) Add(val string) {
+	bf.locker.Lock()
+	defer bf.locker.Unlock()
 
-	hashs := hash.GenHashInts([]byte(Salt+val), int(this.k))
-	for i := uint64(0); i < this.k; i++ {
-		this.b.Set(hashs[i] % this.m)
+	hashs := hash.GenHashInts([]byte(Salt+val), int(bf.k))
+	for i := uint64(0); i < bf.k; i++ {
+		bf.b.Set(hashs[i] % bf.m)
 	}
 }
 
 // Contains returns true if value passed is (high probability) in the BloomFilter, or false if not.
-func (this *BloomFilter) Contains(val string) bool {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (bf *BloomFilter) Contains(val string) bool {
+	bf.locker.RLock()
+	defer bf.locker.RUnlock()
 
-	hashs := hash.GenHashInts([]byte(Salt+val), int(this.k))
-	for i := uint64(0); i < this.k; i++ {
-		if !this.b.IsSet(hashs[i] % this.m) {
+	hashs := hash.GenHashInts([]byte(Salt+val), int(bf.k))
+	for i := uint64(0); i < bf.k; i++ {
+		if !bf.b.IsSet(hashs[i] % bf.m) {
 			return false
 		}
 	}
@@ -99,13 +99,13 @@ func (this *BloomFilter) Contains(val string) bool {
 }
 
 // Contains returns the data of BloomFilter, it can bee used to new a BloomFilter by using function 'NewFromData' .
-func (this *BloomFilter) Data() []byte {
-	this.locker.Lock()
-	defer this.locker.Unlock()
+func (bf *BloomFilter) Data() []byte {
+	bf.locker.Lock()
+	defer bf.locker.Unlock()
 
 	buf := new(bytes.Buffer)
-	binary.Write(buf, binary.LittleEndian, this.m)
-	binary.Write(buf, binary.LittleEndian, this.k)
-	buf.Write(this.b.Data())
+	binary.Write(buf, binary.LittleEndian, bf.m)
+	binary.Write(buf, binary.LittleEndian, bf.k)
+	buf.Write(bf.b.Data())
 	return buf.Bytes()
 }

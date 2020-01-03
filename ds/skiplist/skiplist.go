@@ -82,18 +82,18 @@ func New(opts ...Options) *Skiplist {
 }
 
 // Insert inserts a key-value pair into skiplist
-func (this *Skiplist) Insert(key, value interface{}) {
-	this.locker.Lock()
-	defer this.locker.Unlock()
-	prevs := this.findPrevNodes(key)
+func (sl *Skiplist) Insert(key, value interface{}) {
+	sl.locker.Lock()
+	defer sl.locker.Unlock()
+	prevs := sl.findPrevNodes(key)
 
-	if prevs[0].next[0] != nil && this.keyCmp(prevs[0].next[0].key, key) == 0 {
+	if prevs[0].next[0] != nil && sl.keyCmp(prevs[0].next[0].key, key) == 0 {
 		//same key, update value
 		prevs[0].next[0].value = value
 		return
 	}
 
-	level := this.randomLevel()
+	level := sl.randomLevel()
 
 	e := &Element{
 		key:   key,
@@ -108,19 +108,19 @@ func (this *Skiplist) Insert(key, value interface{}) {
 		prevs[i].next[i] = e
 	}
 
-	this.len++
+	sl.len++
 }
 
 // Get gets the value associated with the key passed if exist, or nil if not exist
-func (this *Skiplist) Get(key interface{}) interface{} {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (sl *Skiplist) Get(key interface{}) interface{} {
+	sl.locker.RLock()
+	defer sl.locker.RUnlock()
 
-	var pre = &this.head
-	for i := this.maxLevel - 1; i >= 0; i-- {
+	var pre = &sl.head
+	for i := sl.maxLevel - 1; i >= 0; i-- {
 		cur := pre.next[i]
 		for ; cur != nil; cur = cur.next[i] {
-			cmpRet := this.keyCmp(cur.key, key)
+			cmpRet := sl.keyCmp(cur.key, key)
 			if cmpRet == 0 {
 				return cur.value
 			}
@@ -134,37 +134,37 @@ func (this *Skiplist) Get(key interface{}) interface{} {
 }
 
 // Remove removes the element associated with the key passed and returns true if exist,or false if not exist
-func (this *Skiplist) Remove(key interface{}) bool {
-	this.locker.Lock()
-	defer this.locker.Unlock()
+func (sl *Skiplist) Remove(key interface{}) bool {
+	sl.locker.Lock()
+	defer sl.locker.Unlock()
 
-	prevs := this.findPrevNodes(key)
+	prevs := sl.findPrevNodes(key)
 	element := prevs[0].next[0]
 	if element == nil {
 		return false
 	}
-	if element != nil && this.keyCmp(element.key, key) != 0 {
+	if element != nil && sl.keyCmp(element.key, key) != 0 {
 		return false
 	}
 
 	for i, v := range element.next {
 		prevs[i].next[i] = v
 	}
-	this.len--
+	sl.len--
 	return true
 }
 
 // Len returns the number of elements in the skiplist
-func (this *Skiplist) Len() int {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
-	return this.len
+func (sl *Skiplist) Len() int {
+	sl.locker.RLock()
+	defer sl.locker.RUnlock()
+	return sl.len
 }
 
-func (this *Skiplist) randomLevel() int {
-	total := uint64(1)<<uint64(this.maxLevel) - 1 // 2^n-1
-	k := this.rander.Uint64() % total
-	levelN := uint64(1) << (uint64(this.maxLevel) - 1)
+func (sl *Skiplist) randomLevel() int {
+	total := uint64(1)<<uint64(sl.maxLevel) - 1 // 2^n-1
+	k := sl.rander.Uint64() % total
+	levelN := uint64(1) << (uint64(sl.maxLevel) - 1)
 
 	level := 1
 	for total -= levelN; total > k; level++ {
@@ -174,13 +174,13 @@ func (this *Skiplist) randomLevel() int {
 	return level
 }
 
-func (this *Skiplist) findPrevNodes(key interface{}) []*Node {
-	prevs := this.prevNodesCache
-	prev := &this.head
-	for i := this.maxLevel - 1; i >= 0; i-- {
-		if this.head.next[i] != nil {
+func (sl *Skiplist) findPrevNodes(key interface{}) []*Node {
+	prevs := sl.prevNodesCache
+	prev := &sl.head
+	for i := sl.maxLevel - 1; i >= 0; i-- {
+		if sl.head.next[i] != nil {
 			for next := prev.next[i]; next != nil; next = next.next[i] {
-				if this.keyCmp(next.key, key) >= 0 {
+				if sl.keyCmp(next.key, key) >= 0 {
 					break
 				}
 				prev = &next.Node
@@ -192,11 +192,11 @@ func (this *Skiplist) findPrevNodes(key interface{}) []*Node {
 }
 
 // Traversal traversals elements in Skiplist, it will stop until to the end or visitor returns false
-func (this *Skiplist) Traversal(visitor visitor.KvVisitor) {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (sl *Skiplist) Traversal(visitor visitor.KvVisitor) {
+	sl.locker.RLock()
+	defer sl.locker.RUnlock()
 
-	for e := this.head.next[0]; e != nil; e = e.next[0] {
+	for e := sl.head.next[0]; e != nil; e = e.next[0] {
 		if !visitor(e.key, e.value) {
 			return
 		}
@@ -204,9 +204,9 @@ func (this *Skiplist) Traversal(visitor visitor.KvVisitor) {
 }
 
 // Keys returns all keys in the Skiplist
-func (this *Skiplist) Keys() []interface{} {
+func (sl *Skiplist) Keys() []interface{} {
 	var keys []interface{}
-	this.Traversal(func(key, value interface{}) bool {
+	sl.Traversal(func(key, value interface{}) bool {
 		keys = append(keys, key)
 		return false
 	})

@@ -9,50 +9,50 @@ type MapIterator struct {
 	node *rbtree.Node
 }
 
-func (this *MapIterator) IsValid() bool {
-	if this.node != nil {
+func (iter *MapIterator) IsValid() bool {
+	if iter.node != nil {
 		return true
 	}
 	return false
 }
 
-func (this *MapIterator) Next() ConstIterator {
-	if this.IsValid() {
-		this.node = this.node.Next()
+func (iter *MapIterator) Next() ConstIterator {
+	if iter.IsValid() {
+		iter.node = iter.node.Next()
 	}
-	return this
+	return iter
 }
 
-func (this *MapIterator) Prev() ConstBidIterator {
-	if this.IsValid() {
-		this.node = this.node.Prev()
+func (iter *MapIterator) Prev() ConstBidIterator {
+	if iter.IsValid() {
+		iter.node = iter.node.Prev()
 	}
-	return this
+	return iter
 }
 
-func (this *MapIterator) Key() interface{} {
-	return this.node.Key()
+func (iter *MapIterator) Key() interface{} {
+	return iter.node.Key()
 }
 
-func (this *MapIterator) Value() interface{} {
-	return this.node.Value()
+func (iter *MapIterator) Value() interface{} {
+	return iter.node.Value()
 }
 
-func (this *MapIterator) SetValue(val interface{}) error {
-	this.node.SetValue(val)
+func (iter *MapIterator) SetValue(val interface{}) error {
+	iter.node.SetValue(val)
 	return nil
 }
 
-func (this *MapIterator) Clone() ConstIterator {
-	return &MapIterator{this.node}
+func (iter *MapIterator) Clone() ConstIterator {
+	return &MapIterator{iter.node}
 }
 
-func (this *MapIterator) Equal(other ConstIterator) bool {
+func (iter *MapIterator) Equal(other ConstIterator) bool {
 	otherIter, ok := other.(*MapIterator)
 	if !ok {
 		return false
 	}
-	if otherIter.node == this.node {
+	if otherIter.node == iter.node {
 		return true
 	}
 	return false

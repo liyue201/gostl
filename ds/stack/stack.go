@@ -58,51 +58,51 @@ func New(opts ...Options) *Stack {
 	}
 }
 
-func (this *Stack) Size() int {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (s *Stack) Size() int {
+	s.locker.RLock()
+	defer s.locker.RUnlock()
 
-	return this.container.Size()
+	return s.container.Size()
 }
 
-func (this *Stack) Empty() bool {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (s *Stack) Empty() bool {
+	s.locker.RLock()
+	defer s.locker.RUnlock()
 
-	return this.container.Empty()
+	return s.container.Empty()
 }
 
-func (this *Stack) Push(value interface{}) {
-	this.locker.Lock()
-	defer this.locker.Unlock()
+func (s *Stack) Push(value interface{}) {
+	s.locker.Lock()
+	defer s.locker.Unlock()
 
-	this.container.PushBack(value)
+	s.container.PushBack(value)
 }
 
-func (this *Stack) Top() interface{} {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (s *Stack) Top() interface{} {
+	s.locker.RLock()
+	defer s.locker.RUnlock()
 
-	return this.container.Back()
+	return s.container.Back()
 }
 
-func (this *Stack) Pop() interface{} {
-	this.locker.Lock()
-	defer this.locker.Unlock()
+func (s *Stack) Pop() interface{} {
+	s.locker.Lock()
+	defer s.locker.Unlock()
 
-	return this.container.PopBack()
+	return s.container.PopBack()
 }
 
-func (this *Stack) Clear() {
-	this.locker.Lock()
-	defer this.locker.Unlock()
+func (s *Stack) Clear() {
+	s.locker.Lock()
+	defer s.locker.Unlock()
 
-	this.container.Clear()
+	s.container.Clear()
 }
 
-func (this *Stack) String() string {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (s *Stack) String() string {
+	s.locker.RLock()
+	defer s.locker.RUnlock()
 
-	return this.container.String()
+	return s.container.String()
 }

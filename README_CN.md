@@ -1,5 +1,13 @@
 # GoSTL
 
+
+[![GoDoc](https://godoc.org/github.com/liyue201/gostl?status.svg)](https://godoc.org/github.com/liyue201/gostl)
+[![](https://goreportcard.com/badge/github.com/liyue201/gostl)](https://goreportcard.com/report/github.com/liyue201/gostl)
+[![Build Status](https://travis-ci.org/liyue201/gostl.svg?branch=master)](https://travis-ci.org/liyue201/gostl)
+[![](https://coveralls.io/repos/github/liyue201/gostl/badge.svg?branch=master)](https://coveralls.io/github/liyue201/gostl)
+
+[English](./README.md) | 简体中文
+
 GoSTL是一个go语言数据结构和算法库，类似C++的STL，但功能更强大。结合go语言的特点，大部分数据结构都实现了线程安全，可以在创建对象的时候通过配置参数指定是否开启。
 
 ## 功能列表

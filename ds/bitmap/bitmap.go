@@ -24,56 +24,56 @@ func NewFromData(data []byte) *Bitmap {
 }
 
 // Set set 1 at position
-func (this *Bitmap) Set(position uint64) bool {
-	if position >= this.size {
+func (b *Bitmap) Set(position uint64) bool {
+	if position >= b.size {
 		return false
 	}
-	this.data[position>>3] |= 1 << (position & 0x07)
+	b.data[position>>3] |= 1 << (position & 0x07)
 	return true
 }
 
 // Unset set 0 at position
-func (this *Bitmap) Unset(position uint64) bool {
-	if position >= this.size {
+func (b *Bitmap) Unset(position uint64) bool {
+	if position >= b.size {
 		return false
 	}
-	this.data[position>>3] &= ^(1 << (position & 0x07))
+	b.data[position>>3] &= ^(1 << (position & 0x07))
 	return true
 }
 
 // Unset set 0 at position
-func (this *Bitmap) IsSet(position uint64) bool {
-	if position >= this.size {
+func (b *Bitmap) IsSet(position uint64) bool {
+	if position >= b.size {
 		return false
 	}
-	if this.data[position>>3]&(1<<(position&0x07)) > 0 {
+	if b.data[position>>3]&(1<<(position&0x07)) > 0 {
 		return true
 	}
 	return false
 }
 
 // Resize resize the bitmap
-func (this *Bitmap) Resize(size uint64) {
+func (b *Bitmap) Resize(size uint64) {
 	size = (size + 7) / 8 * 8
-	if this.size == size {
+	if b.size == size {
 		return
 	}
 	data := make([]byte, size/8, size/8)
-	copy(data, this.data)
-	this.data = data
-	this.size = size
+	copy(data, b.data)
+	b.data = data
+	b.size = size
 }
 
 // Size returns the bitmap's size in bit
-func (this *Bitmap) Size() uint64 {
-	return this.size
+func (b *Bitmap) Size() uint64 {
+	return b.size
 }
 
 // Clear clear the bitmap's data
-func (this *Bitmap) Clear() {
-	this.data = make([]byte, this.size/8, this.size/8)
+func (b *Bitmap) Clear() {
+	b.data = make([]byte, b.size/8, b.size/8)
 }
 
-func (this *Bitmap) Data() []byte {
-	return this.data
+func (b *Bitmap) Data() []byte {
+	return b.data
 }

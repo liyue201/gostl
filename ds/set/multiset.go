@@ -30,101 +30,101 @@ func NewMultiSet(opts ...Options) *MultiSet {
 }
 
 // Insert inserts element to the MultiSet
-func (this *MultiSet) Insert(element interface{}) {
-	this.locker.Lock()
-	defer this.locker.Unlock()
+func (ms *MultiSet) Insert(element interface{}) {
+	ms.locker.Lock()
+	defer ms.locker.Unlock()
 
-	this.tree.Insert(element, Empty)
+	ms.tree.Insert(element, Empty)
 }
 
-// Erase erases all node with element in this MultiSet
-func (this *MultiSet) Erase(element interface{}) {
-	this.locker.Lock()
-	defer this.locker.Unlock()
+// Erase erases all node with element in ms MultiSet
+func (ms *MultiSet) Erase(element interface{}) {
+	ms.locker.Lock()
+	defer ms.locker.Unlock()
 
-	node := this.tree.FindNode(element)
-	for node != nil && this.keyCmp(node.Key(), element) == 0 {
+	node := ms.tree.FindNode(element)
+	for node != nil && ms.keyCmp(node.Key(), element) == 0 {
 		nextNode := node.Next()
-		this.tree.Delete(node)
+		ms.tree.Delete(node)
 		node = nextNode
 	}
 }
 
 // Begin returns the iterator related to element in the MultiSet,or an invalid iterator if not exist.
-func (this *MultiSet) Find(element interface{}) *SetIterator {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (ms *MultiSet) Find(element interface{}) *SetIterator {
+	ms.locker.RLock()
+	defer ms.locker.RUnlock()
 
-	node := this.tree.FindNode(element)
+	node := ms.tree.FindNode(element)
 	return &SetIterator{node: node}
 }
 
 //LowerBound returns the first iterator that equal or greater than element in the MultiSet
-func (this *MultiSet) LowerBound(element interface{}) *SetIterator {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (ms *MultiSet) LowerBound(element interface{}) *SetIterator {
+	ms.locker.RLock()
+	defer ms.locker.RUnlock()
 
-	node := this.tree.FindLowerBoundNode(element)
+	node := ms.tree.FindLowerBoundNode(element)
 	return &SetIterator{node: node}
 }
 
 // Begin returns the iterator with the minimum element in the Set, return nil if empty.
-func (this *MultiSet) Begin() *SetIterator {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (ms *MultiSet) Begin() *SetIterator {
+	ms.locker.RLock()
+	defer ms.locker.RUnlock()
 
-	return this.First()
+	return ms.First()
 }
 
 // First returns the iterator with the minimum element in the MultiSet, return nil if empty.
-func (this *MultiSet) First() *SetIterator {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (ms *MultiSet) First() *SetIterator {
+	ms.locker.RLock()
+	defer ms.locker.RUnlock()
 
-	return &SetIterator{node: this.tree.First()}
+	return &SetIterator{node: ms.tree.First()}
 }
 
 //Last returns the iterator with the maximum element in the MultiSet, return nil if empty.
-func (this *MultiSet) Last() *SetIterator {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (ms *MultiSet) Last() *SetIterator {
+	ms.locker.RLock()
+	defer ms.locker.RUnlock()
 
-	return &SetIterator{node: this.tree.Last()}
+	return &SetIterator{node: ms.tree.Last()}
 }
 
 // Clear clears the MultiSet
-func (this *MultiSet) Clear() {
-	this.locker.Lock()
-	defer this.locker.Unlock()
+func (ms *MultiSet) Clear() {
+	ms.locker.Lock()
+	defer ms.locker.Unlock()
 
-	this.tree.Clear()
+	ms.tree.Clear()
 }
 
 // Contains returns true if element in the MultiSet. otherwise returns false.
-func (this *MultiSet) Contains(element interface{}) bool {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (ms *MultiSet) Contains(element interface{}) bool {
+	ms.locker.RLock()
+	defer ms.locker.RUnlock()
 
-	if this.tree.Find(element) != nil {
+	if ms.tree.Find(element) != nil {
 		return true
 	}
 	return false
 }
 
 // Contains returns the size of MultiSet
-func (this *MultiSet) Size() int {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (ms *MultiSet) Size() int {
+	ms.locker.RLock()
+	defer ms.locker.RUnlock()
 
-	return this.tree.Size()
+	return ms.tree.Size()
 }
 
 // Traversal traversals elements in MultiSet, it will not stop until to the end or visitor returns false
-func (this *MultiSet) Traversal(visitor visitor.Visitor) {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (ms *MultiSet) Traversal(visitor visitor.Visitor) {
+	ms.locker.RLock()
+	defer ms.locker.RUnlock()
 
-	for node := this.tree.First(); node != nil; node = node.Next() {
+	for node := ms.tree.First(); node != nil; node = node.Next() {
 		if !visitor(node.Key()) {
 			break
 		}
@@ -132,9 +132,9 @@ func (this *MultiSet) Traversal(visitor visitor.Visitor) {
 }
 
 // String returns the set's elements in string format
-func (this *MultiSet) String() string {
+func (ms *MultiSet) String() string {
 	str := "["
-	this.Traversal(func(value interface{}) bool {
+	ms.Traversal(func(value interface{}) bool {
 		if str != "[" {
 			str += " "
 		}

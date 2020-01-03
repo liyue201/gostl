@@ -37,175 +37,175 @@ func New(opts ...Options) *Vector {
 }
 
 func NewFromVector(other *Vector) *Vector {
-	this := &Vector{data: make([]interface{}, other.Size(), other.Capacity())}
+	v := &Vector{data: make([]interface{}, other.Size(), other.Capacity())}
 	for i := range other.data {
-		this.data[i] = other.data[i]
+		v.data[i] = other.data[i]
 	}
-	return this
+	return v
 }
 
-func (this *Vector) Size() int {
-	return len(this.data)
+func (v *Vector) Size() int {
+	return len(v.data)
 }
 
-func (this *Vector) Capacity() int {
-	return cap(this.data)
+func (v *Vector) Capacity() int {
+	return cap(v.data)
 }
 
-func (this *Vector) Empty() bool {
-	if len(this.data) == 0 {
+func (v *Vector) Empty() bool {
+	if len(v.data) == 0 {
 		return true
 	}
 	return false
 }
 
-func (this *Vector) PushBack(val interface{}) {
-	this.data = append(this.data, val)
+func (v *Vector) PushBack(val interface{}) {
+	v.data = append(v.data, val)
 }
 
-func (this *Vector) SetAt(position int, val interface{}) error {
-	if position < 0 || position >= this.Size() {
+func (v *Vector) SetAt(position int, val interface{}) error {
+	if position < 0 || position >= v.Size() {
 		return ErrOutOffRange
 	}
-	this.data[position] = val
+	v.data[position] = val
 	return nil
 }
 
-func (this *Vector) InsertAt(position int, val interface{}) error {
-	if position < 0 || position > this.Size() {
+func (v *Vector) InsertAt(position int, val interface{}) error {
+	if position < 0 || position > v.Size() {
 		return ErrOutOffRange
 	}
-	this.data = append(this.data, val)
-	for i := len(this.data) - 1; i > position; i-- {
-		this.data[i] = this.data[i-1]
+	v.data = append(v.data, val)
+	for i := len(v.data) - 1; i > position; i-- {
+		v.data[i] = v.data[i-1]
 	}
-	this.data[position] = val
+	v.data[position] = val
 	return nil
 }
 
-func (this *Vector) EraseAt(position int) error {
-	return this.EraseIndexRange(position, position+1)
+func (v *Vector) EraseAt(position int) error {
+	return v.EraseIndexRange(position, position+1)
 }
 
-func (this *Vector) EraseIndexRange(first, last int) error {
+func (v *Vector) EraseIndexRange(first, last int) error {
 	if first > last {
 		return nil
 	}
-	if first < 0 || last > this.Size() {
+	if first < 0 || last > v.Size() {
 		return ErrOutOffRange
 	}
 
-	left := this.data[:first]
-	right := this.data[last:]
-	this.data = append(left, right...)
+	left := v.data[:first]
+	right := v.data[last:]
+	v.data = append(left, right...)
 	return nil
 }
 
 //At returns the value at position, returns nil if position out off range .
-func (this *Vector) At(position int) interface{} {
-	if position < 0 || position >= this.Size() {
+func (v *Vector) At(position int) interface{} {
+	if position < 0 || position >= v.Size() {
 		return nil
 	}
-	return this.data[position]
+	return v.data[position]
 }
 
 //At returns the first value of the vector, returns nil if the vector is empty.
-func (this *Vector) Front() interface{} {
-	return this.At(0)
+func (v *Vector) Front() interface{} {
+	return v.At(0)
 }
 
 //At returns the last value of the vector, returns nil if the vector is empty.
-func (this *Vector) Back() interface{} {
-	return this.At(this.Size() - 1)
+func (v *Vector) Back() interface{} {
+	return v.At(v.Size() - 1)
 }
 
 //At returns the last value of the vector and erase it, returns nil if the vector is empty.
-func (this *Vector) PopBack() interface{} {
-	if this.Empty() {
+func (v *Vector) PopBack() interface{} {
+	if v.Empty() {
 		return nil
 	}
-	val := this.Back()
-	this.data = this.data[:len(this.data)-1]
+	val := v.Back()
+	v.data = v.data[:len(v.data)-1]
 	return val
 }
 
-func (this *Vector) Reserve(capacity int) {
-	if cap(this.data) >= capacity {
+func (v *Vector) Reserve(capacity int) {
+	if cap(v.data) >= capacity {
 		return
 	}
-	data := make([]interface{}, this.Size(), capacity)
-	for i := 0; i < len(this.data); i++ {
-		data[i] = this.data[i]
+	data := make([]interface{}, v.Size(), capacity)
+	for i := 0; i < len(v.data); i++ {
+		data[i] = v.data[i]
 	}
-	this.data = data
+	v.data = data
 }
 
-func (this *Vector) ShrinkToFit() {
-	if len(this.data) == cap(this.data) {
+func (v *Vector) ShrinkToFit() {
+	if len(v.data) == cap(v.data) {
 		return
 	}
-	len := this.Size()
+	len := v.Size()
 	data := make([]interface{}, len, len)
 	for i := 0; i < len; i++ {
-		data[i] = this.data[i]
+		data[i] = v.data[i]
 	}
-	this.data = data
+	v.data = data
 }
 
-func (this *Vector) Clear() {
-	this.data = this.data[:0]
+func (v *Vector) Clear() {
+	v.data = v.data[:0]
 }
 
-func (this *Vector) Data() []interface{} {
-	return this.data
+func (v *Vector) Data() []interface{} {
+	return v.data
 }
 
-func (this *Vector) Begin() *VectorIterator {
-	return this.First()
+func (v *Vector) Begin() *VectorIterator {
+	return v.First()
 }
 
-func (this *Vector) End() *VectorIterator {
-	return this.IterAt(this.Size())
+func (v *Vector) End() *VectorIterator {
+	return v.IterAt(v.Size())
 }
 
-func (this *Vector) First() *VectorIterator {
-	return this.IterAt(0)
+func (v *Vector) First() *VectorIterator {
+	return v.IterAt(0)
 }
 
-func (this *Vector) Last() *VectorIterator {
-	return this.IterAt(this.Size() - 1)
+func (v *Vector) Last() *VectorIterator {
+	return v.IterAt(v.Size() - 1)
 }
 
-func (this *Vector) IterAt(position int) *VectorIterator {
-	return &VectorIterator{vec: this, position: position}
+func (v *Vector) IterAt(position int) *VectorIterator {
+	return &VectorIterator{vec: v, position: position}
 }
 
-func (this *Vector) Insert(iter ConstIterator, val interface{}) *VectorIterator {
+func (v *Vector) Insert(iter ConstIterator, val interface{}) *VectorIterator {
 	index := iter.(*VectorIterator).position
-	this.InsertAt(index, val)
-	return &VectorIterator{vec: this, position: index}
+	v.InsertAt(index, val)
+	return &VectorIterator{vec: v, position: index}
 }
 
-func (this *Vector) Erase(iter ConstIterator) *VectorIterator {
+func (v *Vector) Erase(iter ConstIterator) *VectorIterator {
 	index := iter.(*VectorIterator).position
-	this.EraseAt(index)
-	return &VectorIterator{vec: this, position: index}
+	v.EraseAt(index)
+	return &VectorIterator{vec: v, position: index}
 }
 
-func (this *Vector) EraseRange(first, last ConstIterator) *VectorIterator {
+func (v *Vector) EraseRange(first, last ConstIterator) *VectorIterator {
 	from := first.(*VectorIterator).position
 	to := last.(*VectorIterator).position
-	this.EraseIndexRange(from, to)
-	return &VectorIterator{vec: this, position: from}
+	v.EraseIndexRange(from, to)
+	return &VectorIterator{vec: v, position: from}
 }
 
-func (this *Vector) Resize(size int) {
-	if size >= this.Size() {
+func (v *Vector) Resize(size int) {
+	if size >= v.Size() {
 		return
 	}
-	this.data = this.data[:size]
+	v.data = v.data[:size]
 }
 
-func (this *Vector) String() string {
-	return fmt.Sprintf("%v", this.data)
+func (v *Vector) String() string {
+	return fmt.Sprintf("%v", v.data)
 }

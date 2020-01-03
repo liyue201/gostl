@@ -11,8 +11,8 @@ type Node struct {
 }
 
 // Next returns the next list node or nil.
-func (this *Node) Next() *Node {
-	return this.next
+func (n *Node) Next() *Node {
+	return n.next
 }
 
 // List represents a single direction list:
@@ -32,117 +32,117 @@ func New() *List {
 }
 
 // Len returns the number of nodes of list.
-func (this *List) Len() int {
-	return this.len
+func (l *List) Len() int {
+	return l.len
 }
 
 // FrontNode returns the front node of the list or nil if the list is empty
-func (this *List) FrontNode() *Node {
-	return this.head
+func (l *List) FrontNode() *Node {
+	return l.head
 }
 
 // BackNode returns the lase node of the list or nil if the list is empty
-func (this *List) BackNode() *Node {
-	return this.tail
+func (l *List) BackNode() *Node {
+	return l.tail
 }
 
 // PushFront inserts a new node n with value v at the front of the list.
-func (this *List) PushFront(v interface{}) {
+func (l *List) PushFront(v interface{}) {
 	n := &Node{Value: v}
-	if this.len == 0 {
-		this.head = n
-		this.tail = n
+	if l.len == 0 {
+		l.head = n
+		l.tail = n
 	} else {
-		n.next = this.head
-		this.head = n
+		n.next = l.head
+		l.head = n
 	}
-	this.len++
+	l.len++
 }
 
 // PushBack inserts a new node n with value v at the back of the list.
-func (this *List) PushBack(v interface{}) {
+func (l *List) PushBack(v interface{}) {
 	n := &Node{Value: v}
-	if this.len == 0 {
-		this.head = n
-		this.tail = n
+	if l.len == 0 {
+		l.head = n
+		l.tail = n
 	} else {
-		this.tail.next = n
-		this.tail = n
+		l.tail.next = n
+		l.tail = n
 	}
-	this.len++
+	l.len++
 }
 
 // InsertAfter inserts a new node n with value v immediately after mark and returns n.
-// If mark is not a node of this list, the list is not modified.
+// If mark is not a node of l list, the list is not modified.
 // The mark must not be nil.
-func (this *List) InsertAfter(v interface{}, mark *Node) *Node {
-	return this.insertAfter(&Node{Value: v}, mark)
+func (l *List) InsertAfter(v interface{}, mark *Node) *Node {
+	return l.insertAfter(&Node{Value: v}, mark)
 }
 
-func (this *List) insertAfter(n, at *Node) *Node {
+func (l *List) insertAfter(n, at *Node) *Node {
 	n.next = at.next
 	at.next = n
 	if n.next == nil {
-		this.tail = n
+		l.tail = n
 	}
-	this.len++
+	l.len++
 	return n
 }
 
-// Remove removes node n from this list.
+// Remove removes node n from l list.
 // The node must not be nil.
-func (this *List) Remove(pre, n *Node) interface{} {
+func (l *List) Remove(pre, n *Node) interface{} {
 	if n == nil {
 		return nil
 	}
 	if pre == nil {
-		this.head = n.next
-		if this.head == nil {
-			this.tail = nil
+		l.head = n.next
+		if l.head == nil {
+			l.tail = nil
 		}
 	} else {
 		pre.next = n.next
 		if pre.next == nil {
-			this.tail = pre
+			l.tail = pre
 		}
 	}
-	this.len--
+	l.len--
 	return n.Value
 }
 
-// MoveToFront moves node n to the front of this list.
+// MoveToFront moves node n to the front of l list.
 // The n must not be nil.
-func (this *List) MoveToFront(pre, n *Node) {
-	if pre == nil || pre.next != n || n == nil || this.len <= 1 {
+func (l *List) MoveToFront(pre, n *Node) {
+	if pre == nil || pre.next != n || n == nil || l.len <= 1 {
 		return
 	}
 	pre.next = n.next
 	if pre.next == nil {
-		this.tail = pre
+		l.tail = pre
 	}
-	n.next = this.head
-	this.head = n
+	n.next = l.head
+	l.head = n
 }
 
-// MoveToBack moves node n to the back of this list.
+// MoveToBack moves node n to the back of l list.
 // The n must not be nil.
-func (this *List) MoveToBack(pre, n *Node) {
-	if n == nil || n.next == nil || this.len <= 1 {
+func (l *List) MoveToBack(pre, n *Node) {
+	if n == nil || n.next == nil || l.len <= 1 {
 		return
 	}
 	if pre == nil {
-		this.head = n.next
+		l.head = n.next
 	} else {
 		pre.next = n.next
 	}
-	this.tail.next = n
-	this.tail = n
+	l.tail.next = n
+	l.tail = n
 }
 
 // String returns the list content in string format
-func (this *List) String() string {
+func (l *List) String() string {
 	str := "["
-	for n := this.FrontNode(); n != nil; n = n.Next() {
+	for n := l.FrontNode(); n != nil; n = n.Next() {
 		if str != "[" {
 			str += " "
 		}
@@ -153,8 +153,8 @@ func (this *List) String() string {
 }
 
 // Traversal traversals elements in list, it will not stop until to the end or visitor returns false
-func (this *List) Traversal(visitor visitor.Visitor) {
-	for node := this.head; node != nil; node = node.next {
+func (l *List) Traversal(visitor visitor.Visitor) {
+	for node := l.head; node != nil; node = node.next {
 		if !visitor(node.Value) {
 			break
 		}

@@ -12,53 +12,53 @@ type DequeIterator struct {
 	position int
 }
 
-func (this *DequeIterator) IsValid() bool {
-	if this.position >= 0 && this.position < this.dq.Size() {
+func (iter *DequeIterator) IsValid() bool {
+	if iter.position >= 0 && iter.position < iter.dq.Size() {
 		return true
 	}
 	return false
 }
 
-func (this *DequeIterator) Value() interface{} {
-	return this.dq.At(this.position)
+func (iter *DequeIterator) Value() interface{} {
+	return iter.dq.At(iter.position)
 }
 
-func (this *DequeIterator) SetValue(val interface{}) error {
-	return this.dq.Set(this.position, val)
+func (iter *DequeIterator) SetValue(val interface{}) error {
+	return iter.dq.Set(iter.position, val)
 }
 
-func (this *DequeIterator) Next() ConstIterator {
-	if this.position < this.dq.Size() {
-		this.position++
+func (iter *DequeIterator) Next() ConstIterator {
+	if iter.position < iter.dq.Size() {
+		iter.position++
 	}
-	return this
+	return iter
 }
 
-func (this *DequeIterator) Prev() ConstBidIterator {
-	if this.position >= 0 {
-		this.position--
+func (iter *DequeIterator) Prev() ConstBidIterator {
+	if iter.position >= 0 {
+		iter.position--
 	}
-	return this
+	return iter
 }
 
-func (this *DequeIterator) Clone() ConstIterator {
-	return &DequeIterator{dq: this.dq, position: this.position}
+func (iter *DequeIterator) Clone() ConstIterator {
+	return &DequeIterator{dq: iter.dq, position: iter.position}
 }
 
-func (this *DequeIterator) IteratorAt(position int) RandomAccessIterator {
-	return &DequeIterator{dq: this.dq, position: position}
+func (iter *DequeIterator) IteratorAt(position int) RandomAccessIterator {
+	return &DequeIterator{dq: iter.dq, position: position}
 }
 
-func (this *DequeIterator) Position() int {
-	return this.position
+func (iter *DequeIterator) Position() int {
+	return iter.position
 }
 
-func (this *DequeIterator) Equal(other ConstIterator) bool {
+func (iter *DequeIterator) Equal(other ConstIterator) bool {
 	otherIter, ok := other.(*DequeIterator)
 	if !ok {
 		return false
 	}
-	if otherIter.dq == this.dq && otherIter.position == this.position {
+	if otherIter.dq == iter.dq && otherIter.position == iter.position {
 		return true
 	}
 	return false

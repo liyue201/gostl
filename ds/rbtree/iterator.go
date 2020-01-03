@@ -10,50 +10,50 @@ func NewIterator(node *Node) *RbTreeIterator {
 	return &RbTreeIterator{node: node}
 }
 
-func (this *RbTreeIterator) IsValid() bool {
-	if this.node != nil {
+func (iter *RbTreeIterator) IsValid() bool {
+	if iter.node != nil {
 		return true
 	}
 	return false
 }
 
-func (this *RbTreeIterator) Next() ConstIterator {
-	if this.IsValid() {
-		this.node = this.node.Next()
+func (iter *RbTreeIterator) Next() ConstIterator {
+	if iter.IsValid() {
+		iter.node = iter.node.Next()
 	}
-	return this
+	return iter
 }
 
-func (this *RbTreeIterator) Prev() ConstBidIterator {
-	if this.IsValid() {
-		this.node = this.node.Prev()
+func (iter *RbTreeIterator) Prev() ConstBidIterator {
+	if iter.IsValid() {
+		iter.node = iter.node.Prev()
 	}
-	return this
+	return iter
 }
 
-func (this *RbTreeIterator) Key() interface{} {
-	return this.node.Key()
+func (iter *RbTreeIterator) Key() interface{} {
+	return iter.node.Key()
 }
 
-func (this *RbTreeIterator) Value() interface{} {
-	return this.node.Value()
+func (iter *RbTreeIterator) Value() interface{} {
+	return iter.node.Value()
 }
 
-func (this *RbTreeIterator) SetValue(val interface{}) error {
-	this.node.SetValue(val)
+func (iter *RbTreeIterator) SetValue(val interface{}) error {
+	iter.node.SetValue(val)
 	return nil
 }
 
-func (this *RbTreeIterator) Clone() ConstIterator {
-	return NewIterator(this.node)
+func (iter *RbTreeIterator) Clone() ConstIterator {
+	return NewIterator(iter.node)
 }
 
-func (this *RbTreeIterator) Equal(other ConstIterator) bool {
+func (iter *RbTreeIterator) Equal(other ConstIterator) bool {
 	otherIter, ok := other.(*RbTreeIterator)
 	if !ok {
 		return false
 	}
-	if otherIter.node == this.node {
+	if otherIter.node == iter.node {
 		return true
 	}
 	return false

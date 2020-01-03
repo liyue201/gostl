@@ -17,43 +17,43 @@ type ElementHolder struct {
 	cmpFun   Comparator
 }
 
-func (this *ElementHolder) Push(element interface{}) {
-	this.elements = append(this.elements, element)
+func (h *ElementHolder) Push(element interface{}) {
+	h.elements = append(h.elements, element)
 }
 
-func (this *ElementHolder) Pop() interface{} {
-	if len(this.elements) == 0 {
+func (h *ElementHolder) Pop() interface{} {
+	if len(h.elements) == 0 {
 		return nil
 	}
-	item := this.elements[this.Len()-1]
-	this.elements = this.elements[:this.Len()-1]
+	item := h.elements[h.Len()-1]
+	h.elements = h.elements[:h.Len()-1]
 	return item
 }
 
-func (this *ElementHolder) top() interface{} {
-	if len(this.elements) == 0 {
+func (h *ElementHolder) top() interface{} {
+	if len(h.elements) == 0 {
 		return nil
 	}
-	return this.elements[0]
+	return h.elements[0]
 }
 
-func (this *ElementHolder) Size() int {
-	return len(this.elements)
+func (h *ElementHolder) Size() int {
+	return len(h.elements)
 }
 
-func (this *ElementHolder) Len() int {
-	return len(this.elements)
+func (h *ElementHolder) Len() int {
+	return len(h.elements)
 }
 
-func (this *ElementHolder) Less(i, j int) bool {
-	if this.cmpFun(this.elements[i], this.elements[j]) < 0 {
+func (h *ElementHolder) Less(i, j int) bool {
+	if h.cmpFun(h.elements[i], h.elements[j]) < 0 {
 		return true
 	}
 	return false
 }
 
-func (this *ElementHolder) Swap(i, j int) {
-	this.elements[i], this.elements[j] = this.elements[j], this.elements[i]
+func (h *ElementHolder) Swap(i, j int) {
+	h.elements[i], h.elements[j] = h.elements[j], h.elements[i]
 }
 
 type Option struct {
@@ -98,30 +98,30 @@ func New(opts ...Options) *PriorityQueue {
 	}
 }
 
-func (this *PriorityQueue) Push(item interface{}) {
-	this.locker.Lock()
-	defer this.locker.Unlock()
+func (q *PriorityQueue) Push(item interface{}) {
+	q.locker.Lock()
+	defer q.locker.Unlock()
 
-	heap.Push(this.holder, item)
+	heap.Push(q.holder, item)
 }
 
-func (this *PriorityQueue) Pop() interface{} {
-	this.locker.Lock()
-	defer this.locker.Unlock()
+func (q *PriorityQueue) Pop() interface{} {
+	q.locker.Lock()
+	defer q.locker.Unlock()
 
-	return heap.Pop(this.holder)
+	return heap.Pop(q.holder)
 }
 
-func (this *PriorityQueue) Top() interface{} {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (q *PriorityQueue) Top() interface{} {
+	q.locker.RLock()
+	defer q.locker.RUnlock()
 
-	return this.holder.top()
+	return q.holder.top()
 }
 
-func (this *PriorityQueue) Empty() bool {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (q *PriorityQueue) Empty() bool {
+	q.locker.RLock()
+	defer q.locker.RUnlock()
 
-	return this.holder.Size() == 0
+	return q.holder.Size() == 0
 }

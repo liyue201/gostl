@@ -13,41 +13,41 @@ func NewIterator(node *Node) *ListIterator {
 	return &ListIterator{node: node}
 }
 
-func (this *ListIterator) IsValid() bool {
-	return this.node != nil
+func (iter *ListIterator) IsValid() bool {
+	return iter.node != nil
 }
 
-func (this *ListIterator) Next() ConstIterator {
-	if this.node != nil {
-		this.node = this.node.Next()
+func (iter *ListIterator) Next() ConstIterator {
+	if iter.node != nil {
+		iter.node = iter.node.Next()
 	}
-	return this
+	return iter
 }
 
-func (this *ListIterator) Value() interface{} {
-	if this.node == nil {
+func (iter *ListIterator) Value() interface{} {
+	if iter.node == nil {
 		return nil
 	}
-	return this.node.Value
+	return iter.node.Value
 }
 
-func (this *ListIterator) SetValue(value interface{}) error {
-	if this.node != nil {
-		this.node.Value = value
+func (iter *ListIterator) SetValue(value interface{}) error {
+	if iter.node != nil {
+		iter.node.Value = value
 	}
 	return nil
 }
 
-func (this *ListIterator) Clone() ConstIterator {
-	return NewIterator(this.node)
+func (iter *ListIterator) Clone() ConstIterator {
+	return NewIterator(iter.node)
 }
 
-func (this *ListIterator) Equal(other ConstIterator) bool {
+func (iter *ListIterator) Equal(other ConstIterator) bool {
 	otherIter, ok := other.(*ListIterator)
 	if !ok {
 		return false
 	}
-	if otherIter.node == this.node {
+	if otherIter.node == iter.node {
 		return true
 	}
 	return false

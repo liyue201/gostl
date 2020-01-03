@@ -40,14 +40,14 @@ func New(opts ...Options) *RbTree {
 }
 
 // Clear clears the tree
-func (this *RbTree) Clear() {
-	this.root = nil
-	this.size = 0
+func (t *RbTree) Clear() {
+	t.root = nil
+	t.size = 0
 }
 
 // Find finds the first Node by the key and return its value.
-func (this *RbTree) Find(key interface{}) interface{} {
-	n := this.findFirstNode(key)
+func (t *RbTree) Find(key interface{}) interface{} {
+	n := t.findFirstNode(key)
 	if n != nil {
 		return n.value
 	}
@@ -55,67 +55,67 @@ func (this *RbTree) Find(key interface{}) interface{} {
 }
 
 // FindIt finds the first Node and return it as an iterator.
-func (this *RbTree) FindNode(key interface{}) *Node {
-	return this.findFirstNode(key)
+func (t *RbTree) FindNode(key interface{}) *Node {
+	return t.findFirstNode(key)
 }
 
 // Begin returns the Node with minimum key in the tree
-func (this *RbTree) Begin() *Node {
-	return this.First()
+func (t *RbTree) Begin() *Node {
+	return t.First()
 }
 
 // Fisrt returns the Node with minimum key in the tree
-func (this *RbTree) First() *Node {
-	if this.root == nil {
+func (t *RbTree) First() *Node {
+	if t.root == nil {
 		return nil
 	}
-	return minimum(this.root)
+	return minimum(t.root)
 }
 
 // RBegin returns the Node with maximum key in the tree
-func (this *RbTree) RBegin() *Node {
-	return this.Last()
+func (t *RbTree) RBegin() *Node {
+	return t.Last()
 }
 
 // Last returns the Node with maximum key in the tree
-func (this *RbTree) Last() *Node {
-	if this.root == nil {
+func (t *RbTree) Last() *Node {
+	if t.root == nil {
 		return nil
 	}
-	return maximum(this.root)
+	return maximum(t.root)
 }
 
 // IterFirst returns the iterator of first Node
-func (this *RbTree) IterFirst() *RbTreeIterator {
-	return NewIterator(this.First())
+func (t *RbTree) IterFirst() *RbTreeIterator {
+	return NewIterator(t.First())
 }
 
 // IterLast returns the iterator of first Node
-func (this *RbTree) IterLast() *RbTreeIterator {
-	return NewIterator(this.Last())
+func (t *RbTree) IterLast() *RbTreeIterator {
+	return NewIterator(t.Last())
 }
 
 // Empty returns true if Tree is empty,otherwise returns false.
-func (this *RbTree) Empty() bool {
-	if this.size == 0 {
+func (t *RbTree) Empty() bool {
+	if t.size == 0 {
 		return true
 	}
 	return false
 }
 
 // Size returns the size of the rbtree.
-func (this *RbTree) Size() int {
-	return this.size
+func (t *RbTree) Size() int {
+	return t.size
 }
 
 // Insert inserts a key-value pair into the rbtree.
-func (this *RbTree) Insert(key, value interface{}) {
-	x := this.root
+func (t *RbTree) Insert(key, value interface{}) {
+	x := t.root
 	var y *Node
 
 	for x != nil {
 		y = x
-		if this.keyCmp(key, x.key) < 0 {
+		if t.keyCmp(key, x.key) < 0 {
 			x = x.left
 		} else {
 			x = x.right
@@ -123,21 +123,21 @@ func (this *RbTree) Insert(key, value interface{}) {
 	}
 
 	z := &Node{parent: y, color: RED, key: key, value: value}
-	this.size++
+	t.size++
 
 	if y == nil {
 		z.color = BLACK
-		this.root = z
+		t.root = z
 		return
-	} else if this.keyCmp(z.key, y.key) < 0 {
+	} else if t.keyCmp(z.key, y.key) < 0 {
 		y.left = z
 	} else {
 		y.right = z
 	}
-	this.rbInsertFixup(z)
+	t.rbInsertFixup(z)
 }
 
-func (this *RbTree) rbInsertFixup(z *Node) {
+func (t *RbTree) rbInsertFixup(z *Node) {
 	var y *Node
 	for z.parent != nil && z.parent.color == RED {
 		if z.parent == z.parent.parent.left {
@@ -150,11 +150,11 @@ func (this *RbTree) rbInsertFixup(z *Node) {
 			} else {
 				if z == z.parent.right {
 					z = z.parent
-					this.leftRotate(z)
+					t.leftRotate(z)
 				}
 				z.parent.color = BLACK
 				z.parent.parent.color = RED
-				this.rightRotate(z.parent.parent)
+				t.rightRotate(z.parent.parent)
 			}
 		} else {
 			y = z.parent.parent.left
@@ -166,19 +166,19 @@ func (this *RbTree) rbInsertFixup(z *Node) {
 			} else {
 				if z == z.parent.left {
 					z = z.parent
-					this.rightRotate(z)
+					t.rightRotate(z)
 				}
 				z.parent.color = BLACK
 				z.parent.parent.color = RED
-				this.leftRotate(z.parent.parent)
+				t.leftRotate(z.parent.parent)
 			}
 		}
 	}
-	this.root.color = BLACK
+	t.root.color = BLACK
 }
 
 // Delete deletes the Node
-func (this *RbTree) Delete(node *Node) {
+func (t *RbTree) Delete(node *Node) {
 	z := node
 	if z == nil {
 		return
@@ -202,7 +202,7 @@ func (this *RbTree) Delete(node *Node) {
 		x.parent = xparent
 	}
 	if y.parent == nil {
-		this.root = x
+		t.root = x
 	} else if y == y.parent.left {
 		y.parent.left = x
 	} else {
@@ -215,15 +215,15 @@ func (this *RbTree) Delete(node *Node) {
 	}
 
 	if y.color == BLACK {
-		this.rbDeleteFixup(x, xparent)
+		t.rbDeleteFixup(x, xparent)
 	}
-	this.size--
+	t.size--
 }
 
-func (this *RbTree) rbDeleteFixup(x, parent *Node) {
+func (t *RbTree) rbDeleteFixup(x, parent *Node) {
 	var w *Node
 
-	for x != this.root && getColor(x) == BLACK {
+	for x != t.root && getColor(x) == BLACK {
 		if x != nil {
 			parent = x.parent
 		}
@@ -232,7 +232,7 @@ func (this *RbTree) rbDeleteFixup(x, parent *Node) {
 			if w.color == RED {
 				w.color = BLACK
 				parent.color = RED
-				this.leftRotate(parent)
+				t.leftRotate(parent)
 				w = parent.right
 			}
 			if getColor(w.left) == BLACK && getColor(w.right) == BLACK {
@@ -244,7 +244,7 @@ func (this *RbTree) rbDeleteFixup(x, parent *Node) {
 						w.left.color = BLACK
 					}
 					w.color = RED
-					this.rightRotate(w)
+					t.rightRotate(w)
 					w = parent.right
 				}
 				w.color = parent.color
@@ -252,15 +252,15 @@ func (this *RbTree) rbDeleteFixup(x, parent *Node) {
 				if w.right != nil {
 					w.right.color = BLACK
 				}
-				this.leftRotate(parent)
-				x = this.root
+				t.leftRotate(parent)
+				x = t.root
 			}
 		} else {
 			w = parent.left
 			if w.color == RED {
 				w.color = BLACK
 				parent.color = RED
-				this.rightRotate(parent)
+				t.rightRotate(parent)
 				w = parent.left
 			}
 			if getColor(w.left) == BLACK && getColor(w.right) == BLACK {
@@ -272,7 +272,7 @@ func (this *RbTree) rbDeleteFixup(x, parent *Node) {
 						w.right.color = BLACK
 					}
 					w.color = RED
-					this.leftRotate(w)
+					t.leftRotate(w)
 					w = parent.left
 				}
 				w.color = parent.color
@@ -280,8 +280,8 @@ func (this *RbTree) rbDeleteFixup(x, parent *Node) {
 				if w.left != nil {
 					w.left.color = BLACK
 				}
-				this.rightRotate(parent)
-				x = this.root
+				t.rightRotate(parent)
+				x = t.root
 			}
 		}
 	}
@@ -290,7 +290,7 @@ func (this *RbTree) rbDeleteFixup(x, parent *Node) {
 	}
 }
 
-func (this *RbTree) leftRotate(x *Node) {
+func (t *RbTree) leftRotate(x *Node) {
 	y := x.right
 	x.right = y.left
 	if y.left != nil {
@@ -298,7 +298,7 @@ func (this *RbTree) leftRotate(x *Node) {
 	}
 	y.parent = x.parent
 	if x.parent == nil {
-		this.root = y
+		t.root = y
 	} else if x == x.parent.left {
 		x.parent.left = y
 	} else {
@@ -308,7 +308,7 @@ func (this *RbTree) leftRotate(x *Node) {
 	x.parent = y
 }
 
-func (this *RbTree) rightRotate(x *Node) {
+func (t *RbTree) rightRotate(x *Node) {
 	y := x.left
 	x.left = y.right
 	if y.right != nil {
@@ -316,7 +316,7 @@ func (this *RbTree) rightRotate(x *Node) {
 	}
 	y.parent = x.parent
 	if x.parent == nil {
-		this.root = y
+		t.root = y
 	} else if x == x.parent.right {
 		x.parent.right = y
 	} else {
@@ -327,13 +327,13 @@ func (this *RbTree) rightRotate(x *Node) {
 }
 
 // findNode finds the Node by key and return it's Node, if not exists return nil.
-func (this *RbTree) findNode(key interface{}) *Node {
-	x := this.root
+func (t *RbTree) findNode(key interface{}) *Node {
+	x := t.root
 	for x != nil {
-		if this.keyCmp(key, x.key) < 0 {
+		if t.keyCmp(key, x.key) < 0 {
 			x = x.left
 		} else {
-			if this.keyCmp(key, x.key) == 0 {
+			if t.keyCmp(key, x.key) == 0 {
 				return x
 			}
 			x = x.right
@@ -343,45 +343,45 @@ func (this *RbTree) findNode(key interface{}) *Node {
 }
 
 // findNode returns the first Node that equal to key, if not exists return nil.
-func (this *RbTree) findFirstNode(key interface{}) *Node {
-	node := this.FindLowerBoundNode(key)
+func (t *RbTree) findFirstNode(key interface{}) *Node {
+	node := t.FindLowerBoundNode(key)
 	if node == nil {
 		return nil
 	}
-	if this.keyCmp(node.key, key) == 0 {
+	if t.keyCmp(node.key, key) == 0 {
 		return node
 	}
 	return nil
 }
 
 // findNode returns the first Node that equal or greater than key, if not exists return nil.
-func (this *RbTree) FindLowerBoundNode(key interface{}) *Node {
-	return this.findLowerBoundNode(this.root, key)
+func (t *RbTree) FindLowerBoundNode(key interface{}) *Node {
+	return t.findLowerBoundNode(t.root, key)
 }
 
-func (this *RbTree) findLowerBoundNode(x *Node, key interface{}) *Node {
+func (t *RbTree) findLowerBoundNode(x *Node, key interface{}) *Node {
 	if x == nil {
 		return nil
 	}
-	if this.keyCmp(key, x.key) <= 0 {
-		ret := this.findLowerBoundNode(x.left, key)
+	if t.keyCmp(key, x.key) <= 0 {
+		ret := t.findLowerBoundNode(x.left, key)
 		if ret == nil {
 			return x
 		} else {
-			if this.keyCmp(ret.key, x.key) <= 0 {
+			if t.keyCmp(ret.key, x.key) <= 0 {
 				return ret
 			} else {
 				return x
 			}
 		}
 	} else {
-		return this.findLowerBoundNode(x.right, key)
+		return t.findLowerBoundNode(x.right, key)
 	}
 }
 
 // Traversal traversals elements in rbtree, it will not stop until to the end or visitor returns false
-func (this *RbTree) Traversal(visitor visitor.KvVisitor) {
-	for node := this.First(); node != nil; node = node.Next() {
+func (t *RbTree) Traversal(visitor visitor.KvVisitor) {
+	for node := t.First(); node != nil; node = node.Next() {
 		if !visitor(node.key, node.value) {
 			break
 		}
@@ -389,34 +389,34 @@ func (this *RbTree) Traversal(visitor visitor.KvVisitor) {
 }
 
 // function for test
-func (this *RbTree) IsRbTree() (bool, error) {
+func (t *RbTree) IsRbTree() (bool, error) {
 	// Properties:
 	// 1. Each node is either red or black.
 	// 2. The root is black.
 	// 3. All leaves (NIL) are black.
 	// 4. If a node is red, then both its children are black.
 	// 5. Every path from a given node to any of its descendant NIL nodes contains the same number of black nodes.
-	_, property, ok := this.test(this.root)
+	_, property, ok := t.test(t.root)
 	if !ok {
 		return false, errors.New(fmt.Sprintf("violate property %v", property))
 	}
 	return true, nil
 }
 
-func (this *RbTree) test(n *Node) (int, int, bool) {
+func (t *RbTree) test(n *Node) (int, int, bool) {
 
 	if n == nil { // property 3:
 		return 1, 0, true
 	}
 
-	if n == this.root && n.color != BLACK { // property 2:
+	if n == t.root && n.color != BLACK { // property 2:
 		return 1, 2, false
 	}
-	leftBlackCount, property, ok := this.test(n.left)
+	leftBlackCount, property, ok := t.test(n.left)
 	if !ok {
 		return leftBlackCount, property, ok
 	}
-	rightBlackCount, property, ok := this.test(n.right)
+	rightBlackCount, property, ok := t.test(n.right)
 	if !ok {
 		return rightBlackCount, property, ok
 	}
@@ -434,7 +434,7 @@ func (this *RbTree) test(n *Node) (int, int, bool) {
 		blackCount++
 	}
 
-	if n == this.root {
+	if n == t.root {
 		//fmt.Printf("blackCount:%v \n", blackCount)
 	}
 	return blackCount, 0, true

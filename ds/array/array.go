@@ -17,82 +17,82 @@ func New(size int) *Array {
 }
 
 func NewFromArray(other *Array) *Array {
-	this := &Array{data: make([]interface{}, other.Size(), other.Size())}
+	a := &Array{data: make([]interface{}, other.Size(), other.Size())}
 	for i := range other.data {
-		this.data[i] = other.data[i]
+		a.data[i] = other.data[i]
 	}
-	return this
+	return a
 }
 
-func (this *Array) Fill(val interface{}) {
-	for i := range this.data {
-		this.data[i] = val
+func (a *Array) Fill(val interface{}) {
+	for i := range a.data {
+		a.data[i] = val
 	}
 }
 
-func (this *Array) Set(position int, val interface{}) error {
-	if position < 0 || position >= len(this.data) {
+func (a *Array) Set(position int, val interface{}) error {
+	if position < 0 || position >= len(a.data) {
 		return ErrOutOffRange
 	}
-	this.data[position] = val
+	a.data[position] = val
 	return nil
 }
 
-func (this *Array) At(position int) interface{} {
-	if position < 0 || position >= len(this.data) {
+func (a *Array) At(position int) interface{} {
+	if position < 0 || position >= len(a.data) {
 		return nil
 	}
-	return this.data[position]
+	return a.data[position]
 }
 
-func (this *Array) Front() interface{} {
-	return this.At(0)
+func (a *Array) Front() interface{} {
+	return a.At(0)
 }
 
-func (this *Array) Back() interface{} {
-	return this.At(len(this.data) - 1)
+func (a *Array) Back() interface{} {
+	return a.At(len(a.data) - 1)
 }
 
-func (this *Array) Size() int {
-	return len(this.data)
+func (a *Array) Size() int {
+	return len(a.data)
 }
 
-func (this *Array) Empty() bool {
-	return len(this.data) == 0
+func (a *Array) Empty() bool {
+	return len(a.data) == 0
 }
 
-func (this *Array) SwapArray(other *Array) error {
-	if this.Size() != other.Size() {
+func (a *Array) SwapArray(other *Array) error {
+	if a.Size() != other.Size() {
 		return ErrArraySizeNotEqual
 	}
-	this.data, other.data = other.data, this.data
+	a.data, other.data = other.data, a.data
 	return nil
 }
 
-func (this *Array) Data() []interface{} {
-	return this.data
+func (a *Array) Data() []interface{} {
+	return a.data
 }
 
-func (this *Array) Begin() *ArrayIterator {
-	return this.First()
+func (a *Array) Begin() *ArrayIterator {
+	return a.First()
 }
 
-func (this *Array) End() *ArrayIterator {
-	return this.IterAt(this.Size())
+func (a *Array) End() *ArrayIterator {
+	return a.IterAt(a.Size())
 }
 
-func (this *Array) First() *ArrayIterator {
-	return this.IterAt(0)
+func (a *Array) First() *ArrayIterator {
+	return a.IterAt(0)
 }
 
-func (this *Array) Last() *ArrayIterator {
-	return this.IterAt(this.Size() - 1)
+func (a *Array) Last() *ArrayIterator {
+	return a.IterAt(a.Size() - 1)
 }
 
-func (this *Array) IterAt(position int) *ArrayIterator {
-	return &ArrayIterator{array: this, position: position}
+func (a *Array) IterAt(position int) *ArrayIterator {
+	return &ArrayIterator{array: a, position: position}
 }
 
-func (this *Array) String() string {
-	return fmt.Sprintf("%v", this.data)
+func (a *Array) String() string {
+	return fmt.Sprintf("%v", a.data)
 }

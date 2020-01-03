@@ -8,27 +8,27 @@ func NewPool() *Pool {
 	return &Pool{segs: make([]*Segment, 0)}
 }
 
-func (this *Pool) Get() *Segment {
-	if len(this.segs) == 0 {
+func (p *Pool) Get() *Segment {
+	if len(p.segs) == 0 {
 		return NewSegment(SegmentCapacity)
 	}
-	s := this.segs[len(this.segs)-1]
-	this.segs = this.segs[len(this.segs)-1:]
+	s := p.segs[len(p.segs)-1]
+	p.segs = p.segs[len(p.segs)-1:]
 	return s
 }
 
-func (this *Pool) Put(s *Segment) {
-	this.segs = append(this.segs, s)
+func (p *Pool) Put(s *Segment) {
+	p.segs = append(p.segs, s)
 }
 
-func (this *Pool) ShrinkToSize(size int) {
-	if len(this.segs) > size {
+func (p *Pool) ShrinkToSize(size int) {
+	if len(p.segs) > size {
 		newSeg := make([]*Segment, size)
-		copy(newSeg, this.segs)
-		this.segs = newSeg
+		copy(newSeg, p.segs)
+		p.segs = newSeg
 	}
 }
 
-func (this *Pool) Size() int {
-	return len(this.segs)
+func (p *Pool) Size() int {
+	return len(p.segs)
 }

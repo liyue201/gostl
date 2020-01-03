@@ -28,19 +28,19 @@ func NewMultiMap(opts ...Options) *MultiMap {
 }
 
 //Insert inserts key-value to the set
-func (this *MultiMap) Insert(key, value interface{}) {
-	this.locker.Lock()
-	defer this.locker.Unlock()
+func (mm *MultiMap) Insert(key, value interface{}) {
+	mm.locker.Lock()
+	defer mm.locker.Unlock()
 
-	this.tree.Insert(key, value)
+	mm.tree.Insert(key, value)
 }
 
 //Get returns the first node's value by key if found, or nil if not found
-func (this *MultiMap) Get(key interface{}) interface{} {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (mm *MultiMap) Get(key interface{}) interface{} {
+	mm.locker.RLock()
+	defer mm.locker.RUnlock()
 
-	node := this.tree.FindNode(key)
+	node := mm.tree.FindNode(key)
 	if node != nil {
 		return node.Value()
 	}
@@ -48,91 +48,91 @@ func (this *MultiMap) Get(key interface{}) interface{} {
 }
 
 //Erase erases key in the Map
-func (this *MultiMap) Erase(key interface{}) {
-	this.locker.Lock()
-	defer this.locker.Unlock()
+func (mm *MultiMap) Erase(key interface{}) {
+	mm.locker.Lock()
+	defer mm.locker.Unlock()
 
-	node := this.tree.FindNode(key)
-	for node != nil && this.keyCmp(node.Key(), key) == 0 {
+	node := mm.tree.FindNode(key)
+	for node != nil && mm.keyCmp(node.Key(), key) == 0 {
 		nextNode := node.Next()
-		this.tree.Delete(node)
+		mm.tree.Delete(node)
 		node = nextNode
 	}
 }
 
 //Begin returns the iterator related to key in the set, or an invalid iterator if not exist.
-func (this *MultiMap) Find(key interface{}) *MapIterator {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (mm *MultiMap) Find(key interface{}) *MapIterator {
+	mm.locker.RLock()
+	defer mm.locker.RUnlock()
 
-	node := this.tree.FindNode(key)
+	node := mm.tree.FindNode(key)
 	return &MapIterator{node: node}
 }
 
 //LowerBound returns the first iterator that equal or greater than key in the Map
-func (this *MultiMap) LowerBound(key interface{}) *MapIterator {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (mm *MultiMap) LowerBound(key interface{}) *MapIterator {
+	mm.locker.RLock()
+	defer mm.locker.RUnlock()
 
-	node := this.tree.FindLowerBoundNode(key)
+	node := mm.tree.FindLowerBoundNode(key)
 	return &MapIterator{node: node}
 }
 
 //Begin returns the iterator with the minimum key in the Map, return nil if empty.
-func (this *MultiMap) Begin() *MapIterator {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (mm *MultiMap) Begin() *MapIterator {
+	mm.locker.RLock()
+	defer mm.locker.RUnlock()
 
-	return this.First()
+	return mm.First()
 }
 
 //First returns the iterator with the minimum key in the Map, return nil if empty.
-func (this *MultiMap) First() *MapIterator {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (mm *MultiMap) First() *MapIterator {
+	mm.locker.RLock()
+	defer mm.locker.RUnlock()
 
-	return &MapIterator{node: this.tree.First()}
+	return &MapIterator{node: mm.tree.First()}
 }
 
 //Last returns the iterator with the maximum key in the Map, return nil if empty.
-func (this *MultiMap) Last() *MapIterator {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (mm *MultiMap) Last() *MapIterator {
+	mm.locker.RLock()
+	defer mm.locker.RUnlock()
 
-	return &MapIterator{node: this.tree.Last()}
+	return &MapIterator{node: mm.tree.Last()}
 }
 
 //Clear clears the Map
-func (this *MultiMap) Clear() {
-	this.locker.Lock()
-	defer this.locker.Unlock()
+func (mm *MultiMap) Clear() {
+	mm.locker.Lock()
+	defer mm.locker.Unlock()
 
-	this.tree.Clear()
+	mm.tree.Clear()
 }
 
 // Contains returns true if value in the Map. otherwise returns false.
-func (this *MultiMap) Contains(value interface{}) bool {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (mm *MultiMap) Contains(value interface{}) bool {
+	mm.locker.RLock()
+	defer mm.locker.RUnlock()
 
-	if this.tree.Find(value) != nil {
+	if mm.tree.Find(value) != nil {
 		return true
 	}
 	return false
 }
 
 // Contains returns the size of Map
-func (this *MultiMap) Size() int {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (mm *MultiMap) Size() int {
+	mm.locker.RLock()
+	defer mm.locker.RUnlock()
 
-	return this.tree.Size()
+	return mm.tree.Size()
 }
 
 // Traversal traversals elements in the map, it will not stop until to the end or visitor returns false
-func (this *MultiMap) Traversal(visitor visitor.KvVisitor) {
-	this.locker.RLock()
-	defer this.locker.RUnlock()
+func (mm *MultiMap) Traversal(visitor visitor.KvVisitor) {
+	mm.locker.RLock()
+	defer mm.locker.RUnlock()
 
-	this.tree.Traversal(visitor)
+	mm.tree.Traversal(visitor)
 }

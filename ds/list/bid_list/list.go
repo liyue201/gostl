@@ -17,25 +17,25 @@ type Node struct {
 }
 
 // Next returns the next list node or nil.
-func (this *Node) Next() *Node {
-	if this.list == nil {
+func (n *Node) Next() *Node {
+	if n.list == nil {
 		return nil
 	}
-	if this.next == this.list.head {
+	if n.next == n.list.head {
 		return nil
 	}
-	return this.next
+	return n.next
 }
 
 // Prev returns the previous list node or nil.
-func (this *Node) Prev() *Node {
-	if this.list == nil {
+func (n *Node) Prev() *Node {
+	if n.list == nil {
 		return nil
 	}
-	if this == this.list.head {
+	if n == n.list.head {
 		return nil
 	}
-	return this.prev
+	return n.prev
 }
 
 // List represents a bidirectional list:
@@ -55,197 +55,197 @@ func New() *List {
 }
 
 // Len returns the number of nodes of list.
-func (this *List) Len() int {
-	return this.len
+func (l *List) Len() int {
+	return l.len
 }
 
 // Len returns the number of nodes of list.
-func (this *List) Size() int {
-	return this.len
+func (l *List) Size() int {
+	return l.len
 }
 
-// Len returns true if this List is empty
-func (this *List) Empty() bool {
-	return this.len == 0
+// Len returns true if l List is empty
+func (l *List) Empty() bool {
+	return l.len == 0
 }
 
 // FrontNode returns the front node of the list or nil if the list is empty
-func (this *List) FrontNode() *Node {
-	return this.head
+func (l *List) FrontNode() *Node {
+	return l.head
 }
 
 // BackNode returns the last node of the list or nil if the list is empty
-func (this *List) BackNode() *Node {
-	if this.head == nil {
+func (l *List) BackNode() *Node {
+	if l.head == nil {
 		return nil
 	}
-	return this.head.prev
+	return l.head.prev
 }
 
 // Front returns the value of front node
-func (this *List) Front() interface{} {
-	if this.len == 0 {
+func (l *List) Front() interface{} {
+	if l.len == 0 {
 		return nil
 	}
-	return this.head.Value
+	return l.head.Value
 }
 
 // Back returns the value of last node
-func (this *List) Back() interface{} {
-	if this.len == 0 {
+func (l *List) Back() interface{} {
+	if l.len == 0 {
 		return nil
 	}
-	return this.head.prev.Value
+	return l.head.prev.Value
 }
 
 // PushBack inserts a new node n with value v at the back of the list
-func (this *List) PushBack(v interface{}) {
-	this.pushBack(v)
+func (l *List) PushBack(v interface{}) {
+	l.pushBack(v)
 }
 
 // PushBack inserts a new node n with value v at the back of the list and returns n.
-func (this *List) pushBack(v interface{}) *Node {
-	n := &Node{Value: v, list: this}
-	if this.len == 0 {
+func (l *List) pushBack(v interface{}) *Node {
+	n := &Node{Value: v, list: l}
+	if l.len == 0 {
 		n.prev = n
 		n.next = n
-		this.head = n
-		this.len++
+		l.head = n
+		l.len++
 		return n
 	}
-	return this.insertAfter(n, this.head.prev)
+	return l.insertAfter(n, l.head.prev)
 }
 
 // PushFront inserts a new node n with value v at the front of the list.
-func (this *List) PushFront(v interface{}) {
-	n := this.pushBack(v)
-	this.head = n
+func (l *List) PushFront(v interface{}) {
+	n := l.pushBack(v)
+	l.head = n
 }
 
 // InsertAfter inserts a new node n with value v immediately after mark and returns n.
-// If mark is not a node of this list, the list is not modified.
+// If mark is not a node of l list, the list is not modified.
 // The mark must not be nil.
-func (this *List) InsertAfter(v interface{}, mark *Node) *Node {
-	if mark.list != this {
+func (l *List) InsertAfter(v interface{}, mark *Node) *Node {
+	if mark.list != l {
 		return nil
 	}
-	return this.insertAfter(&Node{Value: v, list: this}, mark)
+	return l.insertAfter(&Node{Value: v, list: l}, mark)
 }
 
 // InsertBefore inserts a new node n with value v immediately before mark and returns n.
-// If mark is not a node of this list, the list is not modified.
+// If mark is not a node of l list, the list is not modified.
 // The mark must not be nil.
-func (this *List) InsertBefore(v interface{}, mark *Node) *Node {
-	if mark.list != this {
+func (l *List) InsertBefore(v interface{}, mark *Node) *Node {
+	if mark.list != l {
 		return nil
 	}
-	n := this.insertAfter(&Node{Value: v, list: this}, mark.prev)
-	if this.head == mark {
-		this.head = n
+	n := l.insertAfter(&Node{Value: v, list: l}, mark.prev)
+	if l.head == mark {
+		l.head = n
 	}
 	return n
 }
 
-func (this *List) insertAfter(n, at *Node) *Node {
+func (l *List) insertAfter(n, at *Node) *Node {
 	n.next = at.next
 	n.prev = at
 	at.next.prev = n
 	at.next = n
-	this.len++
+	l.len++
 	return n
 }
 
-// Remove removes n from this list if n is a node of this list.
+// Remove removes n from l list if n is a node of l list.
 // It returns the n value n.Value.
 // The node must not be nil.
-func (this *List) Remove(n *Node) interface{} {
-	if n.list == this {
-		this.remove(n)
+func (l *List) Remove(n *Node) interface{} {
+	if n.list == l {
+		l.remove(n)
 	}
 	return n.Value
 }
 
-func (this *List) remove(n *Node) *Node {
-	if n == this.head {
-		this.head = this.head.next
+func (l *List) remove(n *Node) *Node {
+	if n == l.head {
+		l.head = l.head.next
 	}
 	n.prev.next = n.next
 	n.next.prev = n.prev
 	n.next = nil // avoid memory leaks
 	n.prev = nil // avoid memory leaks
 	n.list = nil
-	this.len--
-	if this.len == 0 {
-		this.head = nil
+	l.len--
+	if l.len == 0 {
+		l.head = nil
 	}
 	return n
 }
 
 // Clear remove all nodes
-func (this *List) Clear() {
-	this.head = nil
-	this.len = 0
+func (l *List) Clear() {
+	l.head = nil
+	l.len = 0
 }
 
 // PopBack remove the last node in the list and returns it's value
-func (this *List) PopBack() interface{} {
-	n := this.BackNode()
+func (l *List) PopBack() interface{} {
+	n := l.BackNode()
 	if n != nil {
-		return this.Remove(n)
+		return l.Remove(n)
 	}
 	return nil
 }
 
 // PopBack remove the first node in the list and returns it's value
-func (this *List) PopFront() interface{} {
-	n := this.FrontNode()
+func (l *List) PopFront() interface{} {
+	n := l.FrontNode()
 	if n != nil {
-		return this.Remove(n)
+		return l.Remove(n)
 	}
 	return nil
 }
 
-// MoveToFront moves node n to the front of this list.
-// If n is not a node of this list, the list is not modified.
+// MoveToFront moves node n to the front of l list.
+// If n is not a node of l list, the list is not modified.
 // The n must not be nil.
-func (this *List) MoveToFront(n *Node) {
-	if n.list != this {
+func (l *List) MoveToFront(n *Node) {
+	if n.list != l {
 		return
 	}
-	if this.head != n {
-		this.moveToAfter(n, this.head.prev)
-		this.head = n
+	if l.head != n {
+		l.moveToAfter(n, l.head.prev)
+		l.head = n
 	}
 }
 
-// MoveToBack moves node  n to the back of this list.
-// If e is not a node of this list, the list is not modified.
+// MoveToBack moves node  n to the back of l list.
+// If e is not a node of l list, the list is not modified.
 // The node must not be nil.
-func (this *List) MoveToBack(n *Node) {
-	if n.list != this {
+func (l *List) MoveToBack(n *Node) {
+	if n.list != l {
 		return
 	}
-	if this.head.prev != n {
-		this.moveToAfter(n, this.head.prev)
+	if l.head.prev != n {
+		l.moveToAfter(n, l.head.prev)
 	}
 }
 
 // MoveAfter moves node n to its new position after mark.
-// If n or mark is not a node of this list, or n == mark, the list is not modified.
+// If n or mark is not a node of l list, or n == mark, the list is not modified.
 // The node and mark must not be nil.
-func (this *List) MoveAfter(n, mark *Node) {
-	if n.list != this || n == mark || mark.list != this {
+func (l *List) MoveAfter(n, mark *Node) {
+	if n.list != l || n == mark || mark.list != l {
 		return
 	}
-	this.moveToAfter(n, mark)
+	l.moveToAfter(n, mark)
 }
 
-func (this *List) moveToAfter(n, at *Node) {
+func (l *List) moveToAfter(n, at *Node) {
 	if n == at.next {
 		return
 	}
-	if n == this.head {
-		this.head = n.next
+	if n == l.head {
+		l.head = n.next
 	}
 	n.prev.next = n.next
 	n.next.prev = n.prev
@@ -255,16 +255,16 @@ func (this *List) moveToAfter(n, at *Node) {
 	at.next = n
 }
 
-// PushBackList inserts a copy of an other list at the back of this list.
-// The this list and other may be the same. They must not be nil.
-func (this *List) PushBackList(other *List) {
+// PushBackList inserts a copy of an other list at the back of l list.
+// The l list and other may be the same. They must not be nil.
+func (l *List) PushBackList(other *List) {
 	for i, n := other.Len(), other.FrontNode(); i > 0; i, n = i-1, n.Next() {
-		this.InsertAfter(n.Value, this.head.prev)
+		l.InsertAfter(n.Value, l.head.prev)
 	}
 }
 
-// PushFrontList inserts a copy of an other list at the front of this list.
-// The this list and other may be the same. They must not be nil.
+// PushFrontList inserts a copy of an other list at the front of l list.
+// The l list and other may be the same. They must not be nil.
 func (l *List) PushFrontList(other *List) {
 	for i, e := other.Len(), other.BackNode(); i > 0; i, e = i-1, e.Prev() {
 		l.InsertBefore(e.Value, l.head)
@@ -272,9 +272,9 @@ func (l *List) PushFrontList(other *List) {
 }
 
 // String returns the list content in string format
-func (this *List) String() string {
+func (l *List) String() string {
 	str := "["
-	for n := this.FrontNode(); n != nil; n = n.Next() {
+	for n := l.FrontNode(); n != nil; n = n.Next() {
 		if str != "[" {
 			str += " "
 		}
@@ -285,8 +285,8 @@ func (this *List) String() string {
 }
 
 // Traversal traversals elements in list, it will not stop until to the end or visitor returns false
-func (this *List) Traversal(visitor visitor.Visitor) {
-	for node := this.head; node != nil; node = node.next {
+func (l *List) Traversal(visitor visitor.Visitor) {
+	for node := l.head; node != nil; node = node.next {
 		if !visitor(node.Value) {
 			break
 		}

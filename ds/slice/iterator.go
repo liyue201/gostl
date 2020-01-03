@@ -10,54 +10,54 @@ type SliceIterator struct {
 	position int
 }
 
-func (this *SliceIterator) IsValid() bool {
-	if this.position >= 0 && this.position < this.s.Len() {
+func (iter *SliceIterator) IsValid() bool {
+	if iter.position >= 0 && iter.position < iter.s.Len() {
 		return true
 	}
 	return false
 }
 
-func (this *SliceIterator) Value() interface{} {
-	return this.s.At(this.position)
+func (iter *SliceIterator) Value() interface{} {
+	return iter.s.At(iter.position)
 }
 
-func (this *SliceIterator) SetValue(val interface{}) error {
-	this.s.Set(this.position, val)
+func (iter *SliceIterator) SetValue(val interface{}) error {
+	iter.s.Set(iter.position, val)
 	return nil
 }
 
-func (this *SliceIterator) Next() ConstIterator {
-	if this.position < this.s.Len() {
-		this.position++
+func (iter *SliceIterator) Next() ConstIterator {
+	if iter.position < iter.s.Len() {
+		iter.position++
 	}
-	return this
+	return iter
 }
 
-func (this *SliceIterator) Prev() ConstBidIterator {
-	if this.position >= 0 {
-		this.position--
+func (iter *SliceIterator) Prev() ConstBidIterator {
+	if iter.position >= 0 {
+		iter.position--
 	}
-	return this
+	return iter
 }
 
-func (this *SliceIterator) Clone() ConstIterator {
-	return &SliceIterator{s: this.s, position: this.position}
+func (iter *SliceIterator) Clone() ConstIterator {
+	return &SliceIterator{s: iter.s, position: iter.position}
 }
 
-func (this *SliceIterator) IteratorAt(position int) RandomAccessIterator {
-	return &SliceIterator{s: this.s, position: position}
+func (iter *SliceIterator) IteratorAt(position int) RandomAccessIterator {
+	return &SliceIterator{s: iter.s, position: position}
 }
 
-func (this *SliceIterator) Position() int {
-	return this.position
+func (iter *SliceIterator) Position() int {
+	return iter.position
 }
 
-func (this *SliceIterator) Equal(other ConstIterator) bool {
+func (iter *SliceIterator) Equal(other ConstIterator) bool {
 	otherIter, ok := other.(*SliceIterator)
 	if !ok {
 		return false
 	}
-	if otherIter.s == this.s && otherIter.position == this.position {
+	if otherIter.s == iter.s && otherIter.position == iter.position {
 		return true
 	}
 	return false
