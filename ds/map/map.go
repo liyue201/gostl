@@ -21,6 +21,7 @@ type Option struct {
 
 type Options func(option *Option)
 
+// Key comparator option
 func WithKeyComparator(cmp Comparator) Options {
 	return func(option *Option) {
 		option.keyCmp = cmp
@@ -35,11 +36,13 @@ func WithThreadSave() Options {
 	}
 }
 
+// Map uses RbTress for internal data structure, and every key can must bee unique.
 type Map struct {
 	tree   *rbtree.RbTree
 	locker sync.Locker
 }
 
+// New new a map
 func New(opts ...Options) *Map {
 	option := Option{
 		keyCmp: defaultKeyComparator,

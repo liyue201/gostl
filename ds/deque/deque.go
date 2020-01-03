@@ -22,7 +22,7 @@ type Deque struct {
 
 func New() *Deque {
 	dq := &Deque{
-		pool: NewPool(),
+		pool: newPool(),
 		segs: make([]*Segment, 0),
 	}
 	return dq
@@ -49,12 +49,12 @@ func (d *Deque) segUsed() int {
 }
 
 func (d *Deque) PushFront(value interface{}) {
-	d.firstAvailableSegment().PushFront(value)
+	d.firstAvailableSegment().pushFront(value)
 	d.size++
 }
 
 func (d *Deque) PushBack(value interface{}) {
-	d.lastAvailableSegment().PushBack(value)
+	d.lastAvailableSegment().pushBack(value)
 	d.size++
 }
 
@@ -72,7 +72,7 @@ func (d *Deque) Insert(position int, value interface{}) {
 	}
 	seg, pos := d.pos(position)
 	if seg < d.segUsed()-seg {
-		if d.firstSegment().Full() {
+		if d.firstSegment().full() {
 			if d.segUsed() == cap(d.segs) {
 				d.expand()
 			}
@@ -83,39 +83,39 @@ func (d *Deque) Insert(position int, value interface{}) {
 				pos--
 			}
 			d.begin = d.preIndex(d.begin)
-			d.segs[d.begin] = d.pool.Get()
+			d.segs[d.begin] = d.pool.get()
 		}
 		for i := 0; i < seg; i++ {
 			cur := d.segmentAt(i)
 			next := d.segmentAt(i + 1)
-			cur.PushBack(next.PopFront())
+			cur.pushBack(next.popFront())
 		}
-		d.segmentAt(seg).Insert(pos, value)
+		d.segmentAt(seg).insert(pos, value)
 	} else {
 		// move back
-		if d.lastSegment().Full() {
+		if d.lastSegment().full() {
 			if d.segUsed() == len(d.segs) {
 				d.expand()
 			}
-			d.segs[d.end] = d.pool.Get()
+			d.segs[d.end] = d.pool.get()
 			d.end = d.nextIndex(d.end)
 		}
 		for i := d.segUsed() - 1; i > seg; i-- {
 			cur := d.segmentAt(i)
 			pre := d.segmentAt(i - 1)
-			cur.PushFront(pre.PopBack())
+			cur.pushFront(pre.popBack())
 		}
-		d.segmentAt(seg).Insert(pos, value)
+		d.segmentAt(seg).insert(pos, value)
 	}
 	d.size++
 }
 
 func (d *Deque) Front() interface{} {
-	return d.firstSegment().Front()
+	return d.firstSegment().front()
 }
 
 func (d *Deque) Back() interface{} {
-	return d.lastSegment().Back()
+	return d.lastSegment().back()
 }
 
 func (d *Deque) At(position int) interface{} {
@@ -123,7 +123,7 @@ func (d *Deque) At(position int) interface{} {
 		return nil
 	}
 	seg, pos := d.pos(position)
-	return d.segmentAt(seg).At(pos)
+	return d.segmentAt(seg).at(pos)
 }
 
 func (d *Deque) Set(position int, val interface{}) error {
@@ -131,7 +131,7 @@ func (d *Deque) Set(position int, val interface{}) error {
 		return ErrOutOffRange
 	}
 	seg, pos := d.pos(position)
-	d.segmentAt(seg).Set(pos, val)
+	d.segmentAt(seg).set(pos, val)
 	return nil
 }
 
@@ -140,14 +140,14 @@ func (d *Deque) PopFront() interface{} {
 		return nil
 	}
 	s := d.segs[d.begin]
-	if s.Size() == 1 {
+	if s.size() == 1 {
 		d.putToPool(d.segs[d.begin])
 		d.segs[d.begin] = nil
 		d.begin = d.nextIndex(d.begin)
 	}
 	d.size--
 	d.shrinkIfNeeded()
-	return s.PopFront()
+	return s.popFront()
 }
 
 func (d *Deque) PopBack() interface{} {
@@ -156,14 +156,14 @@ func (d *Deque) PopBack() interface{} {
 	}
 	seg := d.preIndex(d.end)
 	s := d.segs[seg]
-	if s.Size() == 1 {
+	if s.size() == 1 {
 		d.putToPool(d.segs[seg])
 		d.segs[seg] = nil
 		d.end = seg
 	}
 	d.size--
 	d.shrinkIfNeeded()
-	return s.PopBack()
+	return s.popBack()
 }
 
 func (d *Deque) EraseAt(position int) {
@@ -171,14 +171,14 @@ func (d *Deque) EraseAt(position int) {
 		return
 	}
 	seg, pos := d.pos(position)
-	d.segmentAt(seg).EraseAt(pos)
+	d.segmentAt(seg).eraseAt(pos)
 	if seg < d.size-seg-1 {
 		for i := seg; i > 0; i-- {
 			cur := d.segmentAt(i)
 			pre := d.segmentAt(i - 1)
-			cur.PushFront(pre.PopBack())
+			cur.pushFront(pre.popBack())
 		}
-		if d.firstSegment().Empty() {
+		if d.firstSegment().empty() {
 			d.putToPool(d.firstSegment())
 			d.segs[d.begin] = nil
 			d.begin = d.nextIndex(d.begin)
@@ -188,9 +188,9 @@ func (d *Deque) EraseAt(position int) {
 		for i := seg; i < d.segUsed()-1; i++ {
 			cur := d.segmentAt(i)
 			next := d.segmentAt(i + 1)
-			cur.PushBack(next.PopFront())
+			cur.pushBack(next.popFront())
 		}
-		if d.lastSegment().Empty() {
+		if d.lastSegment().empty() {
 			d.putToPool(d.lastSegment())
 			d.segs[d.preIndex(d.end)] = nil
 			d.end = d.preIndex(d.end)
@@ -231,33 +231,33 @@ func (d *Deque) Clear() {
 }
 
 func (d *Deque) putToPool(s *Segment) {
-	d.pool.Put(s)
-	if d.pool.Size()*6/5 > d.segUsed() {
-		d.pool.ShrinkToSize(d.segUsed() / 5)
+	d.pool.put(s)
+	if d.pool.size()*6/5 > d.segUsed() {
+		d.pool.shrinkToSize(d.segUsed() / 5)
 	}
 }
 
 func (d *Deque) firstAvailableSegment() *Segment {
-	if d.firstSegment() != nil && !d.firstSegment().Full() {
+	if d.firstSegment() != nil && !d.firstSegment().full() {
 		return d.firstSegment()
 	}
 	if d.segUsed() == len(d.segs) {
 		d.expand()
 	}
 	d.begin = d.preIndex(d.begin)
-	s := d.pool.Get()
+	s := d.pool.get()
 	d.segs[d.begin] = s
 	return s
 }
 
 func (d *Deque) lastAvailableSegment() *Segment {
-	if d.lastSegment() != nil && !d.lastSegment().Full() {
+	if d.lastSegment() != nil && !d.lastSegment().full() {
 		return d.lastSegment()
 	}
 	if d.segUsed() == len(d.segs) {
 		d.expand()
 	}
-	s := d.pool.Get()
+	s := d.pool.get()
 	d.segs[d.end] = s
 	d.end = d.nextIndex(d.end)
 	return s
@@ -283,10 +283,10 @@ func (d *Deque) segmentAt(seg int) *Segment {
 
 //pos returns the segment number and position in segment
 func (d *Deque) pos(position int) (int, int) {
-	if position <= d.firstSegment().Size()-1 {
+	if position <= d.firstSegment().size()-1 {
 		return 0, position
 	}
-	position -= d.firstSegment().Size()
+	position -= d.firstSegment().size()
 	return position/SegmentCapacity + 1, position % SegmentCapacity
 }
 

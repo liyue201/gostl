@@ -27,6 +27,7 @@ type Option struct {
 
 type Options func(option *Option)
 
+// WithThreadSave is the thread-safety option for Hamt
 func WithThreadSave() Options {
 	return func(option *Option) {
 		option.locker = &gosync.RWMutex{}
@@ -38,6 +39,7 @@ type Entry interface {
 	BitPos(depth int) uint64
 }
 
+// bitmap node
 type BitmapNode struct {
 	bitmap   uint64
 	children []Entry
@@ -50,11 +52,13 @@ type KvPair struct {
 	next  *KvPair
 }
 
+// key-value node
 type KvNode struct {
 	hash   uint64
 	kvList *KvPair
 }
 
+// Hamt is an implementation of hash array map tree
 type Hamt struct {
 	root   BitmapNode
 	locker sync.Locker
@@ -214,10 +218,12 @@ func (h *BitmapNode) erase(depth int, hash uint64, key Key) bool {
 	}
 }
 
+// Type returns the node type
 func (h *KvNode) Type() int {
 	return KV_NODE
 }
 
+// BitPos returns the bit position
 func (h *KvNode) BitPos(depth int) uint64 {
 	return uint64(1) << pos(h.hash, depth)
 }
@@ -233,7 +239,7 @@ func New(opts ...Options) *Hamt {
 	return &Hamt{locker: option.locker}
 }
 
-// Insert insert a key-value pair into hamt
+// insert insert a key-value pair into hamt
 func (h *Hamt) Insert(key Key, value interface{}) {
 	keyHash := hash(key)
 
@@ -243,7 +249,7 @@ func (h *Hamt) Insert(key Key, value interface{}) {
 	h.root.insert(0, keyHash, &KvPair{key: key, value: value})
 }
 
-// Insert returns the value by the passed key, or nil if not found
+// Get returns the value by the passed key, or nil if not found
 func (h *Hamt) Get(key Key) interface{} {
 	keyHash := hash(key)
 
@@ -253,7 +259,7 @@ func (h *Hamt) Get(key Key) interface{} {
 	return h.root.find(0, keyHash, key)
 }
 
-// Insert erase the key-value pair in hamt, and returns true if succeed.
+// Erase erase the key-value pair in hamt, and returns true if succeed.
 func (h *Hamt) Erase(key Key) bool {
 	keyHash := hash(key)
 

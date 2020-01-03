@@ -34,11 +34,11 @@ func TestPushPop(t *testing.T) {
 
 	val := q.PopBack()
 	if val != 3 || q.String() != "[5 2 7 1 6]" {
-		t.Fatalf("PopBack error: %v %v", val, q.String())
+		t.Fatalf("popBack error: %v %v", val, q.String())
 	}
 	val = q.PopFront()
 	if val != 5 || q.String() != "[2 7 1 6]" {
-		t.Fatalf("PopBack error: %v %v", val, q.String())
+		t.Fatalf("popBack error: %v %v", val, q.String())
 	}
 	t.Logf("q: %v", q)
 }

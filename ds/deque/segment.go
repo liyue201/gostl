@@ -1,144 +1,144 @@
 package deque
 
-//Segment is a fixed size ring
+//Segment is a fixed nSize ring
 type Segment struct {
 	data  []interface{}
 	begin int
 	end   int
-	size  int
+	nSize int
 }
 
-func NewSegment(capacity int) *Segment {
+func newSegment(capacity int) *Segment {
 	return &Segment{
 		data: make([]interface{}, capacity),
 	}
 }
 
-func (this *Segment) PushBack(value interface{}) {
-	this.data[this.end] = value
-	this.end = this.nextIndex(this.end)
-	this.size++
+func (s *Segment) pushBack(value interface{}) {
+	s.data[s.end] = value
+	s.end = s.nextIndex(s.end)
+	s.nSize++
 }
 
-func (this *Segment) PushFront(val interface{}) {
-	this.begin = this.preIndex(this.begin)
-	this.data[this.begin] = val
-	this.size++
+func (s *Segment) pushFront(val interface{}) {
+	s.begin = s.preIndex(s.begin)
+	s.data[s.begin] = val
+	s.nSize++
 }
 
-func (this *Segment) Insert(position int, value interface{}) {
-	if position < this.size-position {
+func (s *Segment) insert(position int, value interface{}) {
+	if position < s.nSize-position {
 		//move the front pos items
-		idx := this.preIndex(this.begin)
+		idx := s.preIndex(s.begin)
 		for i := 0; i < position; i++ {
-			this.data[idx] = this.data[this.nextIndex(idx)]
-			idx = this.nextIndex(idx)
+			s.data[idx] = s.data[s.nextIndex(idx)]
+			idx = s.nextIndex(idx)
 		}
-		this.data[idx] = value
-		this.begin = this.preIndex(this.begin)
+		s.data[idx] = value
+		s.begin = s.preIndex(s.begin)
 	} else {
 		//move the back pos items
-		idx := this.end
-		for i := 0; i < this.size-position; i++ {
-			this.data[idx] = this.data[this.preIndex(idx)]
-			idx = this.preIndex(idx)
+		idx := s.end
+		for i := 0; i < s.nSize-position; i++ {
+			s.data[idx] = s.data[s.preIndex(idx)]
+			idx = s.preIndex(idx)
 		}
-		this.data[idx] = value
-		this.end = this.nextIndex(this.end)
+		s.data[idx] = value
+		s.end = s.nextIndex(s.end)
 	}
-	this.size++
+	s.nSize++
 }
 
-func (this *Segment) PopBack() interface{} {
-	this.end = this.preIndex(this.end)
-	val := this.data[this.end]
-	this.data[this.end] = nil
-	this.size--
+func (s *Segment) popBack() interface{} {
+	s.end = s.preIndex(s.end)
+	val := s.data[s.end]
+	s.data[s.end] = nil
+	s.nSize--
 	return val
 }
 
-func (this *Segment) PopFront() interface{} {
-	val := this.data[this.begin]
-	this.data[this.begin] = nil
-	this.begin = this.nextIndex(this.begin)
-	this.size--
+func (s *Segment) popFront() interface{} {
+	val := s.data[s.begin]
+	s.data[s.begin] = nil
+	s.begin = s.nextIndex(s.begin)
+	s.nSize--
 	return val
 }
 
-func (this *Segment) EraseAt(position int) {
-	if position < this.size-position {
+func (s *Segment) eraseAt(position int) {
+	if position < s.nSize-position {
 		for i := position; i > 0; i-- {
-			index := (i + this.begin) % this.Capacity()
-			preIndex := (i - 1 + this.begin) % this.Capacity()
-			this.data[index] = this.data[preIndex]
+			index := (i + s.begin) % s.capacity()
+			preIndex := (i - 1 + s.begin) % s.capacity()
+			s.data[index] = s.data[preIndex]
 		}
-		this.data[this.begin] = nil
-		this.begin = this.nextIndex(this.begin)
+		s.data[s.begin] = nil
+		s.begin = s.nextIndex(s.begin)
 	} else {
-		for i := position; i < this.size; i++ {
-			index := (i + this.begin) % this.Capacity()
-			nextIndex := (i + 1 + this.begin) % this.Capacity()
-			this.data[index] = this.data[nextIndex]
+		for i := position; i < s.nSize; i++ {
+			index := (i + s.begin) % s.capacity()
+			nextIndex := (i + 1 + s.begin) % s.capacity()
+			s.data[index] = s.data[nextIndex]
 		}
-		this.data[this.preIndex(this.end)] = nil
-		this.end = this.preIndex(this.end)
+		s.data[s.preIndex(s.end)] = nil
+		s.end = s.preIndex(s.end)
 	}
-	this.size--
+	s.nSize--
 }
 
-func (this *Segment) Size() int {
-	return this.size
+func (s *Segment) size() int {
+	return s.nSize
 }
 
-func (this *Segment) Capacity() int {
-	return len(this.data)
+func (s *Segment) capacity() int {
+	return len(s.data)
 }
 
-func (this *Segment) Full() bool {
-	return this.size == len(this.data)
+func (s *Segment) full() bool {
+	return s.nSize == len(s.data)
 }
 
-func (this *Segment) Empty() bool {
-	return this.size == 0
+func (s *Segment) empty() bool {
+	return s.nSize == 0
 }
 
-func (this *Segment) nextIndex(index int) int {
-	return (index + 1) % this.Capacity()
+func (s *Segment) nextIndex(index int) int {
+	return (index + 1) % s.capacity()
 }
 
-func (this *Segment) preIndex(index int) int {
-	return (index - 1 + this.Capacity()) % this.Capacity()
+func (s *Segment) preIndex(index int) int {
+	return (index - 1 + s.capacity()) % s.capacity()
 }
 
-func (this *Segment) At(position int) interface{} {
-	if position < 0 || position >= this.size {
+func (s *Segment) at(position int) interface{} {
+	if position < 0 || position >= s.nSize {
 		return nil
 	}
-	return this.data[(position+this.begin)%this.Capacity()]
+	return s.data[(position+s.begin)%s.capacity()]
 }
 
-func (this *Segment) Set(position int, val interface{}) {
-	if position < 0 || position >= len(this.data) {
+func (s *Segment) set(position int, val interface{}) {
+	if position < 0 || position >= len(s.data) {
 		return
 	}
-	this.data[(position+this.begin)%this.Capacity()] = val
+	s.data[(position+s.begin)%s.capacity()] = val
 }
 
-func (this *Segment) Back() interface{} {
-	return this.At(this.size - 1)
+func (s *Segment) back() interface{} {
+	return s.at(s.nSize - 1)
 }
 
-func (this *Segment) Front() interface{} {
-	return this.At(0)
+func (s *Segment) front() interface{} {
+	return s.at(0)
 }
 
-func (this *Segment) Clear() {
-	if this.size > 0 {
-		for i := this.begin; i != this.end; i = (i + 1) % len(this.data) {
-			this.data[i] = nil
+func (s *Segment) clear() {
+	if s.nSize > 0 {
+		for i := s.begin; i != s.end; i = (i + 1) % len(s.data) {
+			s.data[i] = nil
 		}
 	}
-	this.begin = 0
-	this.end = 0
-	this.size = 0
+	s.begin = 0
+	s.end = 0
+	s.nSize = 0
 }

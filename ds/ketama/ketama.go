@@ -21,18 +21,21 @@ type Option struct {
 
 type Options func(option *Option)
 
+// thread-safety option
 func WithThreadSave() Options {
 	return func(option *Option) {
 		option.locker = &gosync.RWMutex{}
 	}
 }
 
+// replicas option
 func WithReplicas(replicas int) Options {
 	return func(option *Option) {
 		option.replicas = replicas
 	}
 }
 
+// Ketama is an implementation of consistent-hash
 type Ketama struct {
 	locker   sync.Locker
 	replicas int
@@ -81,7 +84,7 @@ func (k *Ketama) Add(nodes ...string) {
 	}
 }
 
-// Get remove nodes from ketama ring
+// Remove remove nodes from ketama ring
 func (k *Ketama) Remove(nodes ...string) {
 	k.locker.Lock()
 	defer k.locker.Unlock()

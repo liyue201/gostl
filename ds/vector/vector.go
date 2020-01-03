@@ -109,17 +109,17 @@ func (v *Vector) At(position int) interface{} {
 	return v.data[position]
 }
 
-//At returns the first value of the vector, returns nil if the vector is empty.
+//Front returns the first value of the vector, returns nil if the vector is empty.
 func (v *Vector) Front() interface{} {
 	return v.At(0)
 }
 
-//At returns the last value of the vector, returns nil if the vector is empty.
+//Back returns the last value of the vector, returns nil if the vector is empty.
 func (v *Vector) Back() interface{} {
 	return v.At(v.Size() - 1)
 }
 
-//At returns the last value of the vector and erase it, returns nil if the vector is empty.
+//PopBack returns the last value of the vector and erase it, returns nil if the vector is empty.
 func (v *Vector) PopBack() interface{} {
 	if v.Empty() {
 		return nil

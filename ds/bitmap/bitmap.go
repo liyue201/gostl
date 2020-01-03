@@ -15,6 +15,7 @@ func New(size uint64) *Bitmap {
 	return bitmap
 }
 
+// NewFromData creates a bitmap from exported data
 func NewFromData(data []byte) *Bitmap {
 	bitmap := &Bitmap{
 		size: uint64(len(data)) * 8,
@@ -32,7 +33,7 @@ func (b *Bitmap) Set(position uint64) bool {
 	return true
 }
 
-// Unset set 0 at position
+// Unset sets 0 at position
 func (b *Bitmap) Unset(position uint64) bool {
 	if position >= b.size {
 		return false
@@ -41,7 +42,7 @@ func (b *Bitmap) Unset(position uint64) bool {
 	return true
 }
 
-// Unset set 0 at position
+// Unset sets 0 at position
 func (b *Bitmap) IsSet(position uint64) bool {
 	if position >= b.size {
 		return false
@@ -74,6 +75,7 @@ func (b *Bitmap) Clear() {
 	b.data = make([]byte, b.size/8, b.size/8)
 }
 
+// Data returns the internal data
 func (b *Bitmap) Data() []byte {
 	return b.data
 }

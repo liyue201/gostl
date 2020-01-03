@@ -12,6 +12,7 @@ var (
 	defaultLocker     sync.FakeLocker
 )
 
+// ElementHolder is the holder of elements
 type ElementHolder struct {
 	elements []interface{}
 	cmpFun   Comparator
@@ -63,23 +64,27 @@ type Option struct {
 
 type Options func(option *Option)
 
+// WithComparator sets the comparator option
 func WithComparator(cmp Comparator) Options {
 	return func(option *Option) {
 		option.cmp = cmp
 	}
 }
 
+// WithThreadSave sets the ThreadSave option
 func WithThreadSave() Options {
 	return func(option *Option) {
 		option.locker = &gosync.RWMutex{}
 	}
 }
 
+// PriorityQueue is an implementation of priority queue
 type PriorityQueue struct {
 	holder *ElementHolder
 	locker sync.Locker
 }
 
+// New news a PriorityQueue
 func New(opts ...Options) *PriorityQueue {
 	option := Option{
 		cmp:    defaultComparator,
@@ -98,6 +103,7 @@ func New(opts ...Options) *PriorityQueue {
 	}
 }
 
+// Push pushes an item to q
 func (q *PriorityQueue) Push(item interface{}) {
 	q.locker.Lock()
 	defer q.locker.Unlock()
@@ -105,6 +111,7 @@ func (q *PriorityQueue) Push(item interface{}) {
 	heap.Push(q.holder, item)
 }
 
+// Pop pops an item from q
 func (q *PriorityQueue) Pop() interface{} {
 	q.locker.Lock()
 	defer q.locker.Unlock()
@@ -112,6 +119,7 @@ func (q *PriorityQueue) Pop() interface{} {
 	return heap.Pop(q.holder)
 }
 
+// Top returns the top item at q
 func (q *PriorityQueue) Top() interface{} {
 	q.locker.RLock()
 	defer q.locker.RUnlock()
@@ -119,6 +127,7 @@ func (q *PriorityQueue) Top() interface{} {
 	return q.holder.top()
 }
 
+// Top returns whether q is empty
 func (q *PriorityQueue) Empty() bool {
 	q.locker.RLock()
 	defer q.locker.RUnlock()

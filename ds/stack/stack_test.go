@@ -12,6 +12,7 @@ func TestStack(t *testing.T) {
 			t.Fatalf("expect %v, but get %v", i, s.Top())
 		}
 	}
+	t.Logf("%v", s.String())
 	if s.Size() != 10 {
 		t.Fatalf("expect %v, but get %v", 10, s.Size())
 	}

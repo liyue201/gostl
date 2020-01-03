@@ -14,18 +14,21 @@ const Salt = "g9hmj2fhgr"
 
 var defaultLocker sync.FakeLocker
 
+// BloomFilter's option
 type Option struct {
 	locker sync.Locker
 }
 
 type Options func(option *Option)
 
+// WithThreadSave use to config BloomFilter with thread safety
 func WithThreadSave() Options {
 	return func(option *Option) {
 		option.locker = &gosync.RWMutex{}
 	}
 }
 
+// BloomFilter is an implementation of bloom filter
 type BloomFilter struct {
 	m      uint64
 	k      uint64
@@ -75,6 +78,7 @@ func NewFromData(data []byte, opts ...Options) *BloomFilter {
 	return b
 }
 
+// EstimateParameters estimates m and k from n and p
 func EstimateParameters(n uint64, p float64) (m uint64, k uint64) {
 	m = uint64(math.Ceil(-1 * float64(n) * math.Log(p) / (math.Ln2 * math.Ln2)))
 	k = uint64(math.Ceil(math.Ln2 * float64(m) / float64(n)))

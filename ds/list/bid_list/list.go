@@ -49,6 +49,7 @@ type List struct {
 	len  int   // current list length
 }
 
+// New news a list
 func New() *List {
 	list := &List{}
 	return list
