@@ -30,7 +30,7 @@ func randInt64(seed uint64) uint64 {
 	return (randTable[seed&0xff] & 0xffff) | (randTable[seed>>16&0xff] & 0xffff0000) | (randTable[seed>>32&0xff] & 0xffff00000000) | (randTable[seed>>48&0xff] & 0xffff000000000000)
 }
 
-//sort the container by using quick sort
+//Sort sorts the container by using quick sort
 func Sort(first, last iterator.RandomAccessIterator, cmp ...comparator.Comparator) {
 	randSeed := getSeed()
 	if len(cmp) == 0 {

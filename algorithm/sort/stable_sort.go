@@ -5,7 +5,7 @@ import (
 	"github.com/liyue201/gostl/utils/iterator"
 )
 
-//Stable sort the container by using merge sort
+//Stable sorts the container by using merge sort
 func Stable(first, last iterator.RandomAccessIterator, cmp ...comparator.Comparator) {
 	tempSlice := make([]interface{}, last.Position()-first.Position(), last.Position()-first.Position())
 	if len(cmp) == 0 {

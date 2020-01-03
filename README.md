@@ -6,7 +6,7 @@
 [![Build Status](https://travis-ci.org/liyue201/gostl.svg?branch=master)](https://travis-ci.org/liyue201/gostl)
 [![](https://coveralls.io/repos/github/liyue201/gostl/badge.svg?branch=master)](https://coveralls.io/github/liyue201/gostl)
 
-English | [简体中文](./README.CN.md)
+English | [简体中文](./README_CN.md)
 
 ## Introduction
 GoSTL is a data structure and algorithm library for go,designed to provide functions similar to C++ STL,but more powerful.Combined with the characteristics of go language, most of the data structures have realized thread safety. When creating objects, you can specify whether to turn it on through configuration parameters.
