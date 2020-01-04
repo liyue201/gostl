@@ -5,6 +5,7 @@ import (
 	"github.com/liyue201/gostl/utils/visitor"
 )
 
+// Node is a list node
 type Node struct {
 	next  *Node
 	Value interface{}
@@ -19,13 +20,13 @@ func (n *Node) Next() *Node {
 //
 //   head -> node1 --> node2 --> node3 <- tail
 //
-
 type List struct {
 	head *Node // point to the front Node
 	tail *Node // point to the back Node
 	len  int   // current list length
 }
 
+// New news a list
 func New() *List {
 	list := &List{}
 	return list

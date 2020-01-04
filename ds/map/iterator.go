@@ -5,7 +5,7 @@ import (
 	"github.com/liyue201/gostl/utils/iterator"
 )
 
-// MapIterator  is an iterator for Map
+// MapIterator is an iterator for Map
 type MapIterator struct {
 	node *rbtree.Node
 }

@@ -2,36 +2,39 @@ package treemap
 
 import (
 	"github.com/liyue201/gostl/ds/rbtree"
-	. "github.com/liyue201/gostl/utils/comparator"
-	. "github.com/liyue201/gostl/utils/iterator"
+	"github.com/liyue201/gostl/utils/comparator"
+	"github.com/liyue201/gostl/utils/iterator"
 	"github.com/liyue201/gostl/utils/sync"
 	"github.com/liyue201/gostl/utils/visitor"
 	gosync "sync"
 )
 
 var (
-	defaultKeyComparator = BuiltinTypeComparator
+	defaultKeyComparator = comparator.BuiltinTypeComparator
 	defaultLocker        sync.FakeLocker
 )
 
-type Option struct {
-	keyCmp Comparator
+// Options holds Map's options
+type Options struct {
+	keyCmp comparator.Comparator
 	locker sync.Locker
 }
 
-type Options func(option *Option)
+// Options is a function used to set Options
+type Option func(option *Options)
 
-// Key comparator option
-func WithKeyComparator(cmp Comparator) Options {
-	return func(option *Option) {
+// WithKeyComparator sets Key comparator option
+func WithKeyComparator(cmp comparator.Comparator) Option {
+	return func(option *Options) {
 		option.keyCmp = cmp
 	}
 }
 
+// WithThreadSave set Map thread-safety,
 // Note that iterators are not thread safe, and it is useless to turn on the setting option here.
 // so don't use iterators in multi goroutines
-func WithThreadSave() Options {
-	return func(option *Option) {
+func WithThreadSave() Option {
+	return func(option *Options) {
 		option.locker = &gosync.RWMutex{}
 	}
 }
@@ -43,8 +46,8 @@ type Map struct {
 }
 
 // New new a map
-func New(opts ...Options) *Map {
-	option := Option{
+func New(opts ...Option) *Map {
+	option := Options{
 		keyCmp: defaultKeyComparator,
 		locker: defaultLocker,
 	}
@@ -92,8 +95,8 @@ func (m *Map) Erase(key interface{}) {
 	}
 }
 
-//Erase erases node by iter in the Map
-func (m *Map) EraseIter(iter ConstKvIterator) {
+//EraseIter erases node by iter in the Map
+func (m *Map) EraseIter(iter iterator.ConstKvIterator) {
 	m.locker.Lock()
 	defer m.locker.Unlock()
 
@@ -103,7 +106,7 @@ func (m *Map) EraseIter(iter ConstKvIterator) {
 	}
 }
 
-//Begin returns the iterator related to value in the map, or an invalid iterator if not exist.
+//Find returns the iterator related to value in the map, or an invalid iterator if not exist.
 func (m *Map) Find(key interface{}) *MapIterator {
 	m.locker.RUnlock()
 	defer m.locker.RUnlock()
@@ -164,7 +167,7 @@ func (m *Map) Contains(key interface{}) bool {
 	return false
 }
 
-// Contains returns the size of Map
+// Size returns the size of Map
 func (m *Map) Size() int {
 	m.locker.RLock()
 	defer m.locker.RUnlock()

@@ -9,6 +9,7 @@ import (
 // List is an implementation of Container
 var _ container.Container = (*List)(nil)
 
+// Node is a list node
 type Node struct {
 	prev  *Node
 	next  *Node
@@ -60,12 +61,12 @@ func (l *List) Len() int {
 	return l.len
 }
 
-// Len returns the number of nodes of list.
+// Size returns the number of nodes of list.
 func (l *List) Size() int {
 	return l.len
 }
 
-// Len returns true if l List is empty
+// Empty returns true if l List is empty
 func (l *List) Empty() bool {
 	return l.len == 0
 }
@@ -197,7 +198,7 @@ func (l *List) PopBack() interface{} {
 	return nil
 }
 
-// PopBack remove the first node in the list and returns it's value
+// PopFront remove the first node in the list and returns it's value
 func (l *List) PopFront() interface{} {
 	n := l.FrontNode()
 	if n != nil {

@@ -45,7 +45,7 @@ type ConstKvBidIterator interface {
 	Prev() ConstBidIterator
 }
 
-//  KvBidIterator is an interface of mutable key-value type bidirectional iterator
+// KvBidIterator is an interface of mutable key-value type bidirectional iterator
 type KvBidIterator interface {
 	ConstKvIterator
 	Prev() ConstBidIterator
