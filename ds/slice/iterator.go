@@ -1,9 +1,9 @@
 package slice
 
-import . "github.com/liyue201/gostl/utils/iterator"
+import "github.com/liyue201/gostl/utils/iterator"
 
 // SliceIterator is a RandomAccessIterator
-var _ RandomAccessIterator = (*SliceIterator)(nil)
+var _ iterator.RandomAccessIterator = (*SliceIterator)(nil)
 
 // SliceIterator is a iterator implementation of slice
 type SliceIterator struct {
@@ -31,7 +31,7 @@ func (iter *SliceIterator) SetValue(val interface{}) error {
 }
 
 // Next returns the next iterator
-func (iter *SliceIterator) Next() ConstIterator {
+func (iter *SliceIterator) Next() iterator.ConstIterator {
 	if iter.position < iter.s.Len() {
 		iter.position++
 	}
@@ -39,7 +39,7 @@ func (iter *SliceIterator) Next() ConstIterator {
 }
 
 // Prev returns the previous iterator
-func (iter *SliceIterator) Prev() ConstBidIterator {
+func (iter *SliceIterator) Prev() iterator.ConstBidIterator {
 	if iter.position >= 0 {
 		iter.position--
 	}
@@ -47,12 +47,12 @@ func (iter *SliceIterator) Prev() ConstBidIterator {
 }
 
 // Clone clones iter to a new SliceIterator
-func (iter *SliceIterator) Clone() ConstIterator {
+func (iter *SliceIterator) Clone() iterator.ConstIterator {
 	return &SliceIterator{s: iter.s, position: iter.position}
 }
 
 // IteratorAt new and iterator with position at the position passed
-func (iter *SliceIterator) IteratorAt(position int) RandomAccessIterator {
+func (iter *SliceIterator) IteratorAt(position int) iterator.RandomAccessIterator {
 	return &SliceIterator{s: iter.s, position: position}
 }
 
@@ -62,11 +62,11 @@ func (iter *SliceIterator) Position() int {
 }
 
 // Equal returns whether iter is equal to other
-func (iter *SliceIterator) Equal(other ConstIterator) bool {
+func (iter *SliceIterator) Equal(other iterator.ConstIterator) bool {
 	otherIter, ok := other.(*SliceIterator)
 	if !ok {
 		return false
-	} 
+	}
 	if otherIter.position == iter.position {
 		return true
 	}

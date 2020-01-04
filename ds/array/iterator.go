@@ -1,13 +1,13 @@
 package array
 
 import (
-	. "github.com/liyue201/gostl/utils/iterator"
+	"github.com/liyue201/gostl/utils/iterator"
 )
 
 //ArrayIterator is a RandomAccessIterator
-var _ RandomAccessIterator = (*ArrayIterator)(nil)
+var _ iterator.RandomAccessIterator = (*ArrayIterator)(nil)
 
-// DequeIterator is an implementation of iterator for Array
+// ArrayIterator is an implementation of iterator for Array
 type ArrayIterator struct {
 	array    *Array
 	position int
@@ -32,7 +32,7 @@ func (iter *ArrayIterator) SetValue(val interface{}) error {
 }
 
 // Next moves iter to next position and returns iter
-func (iter *ArrayIterator) Next() ConstIterator {
+func (iter *ArrayIterator) Next() iterator.ConstIterator {
 	if iter.position < iter.array.Size() {
 		iter.position++
 	}
@@ -40,7 +40,7 @@ func (iter *ArrayIterator) Next() ConstIterator {
 }
 
 // Prev moves iter to previous position and returns iter
-func (iter *ArrayIterator) Prev() ConstBidIterator {
+func (iter *ArrayIterator) Prev() iterator.ConstBidIterator {
 	if iter.position >= 0 {
 		iter.position--
 	}
@@ -48,15 +48,14 @@ func (iter *ArrayIterator) Prev() ConstBidIterator {
 }
 
 // Clone clones iter to a new ArrayIterator
-func (iter *ArrayIterator) Clone() ConstIterator {
+func (iter *ArrayIterator) Clone() iterator.ConstIterator {
 	return &ArrayIterator{array: iter.array, position: iter.position}
 }
 
 // IteratorAt new and iterator with position at the passed position
-func (iter *ArrayIterator) IteratorAt(position int) RandomAccessIterator {
+func (iter *ArrayIterator) IteratorAt(position int) iterator.RandomAccessIterator {
 	return &ArrayIterator{array: iter.array, position: position}
 }
-
 
 // Position return the position of iterator
 func (iter *ArrayIterator) Position() int {
@@ -64,7 +63,7 @@ func (iter *ArrayIterator) Position() int {
 }
 
 // Equal returns whether iter is equal to other
-func (iter *ArrayIterator) Equal(other ConstIterator) bool {
+func (iter *ArrayIterator) Equal(other iterator.ConstIterator) bool {
 	otherIter, ok := other.(*ArrayIterator)
 	if !ok {
 		return false

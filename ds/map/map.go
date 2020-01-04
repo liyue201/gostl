@@ -20,7 +20,7 @@ type Options struct {
 	locker sync.Locker
 }
 
-// Options is a function used to set Options
+// Option is a function used to set Options
 type Option func(option *Options)
 
 // WithKeyComparator sets Key comparator option

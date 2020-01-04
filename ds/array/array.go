@@ -5,9 +5,13 @@ import (
 	"fmt"
 )
 
+//ErrArraySizeNotEqual defines "array size are not equal"
 var ErrArraySizeNotEqual = errors.New("array size are not equal")
+
+//ErrArraySizeNotEqual defines "out off range error"
 var ErrOutOffRange = errors.New("out off range")
 
+// Array internal is a slice
 type Array struct {
 	data []interface{}
 }
@@ -33,7 +37,7 @@ func (a *Array) Fill(val interface{}) {
 	}
 }
 
-// set sets a with value val at position
+// Set sets a with value val at position
 func (a *Array) Set(position int, val interface{}) error {
 	if position < 0 || position >= len(a.data) {
 		return ErrOutOffRange
@@ -42,7 +46,7 @@ func (a *Array) Set(position int, val interface{}) error {
 	return nil
 }
 
-// at returns the value at position
+// At returns the value at position
 func (a *Array) At(position int) interface{} {
 	if position < 0 || position >= len(a.data) {
 		return nil
@@ -50,22 +54,22 @@ func (a *Array) At(position int) interface{} {
 	return a.data[position]
 }
 
-// front returns the first value of a
+// Front returns the first value of a
 func (a *Array) Front() interface{} {
 	return a.At(0)
 }
 
-// front returns the last value of a
+// Back returns the last value of a
 func (a *Array) Back() interface{} {
 	return a.At(len(a.data) - 1)
 }
 
-// front returns the size  of a
+// Size returns the size  of a
 func (a *Array) Size() int {
 	return len(a.data)
 }
 
-// front returns whether a is empty
+// Empty returns whether a is empty
 func (a *Array) Empty() bool {
 	return len(a.data) == 0
 }
@@ -104,12 +108,12 @@ func (a *Array) Last() *ArrayIterator {
 	return a.IterAt(a.Size() - 1)
 }
 
-// Last returns an iterator of a at position
+// IterAt returns an iterator of a at position
 func (a *Array) IterAt(position int) *ArrayIterator {
 	return &ArrayIterator{array: a, position: position}
 }
 
-// Last returns a with string format
+// String returns a with string format
 func (a *Array) String() string {
 	return fmt.Sprintf("%v", a.data)
 }
