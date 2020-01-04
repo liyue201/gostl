@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
-	list "github.com/liyue201/gostl/ds/list/bid_list"
-	"github.com/liyue201/gostl/ds/list/simple_list"
+	"github.com/liyue201/gostl/ds/list/bidlist"
+	"github.com/liyue201/gostl/ds/list/simplelist"
 )
 
 func simpleList() {
-	l := simple_list.New()
+	l := simplelist.New()
 	l.PushBack(1)
 	l.PushFront(2)
 	l.PushFront(3)
@@ -19,7 +19,7 @@ func simpleList() {
 }
 
 func bidList() {
-	l := list.New()
+	l := bidlist.New()
 	l.PushBack(1)
 	l.PushFront(2)
 	l.PushFront(3)

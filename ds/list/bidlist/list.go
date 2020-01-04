@@ -1,4 +1,4 @@
-package bid_list
+package bidlist
 
 import (
 	"fmt"

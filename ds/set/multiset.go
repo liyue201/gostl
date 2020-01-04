@@ -3,17 +3,19 @@ package set
 import (
 	"fmt"
 	"github.com/liyue201/gostl/ds/rbtree"
-	. "github.com/liyue201/gostl/utils/comparator"
+	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/utils/sync"
 	"github.com/liyue201/gostl/utils/visitor"
 )
 
+// MultiSet uses RbTress for internal data structure, and keys can bee repeated.
 type MultiSet struct {
 	tree   *rbtree.RbTree
-	keyCmp Comparator
+	keyCmp comparator.Comparator
 	locker sync.Locker
 }
 
+// NewMultiSet new a MultiSet
 func NewMultiSet(opts ...Options) *MultiSet {
 	option := Option{
 		keyCmp: defaultKeyComparator,
@@ -50,7 +52,7 @@ func (ms *MultiSet) Erase(element interface{}) {
 	}
 }
 
-// Begin returns the iterator related to element in the MultiSet,or an invalid iterator if not exist.
+// Find returns the iterator related to element in the MultiSet,or an invalid iterator if not exist.
 func (ms *MultiSet) Find(element interface{}) *SetIterator {
 	ms.locker.RLock()
 	defer ms.locker.RUnlock()
@@ -111,7 +113,7 @@ func (ms *MultiSet) Contains(element interface{}) bool {
 	return false
 }
 
-// Contains returns the size of MultiSet
+// Size returns the size of MultiSet
 func (ms *MultiSet) Size() int {
 	ms.locker.RLock()
 	defer ms.locker.RUnlock()

@@ -1,11 +1,11 @@
 package deque
 
 import (
-	. "github.com/liyue201/gostl/utils/iterator"
+	 "github.com/liyue201/gostl/utils/iterator"
 )
 
 //ArrayIterator is a RandomAccessIterator
-var _ RandomAccessIterator = (*DequeIterator)(nil)
+var _ iterator.RandomAccessIterator = (*DequeIterator)(nil)
 
 // DequeIterator is an implementation of iterator for Deque
 type DequeIterator struct {
@@ -32,7 +32,7 @@ func (iter *DequeIterator) SetValue(val interface{}) error {
 }
 
 // Next moves iter to next position and returns iter
-func (iter *DequeIterator) Next() ConstIterator {
+func (iter *DequeIterator) Next() iterator.ConstIterator {
 	if iter.position < iter.dq.Size() {
 		iter.position++
 	}
@@ -40,7 +40,7 @@ func (iter *DequeIterator) Next() ConstIterator {
 }
 
 // Prev moves iter to previous position and returns iter
-func (iter *DequeIterator) Prev() ConstBidIterator {
+func (iter *DequeIterator) Prev() iterator.ConstBidIterator {
 	if iter.position >= 0 {
 		iter.position--
 	}
@@ -48,12 +48,12 @@ func (iter *DequeIterator) Prev() ConstBidIterator {
 }
 
 // Clone clones iter to a new DequeIterator
-func (iter *DequeIterator) Clone() ConstIterator {
+func (iter *DequeIterator) Clone() iterator.ConstIterator {
 	return &DequeIterator{dq: iter.dq, position: iter.position}
 }
 
-//  IteratorAt new and iterator with position at the passed position
-func (iter *DequeIterator) IteratorAt(position int) RandomAccessIterator {
+// IteratorAt new and iterator with position at the passed position
+func (iter *DequeIterator) IteratorAt(position int) iterator.RandomAccessIterator {
 	return &DequeIterator{dq: iter.dq, position: position}
 }
 
@@ -63,7 +63,7 @@ func (iter *DequeIterator) Position() int {
 }
 
 // Equal returns whether iter is equal to other
-func (iter *DequeIterator) Equal(other ConstIterator) bool {
+func (iter *DequeIterator) Equal(other iterator.ConstIterator) bool {
 	otherIter, ok := other.(*DequeIterator)
 	if !ok {
 		return false

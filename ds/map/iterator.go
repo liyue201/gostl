@@ -2,10 +2,10 @@ package treemap
 
 import (
 	"github.com/liyue201/gostl/ds/rbtree"
-	. "github.com/liyue201/gostl/utils/iterator"
+	"github.com/liyue201/gostl/utils/iterator"
 )
 
-// ListIterator is an iterator for Map
+// MapIterator  is an iterator for Map
 type MapIterator struct {
 	node *rbtree.Node
 }
@@ -19,7 +19,7 @@ func (iter *MapIterator) IsValid() bool {
 }
 
 // Next returns the next iterator
-func (iter *MapIterator) Next() ConstIterator {
+func (iter *MapIterator) Next() iterator.ConstIterator {
 	if iter.IsValid() {
 		iter.node = iter.node.Next()
 	}
@@ -27,19 +27,19 @@ func (iter *MapIterator) Next() ConstIterator {
 }
 
 // Prev returns the previous iterator
-func (iter *MapIterator) Prev() ConstBidIterator {
+func (iter *MapIterator) Prev() iterator.ConstBidIterator {
 	if iter.IsValid() {
 		iter.node = iter.node.Prev()
 	}
 	return iter
 }
 
-// Prev returns the key of iter
+// Key returns the key of iter
 func (iter *MapIterator) Key() interface{} {
 	return iter.node.Key()
 }
 
-// Prev returns the value of iter
+// Value returns the value of iter
 func (iter *MapIterator) Value() interface{} {
 	return iter.node.Value()
 }
@@ -51,12 +51,12 @@ func (iter *MapIterator) SetValue(val interface{}) error {
 }
 
 // Clone clones iter to a new MapIterator
-func (iter *MapIterator) Clone() ConstIterator {
+func (iter *MapIterator) Clone() iterator.ConstIterator {
 	return &MapIterator{iter.node}
 }
 
 // Equal returns whether iter is equal to other
-func (iter *MapIterator) Equal(other ConstIterator) bool {
+func (iter *MapIterator) Equal(other iterator.ConstIterator) bool {
 	otherIter, ok := other.(*MapIterator)
 	if !ok {
 		return false

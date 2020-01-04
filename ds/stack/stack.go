@@ -3,7 +3,7 @@ package stack
 import (
 	"github.com/liyue201/gostl/ds/container"
 	"github.com/liyue201/gostl/ds/deque"
-	"github.com/liyue201/gostl/ds/list/bid_list"
+	"github.com/liyue201/gostl/ds/list/bidlist"
 	"github.com/liyue201/gostl/utils/sync"
 	gosync "sync"
 )
@@ -34,7 +34,7 @@ func WithContainer(c container.Container) Options {
 
 func WithListContainer() Options {
 	return func(option *Option) {
-		option.container = bid_list.New()
+		option.container = bidlist.New()
 	}
 }
 

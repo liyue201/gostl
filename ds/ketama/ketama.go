@@ -12,23 +12,25 @@ var (
 	defaultLocker   sync.FakeLocker
 )
 
-const Salt = "ni9fkh72hgh1g"
+const salt = "ni9fkh72hgh1g"
 
+// Option hold Ketama's options
 type Option struct {
 	replicas int
 	locker   sync.Locker
 }
 
+// Options configures Ketama's options
 type Options func(option *Option)
 
-// thread-safety option
+// WithThreadSave configures thread-safety
 func WithThreadSave() Options {
 	return func(option *Option) {
 		option.locker = &gosync.RWMutex{}
 	}
 }
 
-// replicas option
+// WithReplicas configures replicas
 func WithReplicas(replicas int) Options {
 	return func(option *Option) {
 		option.replicas = replicas
@@ -74,7 +76,7 @@ func (k *Ketama) Add(nodes ...string) {
 	defer k.locker.Unlock()
 
 	for _, node := range nodes {
-		hashs := hash.GenHashInts([]byte(Salt+node), k.replicas)
+		hashs := hash.GenHashInts([]byte(salt+node), k.replicas)
 		for i := 0; i < k.replicas; i++ {
 			key := hashs[i]
 			if !k.m.Contains(key) {
@@ -90,7 +92,7 @@ func (k *Ketama) Remove(nodes ...string) {
 	defer k.locker.Unlock()
 
 	for _, node := range nodes {
-		hashs := hash.GenHashInts([]byte(Salt+node), k.replicas)
+		hashs := hash.GenHashInts([]byte(salt+node), k.replicas)
 		for i := 0; i < k.replicas; i++ {
 			key := hashs[i]
 			iter := k.m.Find(key)
@@ -107,7 +109,7 @@ func (k *Ketama) Get(key string) (string, bool) {
 		return "", false
 	}
 
-	hashs := hash.GenHashInts([]byte(Salt+key), 1)
+	hashs := hash.GenHashInts([]byte(salt+key), 1)
 	hash := hashs[0]
 
 	k.locker.Lock()

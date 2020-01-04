@@ -9,9 +9,8 @@ import (
 func NextPermutation(first, last iterator.RandomAccessIterator, cmp ...comparator.Comparator) bool {
 	if len(cmp) == 0 {
 		return nextPermutation(first, last, comparator.BuiltinTypeComparator)
-	} else {
-		return nextPermutation(first, last, cmp[0])
 	}
+	return nextPermutation(first, last, cmp[0])
 }
 
 func nextPermutation(first, last iterator.RandomAccessIterator, cmp comparator.Comparator) bool {

@@ -1,9 +1,9 @@
-package bid_list
+package bidlist
 
-import . "github.com/liyue201/gostl/utils/iterator"
+import "github.com/liyue201/gostl/utils/iterator"
 
 //ListIterator is an implementation BidIterator
-var _ BidIterator = (*ListIterator)(nil)
+var _ iterator.BidIterator = (*ListIterator)(nil)
 
 // ListIterator is an iterator for List
 type ListIterator struct {
@@ -21,7 +21,7 @@ func (iter *ListIterator) IsValid() bool {
 }
 
 // Next returns the next iterator
-func (iter *ListIterator) Next() ConstIterator {
+func (iter *ListIterator) Next() iterator.ConstIterator {
 	if iter.node != nil {
 		iter.node = iter.node.Next()
 	}
@@ -29,7 +29,7 @@ func (iter *ListIterator) Next() ConstIterator {
 }
 
 // Prev returns the previous iterator
-func (iter *ListIterator) Prev() ConstBidIterator {
+func (iter *ListIterator) Prev() iterator.ConstBidIterator {
 	if iter.node != nil {
 		iter.node = iter.node.Prev()
 	}
@@ -53,12 +53,12 @@ func (iter *ListIterator) SetValue(value interface{}) error {
 }
 
 // Clone clones iter to a new ListIterator
-func (iter *ListIterator) Clone() ConstIterator {
+func (iter *ListIterator) Clone() iterator.ConstIterator {
 	return NewIterator(iter.node)
 }
 
 // Equal returns whether iter is equal to other
-func (iter *ListIterator) Equal(other ConstIterator) bool {
+func (iter *ListIterator) Equal(other iterator.ConstIterator) bool {
 	otherIter, ok := other.(*ListIterator)
 	if !ok {
 		return false

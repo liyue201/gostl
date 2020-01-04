@@ -20,6 +20,7 @@ func GenHashInts(seed []byte, n int) []uint64 {
 	return hashInts[:n]
 }
 
+// Hash512 return the sha512 of the data passed
 func Hash512(data []byte) []byte {
 	h := sha512.New()
 	h.Write(data)

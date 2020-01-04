@@ -1,6 +1,6 @@
 package iterator
 
-// const iterator
+// ConstIterator is an interface of const iterator
 type ConstIterator interface {
 	IsValid() bool
 	Next() ConstIterator
@@ -9,50 +9,50 @@ type ConstIterator interface {
 	Equal(other ConstIterator) bool
 }
 
-// mutable iterator
+// Iterator is an interface of mutable iterator
 type Iterator interface {
 	ConstIterator
 	SetValue(value interface{}) error
 }
 
-// const key-value type iterator
+// ConstKvIterator is an interface of const key-value type iterator
 type ConstKvIterator interface {
 	ConstIterator
 	Key() interface{}
 }
 
-// mutable key-value type iterator
+// KvIterator is an interface of mutable key-value type iterator
 type KvIterator interface {
 	ConstKvIterator
 	SetValue(value interface{}) error
 }
 
-// const bidirectional iterator
+// ConstBidIterator is an interface of const bidirectional iterator
 type ConstBidIterator interface {
 	ConstIterator
 	Prev() ConstBidIterator
 }
 
-// mutable bidirectional iterator
+// BidIterator is an interface of mutable bidirectional iterator
 type BidIterator interface {
 	ConstBidIterator
 	SetValue(value interface{}) error
 }
 
-// const key-value type bidirectional iterator
+// ConstKvBidIterator is an interface of const key-value type bidirectional iterator
 type ConstKvBidIterator interface {
 	ConstKvIterator
 	Prev() ConstBidIterator
 }
 
-// mutable key-value type bidirectional iterator
+//  KvBidIterator is an interface of mutable key-value type bidirectional iterator
 type KvBidIterator interface {
 	ConstKvIterator
 	Prev() ConstBidIterator
 	SetValue(value interface{}) error
 }
 
-// random access iterator
+// RandomAccessIterator is an interface of mutable random access iterator
 type RandomAccessIterator interface {
 	BidIterator
 	//IteratorAt returns a new iterator at position

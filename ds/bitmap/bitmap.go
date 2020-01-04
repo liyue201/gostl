@@ -1,5 +1,6 @@
 package bitmap
 
+// Bitmap is a mapping from some domain (for example, a range of integers) to bits. It is also called a bit array or bitmap index
 type Bitmap struct {
 	data []byte
 	size uint64 //bitmap's size in bit, is the multiple of 8
@@ -42,7 +43,7 @@ func (b *Bitmap) Unset(position uint64) bool {
 	return true
 }
 
-// Unset sets 0 at position
+// IsSet returns whether the position is set 1
 func (b *Bitmap) IsSet(position uint64) bool {
 	if position >= b.size {
 		return false

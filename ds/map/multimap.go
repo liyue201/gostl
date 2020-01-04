@@ -2,7 +2,7 @@ package treemap
 
 import (
 	"github.com/liyue201/gostl/ds/rbtree"
-	. "github.com/liyue201/gostl/utils/comparator"
+	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/utils/sync"
 	"github.com/liyue201/gostl/utils/visitor"
 )
@@ -10,7 +10,7 @@ import (
 // Multimap uses RbTress for internal data structure, and keys can bee repeated.
 type MultiMap struct {
 	tree   *rbtree.RbTree
-	keyCmp Comparator
+	keyCmp comparator.Comparator
 	locker sync.Locker
 }
 

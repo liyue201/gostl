@@ -12,7 +12,6 @@ English | [简体中文](./README_CN.md)
 GoSTL is a data structure and algorithm library for go,designed to provide functions similar to C++ STL,but more powerful.Combined with the characteristics of go language, most of the data structures have realized thread safety. When creating objects, you can specify whether to turn it on through configuration parameters.
 
 
-
 ## Function list
 - data structure
     - [slice](#slice)
@@ -146,11 +145,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/liyue201/gostl/ds/list/simple_list"
+	"github.com/liyue201/gostl/ds/list/simplelist"
 )
 
 func main() {
-	l := simple_list.New()
+	l := simplelist.New()
 	l.PushBack(1)
 	l.PushFront(2)
 	l.PushFront(3)
@@ -170,11 +169,11 @@ package main
 
 import (
 	"fmt"
-	list "github.com/liyue201/gostl/ds/list/bid_list"
+	"github.com/liyue201/gostl/ds/list/bidlist"
 )
 
 func main() {
-	l := list.New()
+	l := bidlist.New()
 	l.PushBack(1)
 	l.PushFront(2)
 	l.PushFront(3)
@@ -301,13 +300,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/liyue201/gostl/ds/priority_queue"
+	"github.com/liyue201/gostl/ds/priorityqueue"
 	"github.com/liyue201/gostl/utils/comparator"
 )
 
 func main() {
-	q := priority_queue.New(priority_queue.WithComparator(comparator.Reverse(comparator.BuiltinTypeComparator)),
-		priority_queue.WithThreadSave())
+	q := priorityqueue.New(priorityqueue.WithComparator(comparator.Reverse(comparator.BuiltinTypeComparator)),
+		priorityqueue.WithThreadSave())
 	q.Push(5)
 	q.Push(13)
 	q.Push(7)
