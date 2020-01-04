@@ -57,7 +57,7 @@ var _ ISlice = Float64Slice(nil)
 var _ ISlice = StringSlice(nil)
 
 ///////////////////////////////////////////////////
-// Slice functions
+// Len returns the length of s
 func (s Slice) Len() int {
 	return len(s)
 }
@@ -97,7 +97,7 @@ func (s Slice) First() *SliceIterator {
 	}
 }
 
-// First returns the last iterator of s
+// Last returns the last iterator of s
 func (s Slice) Last() *SliceIterator {
 	return &SliceIterator{s: s,
 		position: s.Len(),
@@ -105,7 +105,7 @@ func (s Slice) Last() *SliceIterator {
 }
 
 ///////////////////////////////////////////
-// IntSlice functions
+// Len returns the length of s
 func (s IntSlice) Len() int {
 	return len(s)
 }
@@ -145,7 +145,7 @@ func (s IntSlice) First() *SliceIterator {
 	}
 }
 
-// First returns the last iterator of s
+// Last returns the last iterator of s
 func (s IntSlice) Last() *SliceIterator {
 	return &SliceIterator{s: s,
 		position: s.Len() - 1,
@@ -153,7 +153,7 @@ func (s IntSlice) Last() *SliceIterator {
 }
 
 ///////////////////////////////////////
-// UIntSlice functions
+// Len returns the length of s
 func (s UIntSlice) Len() int {
 	return len(s)
 }
@@ -193,7 +193,7 @@ func (s UIntSlice) First() *SliceIterator {
 	}
 }
 
-// First returns the last iterator of s
+// Last returns the last iterator of s
 func (s UIntSlice) Last() *SliceIterator {
 	return &SliceIterator{s: s,
 		position: s.Len() - 1,
@@ -201,7 +201,7 @@ func (s UIntSlice) Last() *SliceIterator {
 }
 
 ///////////////////////////////////////
-// Int8Slice functions
+// Len returns the length of s
 func (s Int8Slice) Len() int {
 	return len(s)
 }
@@ -241,7 +241,7 @@ func (s Int8Slice) First() *SliceIterator {
 	}
 }
 
-// First returns the last iterator of s
+// Last returns the last iterator of s
 func (s Int8Slice) Last() *SliceIterator {
 	return &SliceIterator{s: s,
 		position: s.Len() - 1,
@@ -249,7 +249,7 @@ func (s Int8Slice) Last() *SliceIterator {
 }
 
 ///////////////////////////////////////
-// UInt8Slice functions
+// Len returns the length of s
 func (s UInt8Slice) Len() int {
 	return len(s)
 }
@@ -289,7 +289,7 @@ func (s UInt8Slice) First() *SliceIterator {
 	}
 }
 
-// First returns the last iterator of s
+// Last returns the last iterator of s
 func (s UInt8Slice) Last() *SliceIterator {
 	return &SliceIterator{s: s,
 		position: s.Len() - 1,
@@ -297,7 +297,7 @@ func (s UInt8Slice) Last() *SliceIterator {
 }
 
 ///////////////////////////////////////
-// Int32Slice functions
+// Len returns the length of s
 func (s Int32Slice) Len() int {
 	return len(s)
 }
@@ -337,7 +337,7 @@ func (s Int32Slice) First() *SliceIterator {
 	}
 }
 
-// First returns the last iterator of s
+// Last returns the last iterator of s
 func (s Int32Slice) Last() *SliceIterator {
 	return &SliceIterator{s: s,
 		position: s.Len() - 1,
@@ -345,7 +345,7 @@ func (s Int32Slice) Last() *SliceIterator {
 }
 
 ///////////////////////////////////////
-// UInt32Slice functions
+// Len returns the length of s
 func (s UInt32Slice) Len() int {
 	return len(s)
 }
@@ -385,7 +385,7 @@ func (s UInt32Slice) First() *SliceIterator {
 	}
 }
 
-// First returns the last iterator of s
+// Last returns the last iterator of s
 func (s UInt32Slice) Last() *SliceIterator {
 	return &SliceIterator{s: s,
 		position: s.Len() - 1,
@@ -393,7 +393,7 @@ func (s UInt32Slice) Last() *SliceIterator {
 }
 
 ///////////////////////////////////////
-// Int64Slice functions
+// Len returns the length of s
 func (s Int64Slice) Len() int {
 	return len(s)
 }
@@ -433,7 +433,7 @@ func (s Int64Slice) First() *SliceIterator {
 	}
 }
 
-// First returns the last iterator of s
+// Last returns the last iterator of s
 func (s Int64Slice) Last() *SliceIterator {
 	return &SliceIterator{s: s,
 		position: s.Len() - 1,
@@ -441,7 +441,7 @@ func (s Int64Slice) Last() *SliceIterator {
 }
 
 ///////////////////////////////////////
-// UInt64Slice functions
+// Len returns the length of s
 func (s UInt64Slice) Len() int {
 	return len(s)
 }
@@ -481,7 +481,7 @@ func (s UInt64Slice) First() *SliceIterator {
 	}
 }
 
-// First returns the last iterator of s
+// Last returns the last iterator of s
 func (s UInt64Slice) Last() *SliceIterator {
 	return &SliceIterator{s: s,
 		position: s.Len() - 1,
@@ -489,7 +489,7 @@ func (s UInt64Slice) Last() *SliceIterator {
 }
 
 ///////////////////////////////////////
-// Float32Slice functions
+// Len returns the length of s
 func (s Float32Slice) Len() int {
 	return len(s)
 }
@@ -529,7 +529,7 @@ func (s Float32Slice) First() *SliceIterator {
 	}
 }
 
-// First returns the last iterator of s
+// Last returns the last iterator of s
 func (s Float32Slice) Last() *SliceIterator {
 	return &SliceIterator{s: s,
 		position: s.Len() - 1,
@@ -537,7 +537,7 @@ func (s Float32Slice) Last() *SliceIterator {
 }
 
 ///////////////////////////////////////
-// Float64Slice functions
+// Len returns the length of s
 func (s Float64Slice) Len() int {
 	return len(s)
 }
@@ -577,7 +577,7 @@ func (s Float64Slice) First() *SliceIterator {
 	}
 }
 
-// First returns the last iterator of s
+// Last returns the last iterator of s
 func (s Float64Slice) Last() *SliceIterator {
 	return &SliceIterator{s: s,
 		position: s.Len() - 1,
@@ -585,7 +585,7 @@ func (s Float64Slice) Last() *SliceIterator {
 }
 
 ///////////////////////////////////////
-// StringSlice functions
+// Len returns the length of s
 func (s StringSlice) Len() int {
 	return len(s)
 }
@@ -625,7 +625,7 @@ func (s StringSlice) First() *SliceIterator {
 	}
 }
 
-// First returns the last iterator of s
+// Last returns the last iterator of s
 func (s StringSlice) Last() *SliceIterator {
 	return &SliceIterator{s: s,
 		position: s.Len() - 1,
