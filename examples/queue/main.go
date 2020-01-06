@@ -34,7 +34,7 @@ func example2() {
 func example3() {
 	fmt.Printf("example3:\n")
 
-	s := queue.New(queue.WithThreadSave())
+	s := queue.New(queue.WithThreadSafe())
 	sw := sync.WaitGroup{}
 	sw.Add(2)
 	go func() {

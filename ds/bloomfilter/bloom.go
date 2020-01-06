@@ -22,8 +22,8 @@ type Options struct {
 // Option is a function used to set Options
 type Option func(opt *Options)
 
-// WithThreadSave use to config BloomFilter with thread-safety
-func WithThreadSave() Option {
+// WithThreadSafe use to config BloomFilter with thread-safety
+func WithThreadSafe() Option {
 	return func(opt *Options) {
 		opt.locker = &gosync.RWMutex{}
 	}

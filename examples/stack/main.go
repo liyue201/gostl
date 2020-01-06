@@ -36,7 +36,7 @@ func example2() {
 func example3() {
 	fmt.Printf("example3:\n")
 
-	s := stack.New(stack.WithThreadSave())
+	s := stack.New(stack.WithThreadSafe())
 	sw := sync.WaitGroup{}
 	sw.Add(2)
 	go func() {

@@ -35,23 +35,9 @@ func BuiltinTypeComparator(a, b interface{}) int {
 			return -1
 		}
 	case complex64:
-		comA := a.(complex64)
-		comB := b.(complex64)
-		if real(comA) < real(comB) {
-			return -1
-		}
-		if real(comA) == real(comB) && imag(comA) < imag(comB) {
-			return -1
-		}
+		return cmpComplex64(a.(complex64), b.(complex64))
 	case complex128:
-		comA := a.(complex128)
-		comB := b.(complex128)
-		if real(comA) < real(comB) {
-			return -1
-		}
-		if real(comA) == real(comB) && imag(comA) < imag(comB) {
-			return -1
-		}
+		return cmpComplex128(a.(complex128), b.(complex128))
 	}
 	return 1
 }
@@ -94,6 +80,40 @@ func cmpInt64(a, b int64) int {
 
 func cmpUint64(a, b uint64) int {
 	if a < b {
+		return -1
+	}
+	return 1
+}
+
+func cmpFloat32(a, b float32) int {
+	if a < b {
+		return -1
+	}
+	return 1
+}
+
+func cmpFloat64(a, b float64) int {
+	if a < b {
+		return -1
+	}
+	return 1
+}
+
+func cmpComplex64(a, b complex64) int {
+	if real(a) < real(b) {
+		return -1
+	}
+	if real(a) == real(b) && imag(a) < imag(b) {
+		return -1
+	}
+	return 1
+}
+
+func cmpComplex128(a, b complex128) int {
+	if real(a) < real(b) {
+		return -1
+	}
+	if real(a) == real(b) && imag(a) < imag(b) {
 		return -1
 	}
 	return 1

@@ -22,8 +22,8 @@ type Options struct {
 // Option is a function used to set Options
 type Option func(option *Options)
 
-// WithThreadSave uses ThreadSave
-func WithThreadSave() Option {
+// WithThreadSafe uses ThreadSafe
+func WithThreadSafe() Option {
 	return func(option *Options) {
 		option.locker = &gosync.RWMutex{}
 	}

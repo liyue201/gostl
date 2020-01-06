@@ -258,7 +258,7 @@ func example2()  {
 func example3() {
 	fmt.Printf("example3:\n")
 
-	s := queue.New(queue.WithThreadSave())
+	s := queue.New(queue.WithThreadSafe())
 	sw := sync.WaitGroup{}
 	sw.Add(2)
 	go func() {
@@ -305,7 +305,7 @@ import (
 
 func main() {
 	q := priorityqueue.New(priorityqueue.WithComparator(comparator.Reverse(comparator.BuiltinTypeComparator)),
-		priorityqueue.WithThreadSave())
+		priorityqueue.WithThreadSafe())
 	q.Push(5)
 	q.Push(13)
 	q.Push(7)
@@ -360,7 +360,7 @@ func example2() {
 func example3() {
 	fmt.Printf("example3:\n")
 
-	s := stack.New(stack.WithThreadSave())
+	s := stack.New(stack.WithThreadSafe())
 	sw := sync.WaitGroup{}
 	sw.Add(2)
 	go func() {
@@ -432,7 +432,7 @@ import (
 )
 
 func main() {
-	m := treemap.New(treemap.WithThreadSave())
+	m := treemap.New(treemap.WithThreadSafe())
 
 	m.Insert("a", "aaa")
 	m.Insert("b", "bbb")
@@ -456,7 +456,7 @@ import (
 )
 
 func main()  {
-	s := set.New(set.WithThreadSave())
+	s := set.New(set.WithThreadSafe())
 	s.Insert(1)
 	s.Insert(5)
 	s.Insert(3)
@@ -509,7 +509,7 @@ import (
 )
 
 func main() {
-	filter := bloom.New(100, 4, bloom.WithThreadSave())
+	filter := bloom.New(100, 4, bloom.WithThreadSafe())
 	filter.Add("hhhh")
 	filter.Add("gggg")
 
@@ -531,7 +531,7 @@ import (
 
 func main() {
 	h := hamt.New()
-	// h := hamt.New(hamt.WithThreadSave())
+	// h := hamt.New(hamt.WithThreadSafe())
 	key := []byte("aaaaa")
 	val := "bbbbbbbbbbbbb"
 

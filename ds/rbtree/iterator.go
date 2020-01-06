@@ -38,7 +38,7 @@ func (iter *RbTreeIterator) Prev() iterator.ConstBidIterator {
 	return iter
 }
 
-// Value returns the internal key of iter
+// Key returns the internal key of iter
 func (iter *RbTreeIterator) Key() interface{} {
 	return iter.node.Key()
 }

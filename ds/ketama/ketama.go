@@ -23,8 +23,8 @@ type Option struct {
 // Options configures Ketama's options
 type Options func(option *Option)
 
-// WithThreadSave configures thread-safety
-func WithThreadSave() Options {
+// WithThreadSafe configures thread-safety
+func WithThreadSafe() Options {
 	return func(option *Option) {
 		option.locker = &gosync.RWMutex{}
 	}

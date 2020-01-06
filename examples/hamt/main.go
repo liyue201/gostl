@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	h := hamt.New(hamt.WithThreadSave())
+	h := hamt.New(hamt.WithThreadSafe())
 	key := []byte("aaaaa")
 	val := "bbbbbbbbbbbbb"
 

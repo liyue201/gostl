@@ -5,7 +5,7 @@ import (
 )
 
 func TestBoomfilter(t *testing.T) {
-	b := New(10000, 7, WithThreadSave())
+	b := New(10000, 7, WithThreadSafe())
 
 	if b.Contains("aa") {
 		t.Fatalf("expect false, but get true")

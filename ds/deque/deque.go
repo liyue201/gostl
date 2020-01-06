@@ -5,6 +5,7 @@ import (
 	"fmt"
 )
 
+// Constants definition
 const (
 	SegmentCapacity = 64
 )
@@ -37,7 +38,7 @@ func (d *Deque) Size() int {
 	return d.size
 }
 
-//Empty returns true if the Deque is empty,otherwise returns false.
+// Empty returns true if the Deque is empty,otherwise returns false.
 func (d *Deque) Empty() bool {
 	return d.size == 0
 }
@@ -52,19 +53,19 @@ func (d *Deque) segUsed() int {
 	return len(d.segs) - d.begin + d.end
 }
 
-//  PushFront pushed value to the front of d
+// PushFront pushed value to the front of d
 func (d *Deque) PushFront(value interface{}) {
 	d.firstAvailableSegment().pushFront(value)
 	d.size++
 }
 
-//  PushBack pushed value to the back of d
+// PushBack pushed value to the back of d
 func (d *Deque) PushBack(value interface{}) {
 	d.lastAvailableSegment().pushBack(value)
 	d.size++
 }
 
-//  Insert inserts value to the position of d
+// Insert inserts value to the position of d
 func (d *Deque) Insert(position int, value interface{}) {
 	if position < 0 || position > d.size {
 		return

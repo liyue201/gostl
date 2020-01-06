@@ -32,7 +32,7 @@ func WithKeyComparator(cmp comparator.Comparator) Option {
 	}
 }
 
-// WithThreadSave sets Skiplist thread-safety,
+// WithThreadSafe sets Skiplist thread-safety,
 func WithThreadSafe() Option {
 	return func(option *Options) {
 		option.locker = &gosync.RWMutex{}

@@ -6,7 +6,7 @@ import (
 )
 
 func TestHamt(t *testing.T) {
-	h := New(WithThreadSave())
+	h := New(WithThreadSafe())
 
 	for i := 0; i < 1000; i++ {
 		key := fmt.Sprintf("%07d", i)

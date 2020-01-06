@@ -31,8 +31,8 @@ type Options struct {
 // Option is a function used to set Options
 type Option func(option *Options)
 
-// WithThreadSave is the thread-safety option for Hamt
-func WithThreadSave() Option {
+// WithThreadSafe is the thread-safety option for Hamt
+func WithThreadSafe() Option {
 	return func(option *Options) {
 		option.locker = &gosync.RWMutex{}
 	}
@@ -218,17 +218,16 @@ func (h *BitmapNode) erase(depth int, hash uint64, key Key) bool {
 			return true
 		}
 		return false
-	} else {
-		bitmapNode := entry.(*BitmapNode)
-		ok := bitmapNode.erase(depth+1, hash, key)
-		// change bitmapNode to kvNode, if the a bitmapNode has only one kvNode
-		if ok && len(bitmapNode.children) == 1 && bitmapNode.children[0].Type() == KV_NODE {
-			child := bitmapNode.children[0].(*KvNode)
-			h.children[index] = child
-		}
-		return ok
 	}
-	return false
+
+	bitmapNode := entry.(*BitmapNode)
+	ok := bitmapNode.erase(depth+1, hash, key)
+	// change bitmapNode to kvNode, if the a bitmapNode has only one kvNode
+	if ok && len(bitmapNode.children) == 1 && bitmapNode.children[0].Type() == KV_NODE {
+		child := bitmapNode.children[0].(*KvNode)
+		h.children[index] = child
+	}
+	return ok
 }
 
 // Type returns the node type

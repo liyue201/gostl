@@ -5,7 +5,7 @@ import (
 )
 
 func TestMultiMap(t *testing.T) {
-	m := NewMultiMap(WithThreadSave())
+	m := NewMultiMap(WithThreadSafe())
 
 	for i := 9; i >= 0; i-- {
 		m.Insert(i, i+1000)
