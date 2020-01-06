@@ -8,6 +8,7 @@ import (
 	gosync "sync"
 )
 
+// Some constants
 const (
 	BITMAP_NODE = 0
 	KV_NODE     = 1
@@ -15,28 +16,33 @@ const (
 	Mask        = (1 << Fanout) - 1
 )
 
+// Key is a redefinition of []byte
 type Key []byte
 
 var (
 	defaultLocker sync.FakeLocker
 )
 
-type Option struct {
+type Options struct {
 	locker sync.Locker
 }
 
-type Options func(option *Option)
+type Option func(option *Options)
 
 // WithThreadSave is the thread-safety option for Hamt
-func WithThreadSave() Options {
-	return func(option *Option) {
+func WithThreadSave() Option {
+	return func(option *Options) {
 		option.locker = &gosync.RWMutex{}
 	}
 }
 
+// Entry is a tree node
 type Entry interface {
+	// Type returns the node type
 	Type() int
-	BitPos(depth int) uint64
+
+	// BitPosNum returns number from a bit position
+	BitPosNum(depth int) uint64
 }
 
 // bitmap node
@@ -64,14 +70,17 @@ type Hamt struct {
 	locker sync.Locker
 }
 
+// Type returns the node type
 func (h *BitmapNode) Type() int {
 	return BITMAP_NODE
 }
 
-func (h *BitmapNode) BitPos(depth int) uint64 {
+// BitPosNum returns the number from a bit position
+func (h *BitmapNode) BitPosNum(int) uint64 {
 	return uint64(1) << h.pos
 }
 
+// Index returns the index of a bitPos int bitmap
 func (h *BitmapNode) Index(bitPos uint64) int {
 	return bits.OnesCount64((bitPos - 1) & h.bitmap)
 }
@@ -89,7 +98,7 @@ func (h *BitmapNode) insert(depth int, hash uint64, kv *KvPair) {
 		index := h.Index(bitPos)
 		newChildren[index] = kvNode
 		for _, entry := range h.children {
-			index = h.Index(entry.BitPos(depth))
+			index = h.Index(entry.BitPosNum(depth))
 			newChildren[index] = entry
 		}
 		h.children = newChildren
@@ -197,7 +206,7 @@ func (h *BitmapNode) erase(depth int, hash uint64, key Key) bool {
 				newChildren := make([]Entry, len(h.children)-1)
 				for _, entry := range h.children {
 					if entry != nil {
-						newIndex := h.Index(entry.BitPos(depth))
+						newIndex := h.Index(entry.BitPosNum(depth))
 						newChildren[newIndex] = entry
 					}
 				}
@@ -216,6 +225,7 @@ func (h *BitmapNode) erase(depth int, hash uint64, key Key) bool {
 		}
 		return ok
 	}
+	return false
 }
 
 // Type returns the node type
@@ -223,14 +233,14 @@ func (h *KvNode) Type() int {
 	return KV_NODE
 }
 
-// BitPos returns the bit position
-func (h *KvNode) BitPos(depth int) uint64 {
+// BitPosNum returns the bit position
+func (h *KvNode) BitPosNum(depth int) uint64 {
 	return uint64(1) << pos(h.hash, depth)
 }
 
-// New new a Hamt(hash array map tree) instance
-func New(opts ...Options) *Hamt {
-	option := Option{
+// New news a Hamt(hash array map tree) instance
+func New(opts ...Option) *Hamt {
+	option := Options{
 		locker: defaultLocker,
 	}
 	for _, opt := range opts {
@@ -239,7 +249,7 @@ func New(opts ...Options) *Hamt {
 	return &Hamt{locker: option.locker}
 }
 
-// insert insert a key-value pair into hamt
+// Insert inserts a key-value pair into hamt
 func (h *Hamt) Insert(key Key, value interface{}) {
 	keyHash := hash(key)
 
@@ -259,7 +269,7 @@ func (h *Hamt) Get(key Key) interface{} {
 	return h.root.find(0, keyHash, key)
 }
 
-// Erase erase the key-value pair in hamt, and returns true if succeed.
+// Erase erases the key-value pair in hamt, and returns true if succeed.
 func (h *Hamt) Erase(key Key) bool {
 	keyHash := hash(key)
 

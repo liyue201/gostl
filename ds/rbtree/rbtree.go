@@ -3,34 +3,42 @@ package rbtree
 import (
 	"errors"
 	"fmt"
-	. "github.com/liyue201/gostl/utils/comparator"
+	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/utils/visitor"
 )
 
 var (
-	defaultKeyComparator = BuiltinTypeComparator
+	defaultKeyComparator = comparator.BuiltinTypeComparator
 )
 
-type Option struct {
-	keyCmp Comparator
+// Options holds RbTree's options
+type Options struct {
+	keyCmp comparator.Comparator
 }
 
-type Options func(option *Option)
+// Option is a function used to set Options
+type Option func(option *Options)
 
-func WithKeyComparator(cmp Comparator) Options {
-	return func(option *Option) {
+//WithKeyComparator uses cmp for key comparator
+func WithKeyComparator(cmp comparator.Comparator) Option {
+	return func(option *Options) {
 		option.keyCmp = cmp
 	}
 }
 
+// RbTree is a kind of self-balancing binary search tree in computer science.
+// Each node of the binary tree has an extra bit, and that bit is often interpreted
+// as the color (red or black) of the node. These color bits are used to ensure the tree
+// remains approximately balanced during insertions and deletions.
 type RbTree struct {
 	root   *Node
 	size   int
-	keyCmp Comparator
+	keyCmp comparator.Comparator
 }
 
-func New(opts ...Options) *RbTree {
-	option := Option{
+//New news a RbTree
+func New(opts ...Option) *RbTree {
+	option := Options{
 		keyCmp: defaultKeyComparator,
 	}
 	for _, opt := range opts {
@@ -54,7 +62,7 @@ func (t *RbTree) Find(key interface{}) interface{} {
 	return nil
 }
 
-// FindIt finds the first Node and return it as an iterator.
+// FindNode finds the first Node and return it as an iterator.
 func (t *RbTree) FindNode(key interface{}) *Node {
 	return t.findFirstNode(key)
 }
@@ -64,7 +72,7 @@ func (t *RbTree) Begin() *Node {
 	return t.First()
 }
 
-// Fisrt returns the Node with minimum key in the tree
+// First returns the Node with minimum key in the tree
 func (t *RbTree) First() *Node {
 	if t.root == nil {
 		return nil
@@ -388,7 +396,7 @@ func (t *RbTree) Traversal(visitor visitor.KvVisitor) {
 	}
 }
 
-// function for test
+// IsRbTree is a function use to test whether t is a RbTree or not
 func (t *RbTree) IsRbTree() (bool, error) {
 	// Properties:
 	// 1. Each node is either red or black.

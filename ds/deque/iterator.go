@@ -13,7 +13,7 @@ type DequeIterator struct {
 	position int
 }
 
-// IsValid returns whether iter is valid
+// IsValid returns whether iter is valid or not
 func (iter *DequeIterator) IsValid() bool {
 	if iter.position >= 0 && iter.position < iter.dq.Size() {
 		return true

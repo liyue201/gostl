@@ -36,15 +36,15 @@ func TestIter(t *testing.T) {
 	i := float32(0)
 	for iter := sliceA.Begin(); !iter.Equal(sliceA.End()); iter.Next() {
 		if iter.Value().(float32) != float32(i) {
-			t.Fatalf("expect %v, but get %v",  float32(i), iter.Value().(float32))
+			t.Fatalf("expect %v, but get %v", float32(i), iter.Value().(float32))
 		}
 		i++
 		iter.SetValue(i * 10)
 	}
 
-	for iter := sliceA.Last(); iter.IsValid();  iter.Prev() {
-		if iter.Value().(float32) != float32(i  * 10) {
-			t.Fatalf("expect %v, but get %v",  float32(i * 10), iter.Value().(float32))
+	for iter := sliceA.Last(); iter.IsValid(); iter.Prev() {
+		if iter.Value().(float32) != float32(i*10) {
+			t.Fatalf("expect %v, but get %v", float32(i*10), iter.Value().(float32))
 		}
 		i--
 	}

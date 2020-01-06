@@ -8,7 +8,7 @@ import (
 //ErrArraySizeNotEqual defines "array size are not equal"
 var ErrArraySizeNotEqual = errors.New("array size are not equal")
 
-//ErrArraySizeNotEqual defines "out off range error"
+//ErrOutOffRange defines "out off range error"
 var ErrOutOffRange = errors.New("out off range")
 
 // Array internal is a slice

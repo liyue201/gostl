@@ -13,43 +13,45 @@ var (
 	defaultContainer = deque.New()
 )
 
-type Option struct {
+// Options holds Queue's options
+type Options struct {
 	locker    sync.Locker
 	container container.Container
 }
 
-type Options func(option *Option)
+// Option is a function used to set Options
+type Option func(option *Options)
 
-// WithThreadSave uses  ThreadSave
-func WithThreadSave() Options {
-	return func(option *Option) {
+// WithThreadSave uses ThreadSave
+func WithThreadSave() Option {
+	return func(option *Options) {
 		option.locker = &gosync.RWMutex{}
 	}
 }
 
-// WithContainer uses c as for internal Container
-func WithContainer(c container.Container) Options {
-	return func(option *Option) {
+// WithContainer uses c for internal Container
+func WithContainer(c container.Container) Option {
+	return func(option *Options) {
 		option.container = c
 	}
 }
 
 // WithListContainer uses List for internal Container
-func WithListContainer() Options {
-	return func(option *Option) {
+func WithListContainer() Option {
+	return func(option *Options) {
 		option.container = bidlist.New()
 	}
 }
 
-//Queue is a first in first out data structure
+//Queue is a first-in-first-out data structure
 type Queue struct {
 	container container.Container
 	locker    sync.Locker
 }
 
 //New new a queue
-func New(opts ...Options) *Queue {
-	option := Option{
+func New(opts ...Option) *Queue {
+	option := Options{
 		locker:    defaultLocker,
 		container: defaultContainer,
 	}
@@ -71,7 +73,7 @@ func (q *Queue) Size() int {
 	return q.container.Size()
 }
 
-// Size returns whether q is empty
+// Empty returns whether q is empty or not
 func (q *Queue) Empty() bool {
 	q.locker.RLock()
 	defer q.locker.RUnlock()
@@ -95,7 +97,7 @@ func (q *Queue) Front() interface{} {
 	return q.container.Front()
 }
 
-// Front returns the last value in q
+// Back returns the last value in q
 func (q *Queue) Back() interface{} {
 	q.locker.RLock()
 	defer q.locker.RUnlock()

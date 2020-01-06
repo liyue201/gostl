@@ -2,11 +2,13 @@ package rbtree
 
 type Color bool
 
+// Define node 's colors
 const (
 	RED   = false
 	BLACK = true
 )
 
+// Node is a tree node
 type Node struct {
 	parent *Node
 	left   *Node
@@ -16,14 +18,17 @@ type Node struct {
 	value  interface{}
 }
 
+// Key returns node's key
 func (n *Node) Key() interface{} {
 	return n.key
 }
 
+// Value returns node's value
 func (n *Node) Value() interface{} {
 	return n.value
 }
 
+// SetValue sets node's value
 func (n *Node) SetValue(val interface{}) {
 	n.value = val
 }

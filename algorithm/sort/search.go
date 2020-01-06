@@ -9,9 +9,8 @@ import (
 func BinarySearch(first, last iterator.RandomAccessIterator, val interface{}, cmp ...comparator.Comparator) bool {
 	if len(cmp) == 0 {
 		return binarySearch(first, last, val, comparator.BuiltinTypeComparator)
-	} else {
-		return binarySearch(first, last, val, cmp[0])
 	}
+	return binarySearch(first, last, val, cmp[0])
 }
 
 func binarySearch(first, last iterator.RandomAccessIterator, val interface{}, cmp comparator.Comparator) bool {
@@ -40,9 +39,8 @@ func binarySearch(first, last iterator.RandomAccessIterator, val interface{}, cm
 func LowerBound(first, last iterator.RandomAccessIterator, val interface{}, cmp ...comparator.Comparator) iterator.RandomAccessIterator {
 	if len(cmp) == 0 {
 		return lowerBound(first, last, val, comparator.BuiltinTypeComparator)
-	} else {
-		return lowerBound(first, last, val, cmp[0])
 	}
+	return lowerBound(first, last, val, cmp[0])
 }
 
 func lowerBound(first, last iterator.RandomAccessIterator, val interface{}, cmp comparator.Comparator) iterator.RandomAccessIterator {
@@ -73,9 +71,8 @@ func lowerBound(first, last iterator.RandomAccessIterator, val interface{}, cmp 
 func UpperBound(first, last iterator.RandomAccessIterator, val interface{}, cmp ...comparator.Comparator) iterator.RandomAccessIterator {
 	if len(cmp) == 0 {
 		return upperBound(first, last, val, comparator.BuiltinTypeComparator)
-	} else {
-		return upperBound(first, last, val, cmp[0])
 	}
+	return upperBound(first, last, val, cmp[0])
 }
 
 func upperBound(first, last iterator.RandomAccessIterator, val interface{}, cmp comparator.Comparator) iterator.RandomAccessIterator {

@@ -70,5 +70,3 @@ func TestSort(t *testing.T) {
 	sort.Stable(a.Begin(), a.End(), comparator.BuiltinTypeComparator)
 	t.Logf("a: %v", a.String())
 }
-
-

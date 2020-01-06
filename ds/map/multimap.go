@@ -14,8 +14,8 @@ type MultiMap struct {
 	locker sync.Locker
 }
 
-func NewMultiMap(opts ...Options) *MultiMap {
-	option := Option{
+func NewMultiMap(opts ...Option) *MultiMap {
+	option := Options{
 		keyCmp: defaultKeyComparator,
 		locker: defaultLocker,
 	}

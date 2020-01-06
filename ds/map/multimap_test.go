@@ -26,4 +26,3 @@ func TestMultiMap(t *testing.T) {
 		t.Errorf("get key %v, value %v", 8, iter.Value().(int))
 	}
 }
-
