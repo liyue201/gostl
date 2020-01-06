@@ -37,9 +37,12 @@ func TestPushPop(t *testing.T) {
 
 func TestErase(t *testing.T) {
 	q := New()
+	assert.True(t, q.Empty())
 	for i := 0; i < 5; i++ {
 		q.PushBack(i + 1)
 	}
+	assert.False(t, q.Empty())
+
 	//[1 2 3 4 5]
 	t.Logf("q: %v", q)
 	q.EraseAt(1) //[1 3 4 5]
@@ -61,6 +64,9 @@ func TestErase(t *testing.T) {
 	q.EraseRange(3, 5)
 	t.Logf("q: %v", q)
 	assert.Equal(t, "[8 6 3 7]", q.String())
+
+	q.Clear()
+	assert.False(t, q.Empty())
 }
 
 func TestIterator(t *testing.T) {

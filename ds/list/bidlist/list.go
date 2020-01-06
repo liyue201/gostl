@@ -288,7 +288,7 @@ func (l *List) String() string {
 
 // Traversal traversals elements in list, it will not stop until to the end or visitor returns false
 func (l *List) Traversal(visitor visitor.Visitor) {
-	for node := l.head; node != nil; node = node.next {
+	for node := l.FrontNode(); node != nil; node = node.Next() {
 		if !visitor(node.Value) {
 			break
 		}
