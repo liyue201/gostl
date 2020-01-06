@@ -66,7 +66,7 @@ func TestErase(t *testing.T) {
 	assert.Equal(t, "[8 6 3 7]", q.String())
 
 	q.Clear()
-	assert.False(t, q.Empty())
+	assert.True(t, q.Empty())
 }
 
 func TestIterator(t *testing.T) {
