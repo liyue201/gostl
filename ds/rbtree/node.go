@@ -1,5 +1,6 @@
 package rbtree
 
+// Color defines node color type
 type Color bool
 
 // Define node 's colors

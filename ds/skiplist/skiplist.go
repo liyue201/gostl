@@ -15,42 +15,50 @@ var (
 	defaultLocker        sync.FakeLocker
 )
 
-type Option struct {
+// Options holds Skiplist's options
+type Options struct {
 	keyCmp   comparator.Comparator
 	maxLevel int
 	locker   sync.Locker
 }
 
-type Options func(option *Option)
+// Option is a function used to set Options
+type Option func(option *Options)
 
-func WithKeyComparator(cmp comparator.Comparator) Options {
-	return func(option *Option) {
+// WithKeyComparator sets Key comparator option
+func WithKeyComparator(cmp comparator.Comparator) Option {
+	return func(option *Options) {
 		option.keyCmp = cmp
 	}
 }
 
-func WithThreadSafe() Options {
-	return func(option *Option) {
+// WithThreadSave sets Skiplist thread-safety,
+func WithThreadSafe() Option {
+	return func(option *Options) {
 		option.locker = &gosync.RWMutex{}
 	}
 }
 
-func WithMaxLevel(maxLevel int) Options {
-	return func(option *Option) {
+// WithMaxLevel sets max level of Skiplist
+func WithMaxLevel(maxLevel int) Option {
+	return func(option *Options) {
 		option.maxLevel = maxLevel
 	}
 }
 
+// Node is a list node
 type Node struct {
 	next []*Element
 }
 
+// Element is a kind of node with key-value data
 type Element struct {
 	Node
 	key   interface{}
 	value interface{}
 }
 
+// Skiplist is a kind of data structure which can search quickly by exchanging space for time
 type Skiplist struct {
 	locker         sync.Locker
 	head           Node
@@ -61,8 +69,9 @@ type Skiplist struct {
 	rander         *rand.Rand
 }
 
-func New(opts ...Options) *Skiplist {
-	option := Option{
+// New news a Skiplist
+func New(opts ...Option) *Skiplist {
+	option := Options{
 		keyCmp:   defaultKeyComparator,
 		maxLevel: defaultMaxLevel,
 		locker:   defaultLocker,

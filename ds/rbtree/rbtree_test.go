@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestRbTee(t *testing.T) {
+func TestRbTeeFind(t *testing.T) {
 	tree := New()
 	for i := 0; i < 10; i++ {
 		tree.Insert(i, i+10000)
@@ -39,6 +39,16 @@ func TestRbTee(t *testing.T) {
 			}
 			t.Logf("travesal: %v = %v ", n.key, n.value)
 		}
+	}
+}
+
+func TestRbTeeDelete(t *testing.T) {
+	tree := New()
+	for i := 0; i < 10; i++ {
+		tree.Insert(i, i+10000)
+	}
+	for i := 0; i < 10; i++ {
+		tree.Insert(i, i+20000)
 	}
 
 	for n := tree.Begin(); n != nil; n = n.Next() {

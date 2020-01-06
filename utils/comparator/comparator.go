@@ -1,12 +1,12 @@
 package comparator
 
-// Should return a number:
+// Comparator Should return a number:
 //    -1 , if a < b
 //    0  , if a == b
 //    1  , if a > b
 type Comparator func(a, b interface{}) int
 
-// Compare a with b
+// BuiltinTypeComparator compare a with b
 //    -1 , if a < b
 //    0  , if a == b
 //    1  , if a > b
@@ -16,56 +16,14 @@ func BuiltinTypeComparator(a, b interface{}) int {
 		return 0
 	}
 	switch a.(type) {
-	case int:
-		if a.(int) < b.(int) {
-			return -1
-		}
-	case uint:
-		if a.(uint) < b.(uint) {
-			return -1
-		}
-	case int8:
-		if a.(int8) < b.(int8) {
-			return -1
-		}
-	case uint8:
-		if a.(uint8) < b.(uint8) {
-			return -1
-		}
-	case int16:
-		if a.(int16) < b.(int16) {
-			return -1
-		}
-	case uint16:
-		if a.(uint16) < b.(uint16) {
-			return -1
-		}
-	case int32:
-		if a.(int32) < b.(int32) {
-			return -1
-		}
-	case uint32:
-		if a.(uint32) < b.(uint32) {
-			return -1
-		}
-	case int64:
-		if a.(int64) < b.(int64) {
-			return -1
-		}
-	case uint64:
-		if a.(uint64) < b.(uint64) {
-			return -1
-		}
+	case int, uint, int8, uint8, int16, uint16, int32, uint32, int64, uint64, uintptr:
+		return cmpInt(a, b)
 	case float32:
 		if a.(float32) < b.(float32) {
 			return -1
 		}
 	case float64:
 		if a.(float64) < b.(float64) {
-			return -1
-		}
-	case uintptr:
-		if a.(uintptr) < b.(uintptr) {
 			return -1
 		}
 	case bool:
@@ -98,6 +56,49 @@ func BuiltinTypeComparator(a, b interface{}) int {
 	return 1
 }
 
+func cmpInt(a, b interface{}) int {
+	switch a.(type) {
+	case int:
+		return cmpInt64(int64(a.(int)), int64(b.(int)))
+	case uint:
+		return cmpUint64(uint64(a.(uint)), uint64(b.(uint)))
+	case int8:
+		return cmpInt64(int64(a.(int8)), int64(b.(int8)))
+	case uint8:
+		return cmpUint64(uint64(a.(uint8)), uint64(b.(uint8)))
+	case int16:
+		return cmpInt64(int64(a.(int16)), int64(b.(int16)))
+	case uint16:
+		return cmpUint64(uint64(a.(uint16)), uint64(b.(uint16)))
+	case int32:
+		return cmpInt64(int64(a.(int32)), int64(b.(int32)))
+	case uint32:
+		return cmpUint64(uint64(a.(uint32)), uint64(b.(uint32)))
+	case int64:
+		return cmpInt64(a.(int64), b.(int64))
+	case uint64:
+		return cmpUint64(a.(uint64), b.(uint64))
+	case uintptr:
+		return cmpUint64(uint64(a.(uintptr)), uint64(b.(uintptr)))
+	}
+
+	return 0
+}
+
+func cmpInt64(a, b int64) int {
+	if a < b {
+		return -1
+	}
+	return 1
+}
+
+func cmpUint64(a, b uint64) int {
+	if a < b {
+		return -1
+	}
+	return 1
+}
+
 //Reverse returns a comparator reverse to cmp
 func Reverse(cmp Comparator) Comparator {
 	return func(a, b interface{}) int {
@@ -105,6 +106,10 @@ func Reverse(cmp Comparator) Comparator {
 	}
 }
 
+// IntComparator compare a with b
+//    -1 , if a < b
+//    0  , if a == b
+//    1  , if a > b
 func IntComparator(a, b interface{}) int {
 	if a == b {
 		return 0
@@ -115,6 +120,10 @@ func IntComparator(a, b interface{}) int {
 	return 1
 }
 
+// UintComparator compare a with b
+//    -1 , if a < b
+//    0  , if a == b
+//    1  , if a > b
 func UintComparator(a, b interface{}) int {
 	if a == b {
 		return 0
@@ -125,6 +134,10 @@ func UintComparator(a, b interface{}) int {
 	return 1
 }
 
+// Int8Comparator compare a with b
+//    -1 , if a < b
+//    0  , if a == b
+//    1  , if a > b
 func Int8Comparator(a, b interface{}) int {
 	if a == b {
 		return 0
@@ -135,6 +148,10 @@ func Int8Comparator(a, b interface{}) int {
 	return 1
 }
 
+// Uint8Comparator compare a with b
+//    -1 , if a < b
+//    0  , if a == b
+//    1  , if a > b
 func Uint8Comparator(a, b interface{}) int {
 	if a == b {
 		return 0
@@ -145,6 +162,10 @@ func Uint8Comparator(a, b interface{}) int {
 	return 1
 }
 
+// Int16Comparator compare a with b
+//    -1 , if a < b
+//    0  , if a == b
+//    1  , if a > b
 func Int16Comparator(a, b interface{}) int {
 	if a == b {
 		return 0
@@ -155,6 +176,10 @@ func Int16Comparator(a, b interface{}) int {
 	return 1
 }
 
+// Uint16Comparator compare a with b
+//    -1 , if a < b
+//    0  , if a == b
+//    1  , if a > b
 func Uint16Comparator(a, b interface{}) int {
 	if a == b {
 		return 0
@@ -165,6 +190,10 @@ func Uint16Comparator(a, b interface{}) int {
 	return 1
 }
 
+// Int32Comparator compare a with b
+//    -1 , if a < b
+//    0  , if a == b
+//    1  , if a > b
 func Int32Comparator(a, b interface{}) int {
 	if a == b {
 		return 0
@@ -175,6 +204,10 @@ func Int32Comparator(a, b interface{}) int {
 	return 1
 }
 
+// Uint32Comparator compare a with b
+//    -1 , if a < b
+//    0  , if a == b
+//    1  , if a > b
 func Uint32Comparator(a, b interface{}) int {
 	if a == b {
 		return 0
@@ -185,6 +218,10 @@ func Uint32Comparator(a, b interface{}) int {
 	return 1
 }
 
+// Int64Comparator compare a with b
+//    -1 , if a < b
+//    0  , if a == b
+//    1  , if a > b
 func Int64Comparator(a, b interface{}) int {
 	if a == b {
 		return 0
@@ -195,6 +232,10 @@ func Int64Comparator(a, b interface{}) int {
 	return 1
 }
 
+// Uint64Comparator compare a with b
+//    -1 , if a < b
+//    0  , if a == b
+//    1  , if a > b
 func Uint64Comparator(a, b interface{}) int {
 	if a == b {
 		return 0
@@ -205,6 +246,10 @@ func Uint64Comparator(a, b interface{}) int {
 	return 1
 }
 
+// Float32Comparator compare a with b
+//    -1 , if a < b
+//    0  , if a == b
+//    1  , if a > b
 func Float32Comparator(a, b interface{}) int {
 	if a == b {
 		return 0
@@ -215,6 +260,10 @@ func Float32Comparator(a, b interface{}) int {
 	return 1
 }
 
+// Float64Comparator compare a with b
+//    -1 , if a < b
+//    0  , if a == b
+//    1  , if a > b
 func Float64Comparator(a, b interface{}) int {
 	if a == b {
 		return 0
@@ -225,6 +274,10 @@ func Float64Comparator(a, b interface{}) int {
 	return 1
 }
 
+// StringComparator compare a with b
+//    -1 , if a < b
+//    0  , if a == b
+//    1  , if a > b
 func StringComparator(a, b interface{}) int {
 	if a == b {
 		return 0
@@ -235,6 +288,10 @@ func StringComparator(a, b interface{}) int {
 	return 1
 }
 
+// UintptrComparator compare a with b
+//    -1 , if a < b
+//    0  , if a == b
+//    1  , if a > b
 func UintptrComparator(a, b interface{}) int {
 	if a == b {
 		return 0
@@ -245,6 +302,10 @@ func UintptrComparator(a, b interface{}) int {
 	return 1
 }
 
+// BoolComparator compare a with b
+//    -1 , if a < b
+//    0  , if a == b
+//    1  , if a > b
 func BoolComparator(a, b interface{}) int {
 	if a == b {
 		return 0
@@ -255,6 +316,10 @@ func BoolComparator(a, b interface{}) int {
 	return 1
 }
 
+// Complex64Comparator compare a with b
+//    -1 , if a < b
+//    0  , if a == b
+//    1  , if a > b
 func Complex64Comparator(a, b interface{}) int {
 	if a == b {
 		return 0
@@ -270,6 +335,10 @@ func Complex64Comparator(a, b interface{}) int {
 	return 1
 }
 
+// Complex128Comparator compare a with b
+//    -1 , if a < b
+//    0  , if a == b
+//    1  , if a > b
 func Complex128Comparator(a, b interface{}) int {
 	if a == b {
 		return 0

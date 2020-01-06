@@ -1,11 +1,11 @@
 package vector
 
 import (
-	. "github.com/liyue201/gostl/utils/iterator"
+	"github.com/liyue201/gostl/utils/iterator"
 )
 
 //ArrayIterator is a RandomAccessIterator
-var _ RandomAccessIterator = (*VectorIterator)(nil)
+var _ iterator.RandomAccessIterator = (*VectorIterator)(nil)
 
 // VectorIterator is an implementation of iterator for Vector
 type VectorIterator struct {
@@ -33,7 +33,7 @@ func (iter *VectorIterator) SetValue(val interface{}) error {
 }
 
 // Next moves iter to next position and returns iter
-func (iter *VectorIterator) Next() ConstIterator {
+func (iter *VectorIterator) Next() iterator.ConstIterator {
 	if iter.position < iter.vec.Size() {
 		iter.position++
 	}
@@ -41,7 +41,7 @@ func (iter *VectorIterator) Next() ConstIterator {
 }
 
 // Prev moves iter to previous position and returns iter
-func (iter *VectorIterator) Prev() ConstBidIterator {
+func (iter *VectorIterator) Prev() iterator.ConstBidIterator {
 	if iter.position >= 0 {
 		iter.position--
 	}
@@ -49,12 +49,12 @@ func (iter *VectorIterator) Prev() ConstBidIterator {
 }
 
 // Clone clones iter to a new DequeIterator
-func (iter *VectorIterator) Clone() ConstIterator {
+func (iter *VectorIterator) Clone() iterator.ConstIterator {
 	return &VectorIterator{vec: iter.vec, position: iter.position}
 }
 
 // IteratorAt new and iterator with position at the passed position
-func (iter *VectorIterator) IteratorAt(position int) RandomAccessIterator {
+func (iter *VectorIterator) IteratorAt(position int) iterator.RandomAccessIterator {
 	return &VectorIterator{vec: iter.vec, position: position}
 }
 
@@ -64,7 +64,7 @@ func (iter *VectorIterator) Position() int {
 }
 
 // Equal returns whether iter is equal to other
-func (iter *VectorIterator) Equal(other ConstIterator) bool {
+func (iter *VectorIterator) Equal(other iterator.ConstIterator) bool {
 	otherIter, ok := other.(*VectorIterator)
 	if !ok {
 		return false

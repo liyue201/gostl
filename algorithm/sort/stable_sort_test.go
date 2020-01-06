@@ -42,9 +42,11 @@ func TestStableSort(t *testing.T) {
 			t.Fatalf("sort vector error")
 		}
 	}
+}
 
+func TestStableSort10(t *testing.T) {
 	// test size = 10
-	v = vector.New()
+	v := vector.New()
 	for i := 0; i < 10; i++ {
 		v.PushBack(rand.Int() % 10)
 	}
@@ -56,9 +58,11 @@ func TestStableSort(t *testing.T) {
 			t.Fatalf("sort vector error")
 		}
 	}
+}
 
+func TestStableSort31(t *testing.T) {
 	// test size = 31
-	v = vector.New()
+	v := vector.New()
 	for i := 0; i < 31; i++ {
 		v.PushBack(rand.Int() % 10)
 	}
@@ -70,9 +74,11 @@ func TestStableSort(t *testing.T) {
 			t.Fatalf("sort vector error")
 		}
 	}
+}
 
+func TestStableSort50(t *testing.T) {
 	// test size = 50
-	v = vector.New()
+	v := vector.New()
 	for i := 0; i < 50; i++ {
 		v.PushBack(rand.Int() % 100)
 	}

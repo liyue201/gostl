@@ -56,9 +56,11 @@ func TestSort(t *testing.T) {
 			t.Fatalf("sort vector error")
 		}
 	}
+}
 
+func TestSort2(t *testing.T) {
 	// test size = 31
-	v = vector.New()
+	v := vector.New()
 	for i := 0; i < 31; i++ {
 		v.PushBack(rand.Int() % 10)
 	}

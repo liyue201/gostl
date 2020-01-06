@@ -14,6 +14,7 @@ type MultiMap struct {
 	locker sync.Locker
 }
 
+//NewMultiMap news a MultiMap
 func NewMultiMap(opts ...Option) *MultiMap {
 	option := Options{
 		keyCmp: defaultKeyComparator,
@@ -61,7 +62,7 @@ func (mm *MultiMap) Erase(key interface{}) {
 	}
 }
 
-//Begin returns the iterator related to key in the set, or an invalid iterator if not exist.
+//Find returns the iterator related to key in the set, or an invalid iterator if not exist.
 func (mm *MultiMap) Find(key interface{}) *MapIterator {
 	mm.locker.RLock()
 	defer mm.locker.RUnlock()
@@ -122,7 +123,7 @@ func (mm *MultiMap) Contains(value interface{}) bool {
 	return false
 }
 
-// Contains returns the size of Map
+// Size returns the size of Map
 func (mm *MultiMap) Size() int {
 	mm.locker.RLock()
 	defer mm.locker.RUnlock()

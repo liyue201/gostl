@@ -3,21 +3,19 @@ package array
 import (
 	"github.com/liyue201/gostl/algorithm/sort"
 	"github.com/liyue201/gostl/utils/comparator"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestArray(t *testing.T) {
 	a := New(10)
-	if a.Size() != 10 {
-		t.Fatalf("array size error")
-	}
+	assert.Equal(t, 10, a.Size())
 
 	va := 10
 	a.Fill(va)
 	for i := 0; i < a.Size(); i++ {
-		if val := a.At(i); val.(int) != va {
-			t.Fatalf("expect %v, but get %v", va, val)
-		}
+		val := a.At(i)
+		assert.Equal(t, va, val.(int))
 	}
 
 	b := New(10)
@@ -26,12 +24,8 @@ func TestArray(t *testing.T) {
 	a.SwapArray(b)
 
 	for i := 0; i < a.Size(); i++ {
-		if val := a.At(i); val.(int) != vb {
-			t.Fatalf("a: expect %v, but get %v", vb, val)
-		}
-		if val := b.At(i); val.(int) != va {
-			t.Fatalf("b: expect %v, but get %v", va, val)
-		}
+		assert.Equal(t, vb, a.At(i))
+		assert.Equal(t, va,  b.At(i))
 	}
 
 	for i := 0; i < a.Size(); i++ {
@@ -42,9 +36,7 @@ func TestArray(t *testing.T) {
 	i := 0
 	for iter := a.First(); iter.IsValid(); iter.Next() {
 		t.Logf("%v ", iter.Value().(int))
-		if iter.Value().(int) != i {
-			t.Fatalf("expect %v, but get %v", i, iter.Value().(int))
-		}
+		assert.Equal(t, i,   iter.Value().(int))
 		i++
 	}
 
@@ -52,21 +44,32 @@ func TestArray(t *testing.T) {
 	i = a.Size() - 1
 	for iter := a.Last(); iter.IsValid(); iter.Next() {
 		t.Logf("%v ", iter.Value().(int))
-		if iter.Value().(int) != i {
-			t.Fatalf("expect %v, but get %v", i, iter.Value().(int))
-		}
+		assert.Equal(t, i,  iter.Value().(int))
 		i--
+	}
+}
+
+func TestNewFromArray(t *testing.T) {
+	a := New(10)
+	for i := 0; i < 10; i++ {
+		a.Set(i, i*10)
+	}
+	b := NewFromArray(a)
+
+	assert.Equal(t, a.Size(), b.Size())
+	for i := 0; i < 10; i++ {
+		assert.Equal(t, a.At(i), b.At(i))
 	}
 }
 
 func TestSort(t *testing.T) {
 	a := New(10)
-	if a.Size() != 10 {
-		t.Fatalf("array size error")
-	}
 	for i := 0; i < 10; i++ {
 		a.Set(i, 10-i)
 	}
 	sort.Stable(a.Begin(), a.End(), comparator.BuiltinTypeComparator)
 	t.Logf("a: %v", a.String())
+	for  i := 0; i < a.Size() - 1; i++ {
+		assert.LessOrEqual(t, a.At(i), a.At(i))
+	}
 }

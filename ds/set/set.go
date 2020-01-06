@@ -3,50 +3,57 @@ package set
 import (
 	"fmt"
 	"github.com/liyue201/gostl/ds/rbtree"
-	. "github.com/liyue201/gostl/utils/comparator"
+	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/utils/sync"
 	"github.com/liyue201/gostl/utils/visitor"
 	gosync "sync"
 )
 
+// constants
 const (
 	Empty = 0
 )
 
 var (
-	defaultKeyComparator = BuiltinTypeComparator
+	defaultKeyComparator = comparator.BuiltinTypeComparator
 	defaultLocker        sync.FakeLocker
 )
 
-type Option struct {
-	keyCmp Comparator
+// Options holds Set's options
+type Options struct {
+	keyCmp comparator.Comparator
 	locker sync.Locker
 }
 
-type Options func(option *Option)
+// Option is a function used to set Options
+type Option func(option *Options)
 
-func WithKeyComparator(cmp Comparator) Options {
-	return func(option *Option) {
+// WithKeyComparator sets Key comparator option
+func WithKeyComparator(cmp comparator.Comparator) Option {
+	return func(option *Options) {
 		option.keyCmp = cmp
 	}
 }
 
+// WithThreadSave set Map thread-safety,
 // Note that iterators are not thread safe, and it is useless to turn on the setting option here.
 // so don't use iterators in multi goroutines
-func WithThreadSave() Options {
-	return func(option *Option) {
+func WithThreadSave() Option {
+	return func(option *Options) {
 		option.locker = &gosync.RWMutex{}
 	}
 }
 
+// Set uses RbTress for internal data structure, and every key can must bee unique.
 type Set struct {
 	tree   *rbtree.RbTree
-	keyCmp Comparator
+	keyCmp comparator.Comparator
 	locker sync.Locker
 }
 
-func New(opts ...Options) *Set {
-	option := Option{
+// New news a set
+func New(opts ...Option) *Set {
+	option := Options{
 		keyCmp: defaultKeyComparator,
 		locker: defaultLocker,
 	}
@@ -83,7 +90,7 @@ func (s *Set) Erase(element interface{}) {
 	}
 }
 
-// Begin returns the iterator related to element in the Set,or an invalid iterator if not exist.
+// Find returns the iterator related to element in the Set,or an invalid iterator if not exist.
 func (s *Set) Find(element interface{}) *SetIterator {
 	s.locker.RLock()
 	defer s.locker.RUnlock()
@@ -141,7 +148,7 @@ func (s *Set) Contains(element interface{}) bool {
 	return false
 }
 
-// Contains returns the size of Set
+// Size returns the size of Set
 func (s *Set) Size() int {
 	s.locker.RLock()
 	defer s.locker.RUnlock()

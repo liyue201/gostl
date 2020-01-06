@@ -62,7 +62,7 @@ func (iter *DequeIterator) Position() int {
 	return iter.position
 }
 
-// Equal returns whether iter is equal to other
+// Equal returns whether iter is equal to other or not
 func (iter *DequeIterator) Equal(other iterator.ConstIterator) bool {
 	otherIter, ok := other.(*DequeIterator)
 	if !ok {

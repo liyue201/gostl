@@ -9,9 +9,12 @@ const (
 	SegmentCapacity = 64
 )
 
-var ErrOutOffRange = errors.New("out off range")
+// Define internal errors
+var (
+	ErrOutOffRange = errors.New("out off range")
+)
 
-//Deque is a ring
+// Deque supports efficient data insertion from the head and tail, random access and iterator access.
 type Deque struct {
 	pool  *Pool
 	segs  []*Segment
@@ -20,6 +23,7 @@ type Deque struct {
 	size  int
 }
 
+// New news a deque
 func New() *Deque {
 	dq := &Deque{
 		pool: newPool(),
@@ -28,7 +32,7 @@ func New() *Deque {
 	return dq
 }
 
-//Size returns the size of deque
+// Size returns the size of deque
 func (d *Deque) Size() int {
 	return d.size
 }
@@ -48,16 +52,19 @@ func (d *Deque) segUsed() int {
 	return len(d.segs) - d.begin + d.end
 }
 
+//  PushFront pushed value to the front of d
 func (d *Deque) PushFront(value interface{}) {
 	d.firstAvailableSegment().pushFront(value)
 	d.size++
 }
 
+//  PushBack pushed value to the back of d
 func (d *Deque) PushBack(value interface{}) {
 	d.lastAvailableSegment().pushBack(value)
 	d.size++
 }
 
+//  Insert inserts value to the position of d
 func (d *Deque) Insert(position int, value interface{}) {
 	if position < 0 || position > d.size {
 		return
@@ -110,14 +117,17 @@ func (d *Deque) Insert(position int, value interface{}) {
 	d.size++
 }
 
+// Front returns the front value of d
 func (d *Deque) Front() interface{} {
 	return d.firstSegment().front()
 }
 
+// Back returns the back value of d
 func (d *Deque) Back() interface{} {
 	return d.lastSegment().back()
 }
 
+// At returns the value of d at position
 func (d *Deque) At(position int) interface{} {
 	if position < 0 || position >= d.Size() {
 		return nil
@@ -126,6 +136,7 @@ func (d *Deque) At(position int) interface{} {
 	return d.segmentAt(seg).at(pos)
 }
 
+// Set sets the value of d at position
 func (d *Deque) Set(position int, val interface{}) error {
 	if position < 0 || position >= d.size {
 		return ErrOutOffRange
@@ -135,6 +146,7 @@ func (d *Deque) Set(position int, val interface{}) error {
 	return nil
 }
 
+// PopFront returns the font value fo d, and removes it
 func (d *Deque) PopFront() interface{} {
 	if d.size == 0 {
 		return nil
@@ -150,6 +162,7 @@ func (d *Deque) PopFront() interface{} {
 	return s.popFront()
 }
 
+// PopBack returns the back value fo d, and removes it
 func (d *Deque) PopBack() interface{} {
 	if d.size == 0 {
 		return nil
@@ -166,6 +179,7 @@ func (d *Deque) PopBack() interface{} {
 	return s.popBack()
 }
 
+// EraseAt erases the item at position
 func (d *Deque) EraseAt(position int) {
 	if position < 0 || position >= d.size {
 		return
@@ -200,7 +214,7 @@ func (d *Deque) EraseAt(position int) {
 	d.size--
 }
 
-// EraseRange erases data in range [firstPos, lastPos)
+// EraseRange erases items in range [firstPos, lastPos)
 func (d *Deque) EraseRange(firstPos, lastPos int) {
 	if firstPos < 0 || firstPos >= lastPos || lastPos > d.size {
 		return
@@ -326,6 +340,7 @@ func (d *Deque) preIndex(index int) int {
 	return (index - 1 + cap(d.segs)) % cap(d.segs)
 }
 
+// String returns d in string format
 func (d *Deque) String() string {
 	str := "["
 	for i := 0; i < d.Size(); i++ {
@@ -339,24 +354,27 @@ func (d *Deque) String() string {
 	return str
 }
 
-///////////////////////////////////////////////////
-//iterator API
+// Begin returns the first iterator of d
 func (d *Deque) Begin() *DequeIterator {
 	return d.First()
 }
 
+// End returns the end iterator of d
 func (d *Deque) End() *DequeIterator {
 	return d.IterAt(d.Size())
 }
 
+// First returns the first iterator of d
 func (d *Deque) First() *DequeIterator {
 	return d.IterAt(0)
 }
 
+// Last returns the last iterator of d
 func (d *Deque) Last() *DequeIterator {
 	return d.IterAt(d.Size() - 1)
 }
 
+// IterAt returns the iterator at position of d
 func (d *Deque) IterAt(position int) *DequeIterator {
 	return &DequeIterator{dq: d, position: position}
 }

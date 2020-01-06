@@ -1,7 +1,6 @@
 package rbtree
 
 import (
-	"errors"
 	"fmt"
 	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/utils/visitor"
@@ -230,72 +229,81 @@ func (t *RbTree) Delete(node *Node) {
 
 func (t *RbTree) rbDeleteFixup(x, parent *Node) {
 	var w *Node
-
 	for x != t.root && getColor(x) == BLACK {
 		if x != nil {
 			parent = x.parent
 		}
 		if x == parent.left {
-			w = parent.right
-			if w.color == RED {
-				w.color = BLACK
-				parent.color = RED
-				t.leftRotate(parent)
-				w = parent.right
-			}
-			if getColor(w.left) == BLACK && getColor(w.right) == BLACK {
-				w.color = RED
-				x = parent
-			} else {
-				if getColor(w.right) == BLACK {
-					if w.left != nil {
-						w.left.color = BLACK
-					}
-					w.color = RED
-					t.rightRotate(w)
-					w = parent.right
-				}
-				w.color = parent.color
-				parent.color = BLACK
-				if w.right != nil {
-					w.right.color = BLACK
-				}
-				t.leftRotate(parent)
-				x = t.root
-			}
+			x, w = t.rbFixupLeft(x, parent, w)
 		} else {
-			w = parent.left
-			if w.color == RED {
-				w.color = BLACK
-				parent.color = RED
-				t.rightRotate(parent)
-				w = parent.left
-			}
-			if getColor(w.left) == BLACK && getColor(w.right) == BLACK {
-				w.color = RED
-				x = parent
-			} else {
-				if getColor(w.left) == BLACK {
-					if w.right != nil {
-						w.right.color = BLACK
-					}
-					w.color = RED
-					t.leftRotate(w)
-					w = parent.left
-				}
-				w.color = parent.color
-				parent.color = BLACK
-				if w.left != nil {
-					w.left.color = BLACK
-				}
-				t.rightRotate(parent)
-				x = t.root
-			}
+			x, w = t.rbFixupRight(x, parent, w)
 		}
 	}
 	if x != nil {
 		x.color = BLACK
 	}
+}
+
+func (t *RbTree) rbFixupLeft(x, parent, w *Node) (*Node, *Node) {
+	w = parent.right
+	if w.color == RED {
+		w.color = BLACK
+		parent.color = RED
+		t.leftRotate(parent)
+		w = parent.right
+	}
+	if getColor(w.left) == BLACK && getColor(w.right) == BLACK {
+		w.color = RED
+		x = parent
+	} else {
+		if getColor(w.right) == BLACK {
+			if w.left != nil {
+				w.left.color = BLACK
+			}
+			w.color = RED
+			t.rightRotate(w)
+			w = parent.right
+		}
+		w.color = parent.color
+		parent.color = BLACK
+		if w.right != nil {
+			w.right.color = BLACK
+		}
+		t.leftRotate(parent)
+		x = t.root
+	}
+	return x, w
+}
+
+func (t *RbTree) rbFixupRight(x, parent, w *Node) (*Node, *Node) {
+	w = parent.left
+	if w.color == RED {
+		w.color = BLACK
+		parent.color = RED
+		t.rightRotate(parent)
+		w = parent.left
+	}
+	if getColor(w.left) == BLACK && getColor(w.right) == BLACK {
+		w.color = RED
+		x = parent
+	} else {
+		if getColor(w.left) == BLACK {
+			if w.right != nil {
+				w.right.color = BLACK
+			}
+			w.color = RED
+			t.leftRotate(w)
+			w = parent.left
+		}
+		w.color = parent.color
+		parent.color = BLACK
+		if w.left != nil {
+			w.left.color = BLACK
+		}
+		t.rightRotate(parent)
+		x = t.root
+	}
+	return x, w
 }
 
 func (t *RbTree) leftRotate(x *Node) {
@@ -362,7 +370,7 @@ func (t *RbTree) findFirstNode(key interface{}) *Node {
 	return nil
 }
 
-// findNode returns the first Node that equal or greater than key, if not exists return nil.
+// FindLowerBoundNode returns the first Node that equal or greater than key, if not exists return nil.
 func (t *RbTree) FindLowerBoundNode(key interface{}) *Node {
 	return t.findLowerBoundNode(t.root, key)
 }
@@ -375,16 +383,13 @@ func (t *RbTree) findLowerBoundNode(x *Node, key interface{}) *Node {
 		ret := t.findLowerBoundNode(x.left, key)
 		if ret == nil {
 			return x
-		} else {
-			if t.keyCmp(ret.key, x.key) <= 0 {
-				return ret
-			} else {
-				return x
-			}
 		}
-	} else {
-		return t.findLowerBoundNode(x.right, key)
+		if t.keyCmp(ret.key, x.key) <= 0 {
+			return ret
+		}
+		return x
 	}
+	return t.findLowerBoundNode(x.right, key)
 }
 
 // Traversal traversals elements in rbtree, it will not stop until to the end or visitor returns false
@@ -406,7 +411,7 @@ func (t *RbTree) IsRbTree() (bool, error) {
 	// 5. Every path from a given node to any of its descendant NIL nodes contains the same number of black nodes.
 	_, property, ok := t.test(t.root)
 	if !ok {
-		return false, errors.New(fmt.Sprintf("violate property %v", property))
+		return false, fmt.Errorf("violate property %v", property)
 	}
 	return true, nil
 }

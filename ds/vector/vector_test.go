@@ -30,7 +30,12 @@ func TestVectorBase(t *testing.T) {
 	if val := v.Back(); val == nil || val.(int) != 2 {
 		t.Fatalf("val error: %v ", val)
 	}
+}
 
+func TestVectorResize(t *testing.T) {
+	v := New(WithCapacity(10))
+	v.PushBack(1)
+	v.PushBack(2)
 	v.ShrinkToFit()
 	if v.Capacity() != 2 {
 		t.Fatalf("capacity error")

@@ -60,13 +60,19 @@ func TestList(t *testing.T) {
 	if list.String() != "[7 8 5]" {
 		t.Errorf("list data error: %s", list.String())
 	}
+}
 
+func TestPushBackList(t *testing.T) {
+	list := New()
+	list.PushBack(7)
+	list.PushBack(8)
+	list.PushBack(5)
 	list.PushBackList(list)
 	t.Logf("list: %v", list)
 	if list.String() != "[7 8 5 7 8 5]" {
 		t.Errorf("list data error: %s", list.String())
 	}
-	/////////////////////////////
+
 	list2 := New()
 	list2.PushBack(1)
 	list2.PushBack(2)

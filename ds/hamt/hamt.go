@@ -23,10 +23,12 @@ var (
 	defaultLocker sync.FakeLocker
 )
 
+// Options holds Hamt's options
 type Options struct {
 	locker sync.Locker
 }
 
+// Option is a function used to set Options
 type Option func(option *Options)
 
 // WithThreadSave is the thread-safety option for Hamt
@@ -45,20 +47,21 @@ type Entry interface {
 	BitPosNum(depth int) uint64
 }
 
-// bitmap node
+// BitmapNode defines Hamt's bitmap node
 type BitmapNode struct {
 	bitmap   uint64
 	children []Entry
 	pos      uint8 //position in parent array, in range [0, 64)
 }
 
+// KvPair is a list node with actually value
 type KvPair struct {
 	key   []byte
 	value interface{}
 	next  *KvPair
 }
 
-// key-value node
+//KvNode is Hamt's key-value node
 type KvNode struct {
 	hash   uint64
 	kvList *KvPair

@@ -16,8 +16,8 @@ type MultiSet struct {
 }
 
 // NewMultiSet new a MultiSet
-func NewMultiSet(opts ...Options) *MultiSet {
-	option := Option{
+func NewMultiSet(opts ...Option) *MultiSet {
+	option := Options{
 		keyCmp: defaultKeyComparator,
 		locker: defaultLocker,
 	}

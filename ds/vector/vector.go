@@ -3,14 +3,14 @@ package vector
 import (
 	"errors"
 	"fmt"
-	. "github.com/liyue201/gostl/utils/iterator"
+	"github.com/liyue201/gostl/utils/iterator"
 )
 
 // Define some errors
 var (
-	ErrOutOffRange = errors.New("out off range")
-	ErrEmpty = errors.New("vector is empty")
- 	ErrInvalidIterator = errors.New("invalid iterator")
+	ErrOutOffRange     = errors.New("out off range")
+	ErrEmpty           = errors.New("vector is empty")
+	ErrInvalidIterator = errors.New("invalid iterator")
 )
 
 // Options holds Vector's options
@@ -103,7 +103,7 @@ func (v *Vector) EraseAt(position int) error {
 	return v.EraseIndexRange(position, position+1)
 }
 
-// EraseAt erases values at range[first, last)
+// EraseIndexRange  erases values at range[first, last)
 func (v *Vector) EraseIndexRange(first, last int) error {
 	if first > last {
 		return nil
@@ -201,27 +201,27 @@ func (v *Vector) Last() *VectorIterator {
 	return v.IterAt(v.Size() - 1)
 }
 
-// Last returns the iterator at position of v
+// IterAt  returns the iterator at position of v
 func (v *Vector) IterAt(position int) *VectorIterator {
 	return &VectorIterator{vec: v, position: position}
 }
 
 // Insert inserts val at the position of iter
-func (v *Vector) Insert(iter ConstIterator, val interface{}) *VectorIterator {
+func (v *Vector) Insert(iter iterator.ConstIterator, val interface{}) *VectorIterator {
 	index := iter.(*VectorIterator).position
 	v.InsertAt(index, val)
 	return &VectorIterator{vec: v, position: index}
 }
 
 // Erase erases val at the position of iter
-func (v *Vector) Erase(iter ConstIterator) *VectorIterator {
+func (v *Vector) Erase(iter iterator.ConstIterator) *VectorIterator {
 	index := iter.(*VectorIterator).position
 	v.EraseAt(index)
 	return &VectorIterator{vec: v, position: index}
 }
 
 // EraseRange erases all val in the range[first, last)
-func (v *Vector) EraseRange(first, last ConstIterator) *VectorIterator {
+func (v *Vector) EraseRange(first, last iterator.ConstIterator) *VectorIterator {
 	from := first.(*VectorIterator).position
 	to := last.(*VectorIterator).position
 	v.EraseIndexRange(from, to)
