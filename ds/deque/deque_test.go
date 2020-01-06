@@ -1,6 +1,9 @@
 package deque
 
-import "testing"
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
 
 func TestPushPop(t *testing.T) {
 	q := New()
@@ -11,35 +14,24 @@ func TestPushPop(t *testing.T) {
 
 	t.Logf("q: %v", q)
 
-	if q.Size() != 3 {
-		t.Fatalf("size error: %v", q.Size())
-	}
-	if q.Front() != 2 {
-		t.Fatalf("front error: %v", q.Front())
-	}
-	if q.Back() != 3 {
-		t.Fatalf("back error: %v", q.Front())
-	}
-	if q.At(1) != 1 {
-		t.Fatalf("at 1 error: %v", q.At(1))
-	}
+	assert.Equal(t, 3, q.Size())
+	assert.Equal(t, 2, q.Front())
+	assert.Equal(t, 3, q.Back())
+	assert.Equal(t, 1, q.At(1))
+
 	q.Insert(0, 5) //[5 2 1 3]
 	q.Insert(3, 6) //[5 2 1 6 3]
 	q.Insert(2, 7) //[5 2 7 1 6 3]
 	t.Logf("q: %v", q)
 
-	if q.String() != "[5 2 7 1 6 3]" {
-		t.Fatalf("Insert error: %v", q.String())
-	}
+	assert.Equal(t, "[5 2 7 1 6 3]", q.String())
 
-	val := q.PopBack()
-	if val != 3 || q.String() != "[5 2 7 1 6]" {
-		t.Fatalf("popBack error: %v %v", val, q.String())
-	}
-	val = q.PopFront()
-	if val != 5 || q.String() != "[2 7 1 6]" {
-		t.Fatalf("popBack error: %v %v", val, q.String())
-	}
+	assert.Equal(t, 3, q.PopBack())
+	assert.Equal(t, "[5 2 7 1 6]", q.String())
+
+	assert.Equal(t, 5, q.PopFront())
+	assert.Equal(t, "[2 7 1 6]", q.String())
+
 	t.Logf("q: %v", q)
 }
 
@@ -49,32 +41,49 @@ func TestErase(t *testing.T) {
 		q.PushBack(i + 1)
 	}
 	//[1 2 3 4 5]
-
 	t.Logf("q: %v", q)
-
 	q.EraseAt(1) //[1 3 4 5]
-	if q.String() != "[1 3 4 5]" {
-		t.Fatalf("Erase pos=1 error: %v", q.String())
-	}
-	t.Logf("q: %v", q)
+	assert.Equal(t, "[1 3 4 5]", q.String())
 
-	q.EraseAt(0) //[3 4 5]
 	t.Logf("q: %v", q)
-	if q.String() != "[3 4 5]" {
-		t.Fatalf("Erase  error: %v", q.String())
-	}
+	q.EraseAt(0) //[3 4 5]
+
+	t.Logf("q: %v", q)
+	assert.Equal(t, "[3 4 5]", q.String())
 
 	q.PushFront(6)
 	q.PushBack(7)
 	q.PushFront(8)
 	t.Logf("q: %v", q)
-	if q.String() != "[8 6 3 4 5 7]" {
-		t.Fatalf("Push error: %v", q.String())
-	}
+
+	assert.Equal(t, "[8 6 3 4 5 7]", q.String())
 
 	q.EraseRange(3, 5)
 	t.Logf("q: %v", q)
-	if q.String() != "[8 6 3 7]" {
-		t.Fatalf("Push error: %v", q.String())
+	assert.Equal(t, "[8 6 3 7]", q.String())
+}
+
+func TestIterator(t *testing.T) {
+	q := New()
+	for i := 0; i < 10; i++ {
+		q.PushBack(i)
 	}
+	n := 0
+	for iter := q.Begin(); !iter.Equal(q.End()); iter.Next() {
+		assert.Equal(t, n, iter.Value())
+		n++
+	}
+
+	n = 9
+	for iter := q.Last(); iter.IsValid(); iter.Prev() {
+		assert.Equal(t, n, iter.Value())
+		n--
+	}
+
+	iter := q.First().IteratorAt(5).Clone().(*DequeIterator)
+	assert.Equal(t, 5, iter.Position())
+	assert.Equal(t, 5, iter.Value())
+
+	iter.SetValue(555)
+	assert.Equal(t, 555, iter.Value())
 }

@@ -48,6 +48,7 @@ func (iter *RbTreeIterator) Value() interface{} {
 	return iter.node.Value()
 }
 
+//SetValue sets the internal value of iter
 func (iter *RbTreeIterator) SetValue(val interface{}) error {
 	iter.node.SetValue(val)
 	return nil

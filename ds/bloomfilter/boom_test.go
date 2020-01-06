@@ -1,29 +1,22 @@
 package bloom
 
 import (
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestBoomfilter(t *testing.T) {
 	b := New(10000, 7, WithThreadSafe())
 
-	if b.Contains("aa") {
-		t.Fatalf("expect false, but get true")
-	}
-
+	assert.False(t, b.Contains("aa"))
 	b.Add("aa")
-	if !b.Contains("aa") {
-		t.Fatalf("expect true, but get false")
-	}
-	other := NewFromData(b.Data())
+	assert.True(t, b.Contains("aa"))
 
-	if !other.Contains("aa") {
-		t.Fatalf("expect true, but get false")
-	}
+	other := NewFromData(b.Data(), WithThreadSafe())
 
-	b = NewWithEstimates(100000, 0.0001)
+	assert.True(t, other.Contains("aa"))
+
+	b = NewWithEstimates(100000, 0.0001, WithThreadSafe())
 	b.Add("bbbbb")
-	if !b.Contains("bbbbb") {
-		t.Fatalf("expect true, but get false")
-	}
+	assert.True(t, b.Contains("bbbbb"))
 }

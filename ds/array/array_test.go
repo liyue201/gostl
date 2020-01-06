@@ -10,6 +10,7 @@ import (
 func TestArray(t *testing.T) {
 	a := New(10)
 	assert.Equal(t, 10, a.Size())
+	assert.Equal(t, false, a.Empty())
 
 	va := 10
 	a.Fill(va)
@@ -72,4 +73,29 @@ func TestSort(t *testing.T) {
 	for i := 0; i < a.Size()-1; i++ {
 		assert.LessOrEqual(t, a.At(i), a.At(i))
 	}
+}
+
+func TestIterator(t *testing.T) {
+	a := New(10)
+	n := 0
+	for iter := a.Begin(); iter.IsValid(); iter.Next() {
+		iter.SetValue(n)
+		n++
+	}
+	assert.Equal(t, 2, a.At(2))
+	assert.Equal(t, 0, a.Front())
+	assert.Equal(t, 9, a.Back())
+
+	n = 0
+	for iter := a.Begin(); !iter.Equal(a.End()); iter.Next() {
+		assert.Equal(t, n, iter.Value())
+		n++
+	}
+
+	n = 9
+	for iter := a.Last(); iter.IsValid(); iter.Prev() {
+		assert.Equal(t, n, iter.Value())
+		n--
+	}
+
 }
