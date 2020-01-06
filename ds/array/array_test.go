@@ -25,7 +25,7 @@ func TestArray(t *testing.T) {
 
 	for i := 0; i < a.Size(); i++ {
 		assert.Equal(t, vb, a.At(i))
-		assert.Equal(t, va,  b.At(i))
+		assert.Equal(t, va, b.At(i))
 	}
 
 	for i := 0; i < a.Size(); i++ {
@@ -36,7 +36,7 @@ func TestArray(t *testing.T) {
 	i := 0
 	for iter := a.First(); iter.IsValid(); iter.Next() {
 		t.Logf("%v ", iter.Value().(int))
-		assert.Equal(t, i,   iter.Value().(int))
+		assert.Equal(t, i, iter.Value().(int))
 		i++
 	}
 
@@ -44,7 +44,7 @@ func TestArray(t *testing.T) {
 	i = a.Size() - 1
 	for iter := a.Last(); iter.IsValid(); iter.Next() {
 		t.Logf("%v ", iter.Value().(int))
-		assert.Equal(t, i,  iter.Value().(int))
+		assert.Equal(t, i, iter.Value().(int))
 		i--
 	}
 }
@@ -69,7 +69,7 @@ func TestSort(t *testing.T) {
 	}
 	sort.Stable(a.Begin(), a.End(), comparator.BuiltinTypeComparator)
 	t.Logf("a: %v", a.String())
-	for  i := 0; i < a.Size() - 1; i++ {
+	for i := 0; i < a.Size()-1; i++ {
 		assert.LessOrEqual(t, a.At(i), a.At(i))
 	}
 }
