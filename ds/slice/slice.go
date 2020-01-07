@@ -22,6 +22,12 @@ type Int8Slice []int8
 // UInt8Slice is a redefinition []uint8
 type UInt8Slice []uint8
 
+// Int16Slice is redefinition []int16
+type Int16Slice []int16
+
+// UInt16Slice is a redefinition []uint16
+type UInt16Slice []uint16
+
 // Int32Slice is redefinition []int32
 type Int32Slice []int32
 
@@ -49,6 +55,8 @@ var _ ISlice = IntSlice(nil)
 var _ ISlice = UIntSlice(nil)
 var _ ISlice = Int8Slice(nil)
 var _ ISlice = UInt8Slice(nil)
+var _ ISlice = Int16Slice(nil)
+var _ ISlice = UInt16Slice(nil)
 var _ ISlice = Int32Slice(nil)
 var _ ISlice = Int32Slice(nil)
 var _ ISlice = Int64Slice(nil)
@@ -286,6 +294,100 @@ func (s UInt8Slice) First() *SliceIterator {
 
 // Last returns the last iterator of s
 func (s UInt8Slice) Last() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len() - 1,
+	}
+}
+
+// Len returns the length of s
+func (s Int16Slice) Len() int {
+	return len(s)
+}
+
+// At returns the value at position
+func (s Int16Slice) At(position int) interface{} {
+	if position < 0 || position >= s.Len() {
+		return nil
+	}
+	return s[position]
+}
+
+// Set sets value at position
+func (s Int16Slice) Set(position int, val interface{}) {
+	if position < 0 || position >= s.Len() {
+		return
+	}
+	s[position] = val.(int16)
+}
+
+// Begin returns the first iterator of s
+func (s Int16Slice) Begin() *SliceIterator {
+	return s.First()
+}
+
+// End returns the end iterator of s
+func (s Int16Slice) End() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len(),
+	}
+}
+
+// First returns the first iterator of s
+func (s Int16Slice) First() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: 0,
+	}
+}
+
+// Last returns the last iterator of s
+func (s Int16Slice) Last() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len() - 1,
+	}
+}
+
+// Len returns the length of s
+func (s UInt16Slice) Len() int {
+	return len(s)
+}
+
+// At returns the value at position
+func (s UInt16Slice) At(position int) interface{} {
+	if position < 0 || position >= s.Len() {
+		return nil
+	}
+	return s[position]
+}
+
+// Set sets value at position
+func (s UInt16Slice) Set(position int, val interface{}) {
+	if position < 0 || position >= s.Len() {
+		return
+	}
+	s[position] = val.(uint16)
+}
+
+// Begin returns the first iterator of s
+func (s UInt16Slice) Begin() *SliceIterator {
+	return s.First()
+}
+
+// End returns the end iterator of s
+func (s UInt16Slice) End() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: s.Len(),
+	}
+}
+
+// First returns the first iterator of s
+func (s UInt16Slice) First() *SliceIterator {
+	return &SliceIterator{s: s,
+		position: 0,
+	}
+}
+
+// Last returns the last iterator of s
+func (s UInt16Slice) Last() *SliceIterator {
 	return &SliceIterator{s: s,
 		position: s.Len() - 1,
 	}
