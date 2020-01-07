@@ -7,7 +7,7 @@ import (
 
 func TestMap(t *testing.T) {
 	m := New()
- 
+
 	assert.Equal(t, 0, m.Size())
 	assert.False(t, m.Contains(5))
 	assert.Equal(t, nil, m.Get(3))
