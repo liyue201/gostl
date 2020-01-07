@@ -8,7 +8,7 @@ import (
 	"github.com/liyue201/gostl/utils/visitor"
 	gosync "sync"
 )
-
+ 
 // constants
 const (
 	Empty = 0

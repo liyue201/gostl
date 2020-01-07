@@ -108,7 +108,7 @@ func (m *Map) EraseIter(iter iterator.ConstKvIterator) {
 
 //Find returns the iterator related to value in the map, or an invalid iterator if not exist.
 func (m *Map) Find(key interface{}) *MapIterator {
-	m.locker.RUnlock()
+	m.locker.RLock()
 	defer m.locker.RUnlock()
 
 	node := m.tree.FindNode(key)
@@ -129,7 +129,7 @@ func (m *Map) Begin() *MapIterator {
 	m.locker.RLock()
 	defer m.locker.RUnlock()
 
-	return m.First()
+	return &MapIterator{node: m.tree.First()}
 }
 
 //First returns the iterator with the minimum key in the Map, return nil if empty.

@@ -85,7 +85,7 @@ func (mm *MultiMap) Begin() *MapIterator {
 	mm.locker.RLock()
 	defer mm.locker.RUnlock()
 
-	return mm.First()
+	return &MapIterator{node: mm.tree.First()}
 }
 
 //First returns the iterator with the minimum key in the Map, return nil if empty.

@@ -1,28 +1,34 @@
 package slice
 
 import (
-	"github.com/liyue201/gostl/algorithm/sort"
-	"github.com/liyue201/gostl/utils/comparator"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestIntSlice(t *testing.T) {
 	a := make([]int, 0, 10)
+
 	for i := 0; i < 10; i++ {
 		a = append(a, i)
 	}
-	t.Logf("a: %v", a)
 	sliceA := IntSlice(a)
 
-	sort.Sort(sliceA.Begin(), sliceA.End(), comparator.Reverse(comparator.BuiltinTypeComparator))
+	assert.Equal(t, 10, sliceA.Len())
+	assert.EqualValues(t, 5, sliceA.At(5))
 
-	t.Logf("a: %v", a)
-
-	for i, v := range a {
-		if v != 9-i {
-			t.Fatalf("sort error: v expect %v, but get %v", 9-i, v)
-		}
+	i := 0
+	for iter := sliceA.Begin(); !iter.Equal(sliceA.End()); iter.Next() {
+		assert.EqualValues(t, i, iter.Value())
+		i++
 	}
+
+	i = 9
+	for iter := sliceA.Last(); !iter.IsValid(); iter.Prev() {
+		assert.EqualValues(t, i, iter.Value())
+		i--
+	}
+	sliceA.Set(8, 100)
+	assert.EqualValues(t, 100, sliceA.At(8))
 }
 
 func TestIter(t *testing.T) {
@@ -30,22 +36,20 @@ func TestIter(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		a = append(a, float32(i))
 	}
-	t.Logf("a: %v", a)
 	sliceA := Float32Slice(a)
+
+	assert.EqualValues(t, 5, sliceA.Begin().IteratorAt(5).Value())
 
 	i := float32(0)
 	for iter := sliceA.Begin(); !iter.Equal(sliceA.End()); iter.Next() {
-		if iter.Value().(float32) != float32(i) {
-			t.Fatalf("expect %v, but get %v", float32(i), iter.Value().(float32))
-		}
+		assert.EqualValues(t, i, iter.Value())
+		assert.EqualValues(t, i, iter.Position())
 		i++
 		iter.SetValue(i * 10)
 	}
 
-	for iter := sliceA.Last(); iter.IsValid(); iter.Prev() {
-		if iter.Value().(float32) != float32(i*10) {
-			t.Fatalf("expect %v, but get %v", float32(i*10), iter.Value().(float32))
-		}
+	for iter := sliceA.Last().Clone().(*SliceIterator); iter.IsValid(); iter.Prev() {
+		assert.EqualValues(t, i*10, iter.Value())
 		i--
 	}
 }

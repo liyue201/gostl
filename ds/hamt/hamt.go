@@ -56,7 +56,7 @@ type BitmapNode struct {
 
 // KvPair is a list node with actually value
 type KvPair struct {
-	key   []byte
+	key   Key
 	value interface{}
 	next  *KvPair
 }

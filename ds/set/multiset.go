@@ -72,9 +72,6 @@ func (ms *MultiSet) LowerBound(element interface{}) *SetIterator {
 
 // Begin returns the iterator with the minimum element in the Set, return nil if empty.
 func (ms *MultiSet) Begin() *SetIterator {
-	ms.locker.RLock()
-	defer ms.locker.RUnlock()
-
 	return ms.First()
 }
 

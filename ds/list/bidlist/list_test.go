@@ -73,7 +73,7 @@ func TestList(t *testing.T) {
 		if value == 1 {
 			return false
 		}
-		return true 
+		return true
 	})
 	assert.Equal(t, "[5 2 1]", fmt.Sprintf("%v", ret))
 

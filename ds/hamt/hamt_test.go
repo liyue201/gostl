@@ -3,6 +3,7 @@ package hamt
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
+	"sort"
 	"testing"
 )
 
@@ -40,23 +41,26 @@ func TestTraversal(t *testing.T) {
 	h.Insert(Key("222"), "bbb")
 	h.Insert(Key("111"), "aaa")
 	h.Insert(Key("333"), "ccc")
-	m["111'"] = "aaa"
+	m["111"] = "aaa"
 	m["222"] = "bbb"
 	m["333"] = "ccc"
 	keys := h.Keys()
 
-	assert.Equal(t, Key("111"), keys[0])
-	assert.Equal(t, Key("222"), keys[1])
-	assert.Equal(t, Key("333"), keys[2])
+	strKeys := h.StringKeys()
 
-	h.StringKeys()
-	assert.Equal(t, "111", keys[0])
-	assert.Equal(t, "222", keys[1])
-	assert.Equal(t, "333", keys[2])
+	for i := 0; i < len(keys); i++ {
+		assert.Equal(t, string(keys[i]), strKeys[i])
+	}
+
+	sort.Strings(strKeys)
+
+	assert.Equal(t, "111", strKeys[0])
+	assert.Equal(t, "222", strKeys[1])
+	assert.Equal(t, "333", strKeys[2])
 
 	h.Traversal(func(key, value interface{}) bool {
 		val := m[string(key.(Key))]
-		assert.Equal(t, val, value)
+		assert.Equal(t, val, value.(string))
 		return true
 	})
 }
