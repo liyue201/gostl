@@ -57,5 +57,6 @@ func TestTraversal(t *testing.T) {
 	h.Traversal(func(key, value interface{}) bool {
 		val := m[string(key.(Key))]
 		assert.Equal(t, val, value)
+		return true
 	})
 }

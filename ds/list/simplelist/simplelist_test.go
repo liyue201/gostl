@@ -1,6 +1,7 @@
 package simplelist
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -29,12 +30,12 @@ func TestList(t *testing.T) {
 
 	assert.Equal(t, "[1 3 4 2]", list.String())
 
-	//ret := make([]int, 0)
-	//list.Traversal(func(value interface{}) bool {
-	//	ret = append(ret, value.(int))
-	//	return true
-	//})
-	//assert.Equal(t, "[5 2 1 7 8]", fmt.Sprintf("%v", ret))
+	ret := make([]int, 0)
+	list.Traversal(func(value interface{}) bool {
+		ret = append(ret, value.(int))
+		return true
+	})
+	assert.Equal(t, "[1 3 4 2]", fmt.Sprintf("%v", ret))
 }
 
 func TestListIterator(t *testing.T) {
