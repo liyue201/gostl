@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	filter := bloom.New(100, 4, bloom.WithThreadSafe())
+	filter := bloom.New(100, 4, bloom.WithGoroutineSafe())
 	filter.Add("hhhh")
 	filter.Add("gggg")
 

@@ -32,11 +32,11 @@ func example2() {
 	}
 }
 
-// thread-save
+// goroutine-save
 func example3() {
 	fmt.Printf("example3:\n")
 
-	s := stack.New(stack.WithThreadSafe())
+	s := stack.New(stack.WithGoroutineSafe())
 	sw := sync.WaitGroup{}
 	sw.Add(2)
 	go func() {

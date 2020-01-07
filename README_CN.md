@@ -8,7 +8,7 @@
 
 [English](./README.md) | 简体中文
 
-GoSTL是一个go语言数据结构和算法库，类似C++的STL，但功能更强大。结合go语言的特点，大部分数据结构都实现了线程安全，可以在创建对象的时候通过配置参数指定是否开启。
+GoSTL是一个go语言数据结构和算法库，类似C++的STL，但功能更强大。结合go语言的特点，大部分数据结构都实现了协程安全，可以在创建对象的时候通过配置参数指定是否开启。
 
 ## 功能列表
 - 数据结构
@@ -258,7 +258,7 @@ func example2()  {
 func example3() {
 	fmt.Printf("example3:\n")
 
-	s := queue.New(queue.WithThreadSafe())
+	s := queue.New(queue.WithGoroutineSafe())
 	sw := sync.WaitGroup{}
 	sw.Add(2)
 	go func() {
@@ -305,7 +305,7 @@ import (
 
 func main() {
 	q := priorityqueue.New(priorityqueue.WithComparator(comparator.Reverse(comparator.BuiltinTypeComparator)),
-		priorityqueue.WithThreadSafe())
+		priorityqueue.WithGoroutineSafe())
 	q.Push(5)
 	q.Push(13)
 	q.Push(7)
@@ -356,11 +356,11 @@ func example2() {
 	}
 }
 
-// thread-save
+// goroutine-save
 func example3() {
 	fmt.Printf("example3:\n")
 
-	s := stack.New(stack.WithThreadSafe())
+	s := stack.New(stack.WithGoroutineSafe())
 	sw := sync.WaitGroup{}
 	sw.Add(2)
 	go func() {
@@ -432,7 +432,7 @@ import (
 )
 
 func main() {
-	m := treemap.New(treemap.WithThreadSafe())
+	m := treemap.New(treemap.WithGoroutineSafe())
 
 	m.Insert("a", "aaa")
 	m.Insert("b", "bbb")
@@ -456,7 +456,7 @@ import (
 )
 
 func main()  {
-	s := set.New(set.WithThreadSafe())
+	s := set.New(set.WithGoroutineSafe())
 	s.Insert(1)
 	s.Insert(5)
 	s.Insert(3)
@@ -509,7 +509,7 @@ import (
 )
 
 func main() {
-	filter := bloom.New(100, 4, bloom.WithThreadSafe())
+	filter := bloom.New(100, 4, bloom.WithGoroutineSafe())
 	filter.Add("hhhh")
 	filter.Add("gggg")
 
@@ -531,7 +531,7 @@ import (
 
 func main() {
 	h := hamt.New()
-	// h := hamt.New(hamt.WithThreadSafe())
+	// h := hamt.New(hamt.WithGoroutineSafe())
 	key := []byte("aaaaa")
 	val := "bbbbbbbbbbbbb"
 

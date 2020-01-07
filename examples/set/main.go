@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	s := set.New(set.WithThreadSafe())
+	s := set.New(set.WithGoroutineSafe())
 	s.Insert(1)
 	s.Insert(5)
 	s.Insert(3)

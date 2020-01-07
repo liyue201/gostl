@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	m := treemap.New(treemap.WithThreadSafe())
+	m := treemap.New(treemap.WithGoroutineSafe())
 
 	m.Insert("a", "aaa")
 	m.Insert("b", "bbb")

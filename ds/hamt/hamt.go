@@ -31,8 +31,8 @@ type Options struct {
 // Option is a function used to set Options
 type Option func(option *Options)
 
-// WithThreadSafe is the thread-safety option for Hamt
-func WithThreadSafe() Option {
+// WithGoroutineSafe is the goroutine-safety option for Hamt
+func WithGoroutineSafe() Option {
 	return func(option *Options) {
 		option.locker = &gosync.RWMutex{}
 	}

@@ -5,7 +5,7 @@ import (
 )
 
 func TestQueue(t *testing.T) {
-	q := New(WithThreadSafe())
+	q := New(WithGoroutineSafe())
 	for i := 0; i < 10; i++ {
 		q.Push(i)
 		if q.Back() != i {

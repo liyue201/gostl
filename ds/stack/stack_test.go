@@ -5,7 +5,7 @@ import (
 )
 
 func TestStack(t *testing.T) {
-	s := New(WithThreadSafe())
+	s := New(WithGoroutineSafe())
 	for i := 0; i < 10; i++ {
 		s.Push(i)
 		if s.Top() != i {

@@ -30,10 +30,10 @@ func WithKeyComparator(cmp comparator.Comparator) Option {
 	}
 }
 
-// WithThreadSafe set Map thread-safety,
-// Note that iterators are not thread safe, and it is useless to turn on the setting option here.
+// WithGoroutineSafe set Map goroutine-safety,
+// Note that iterators are not goroutine safe, and it is useless to turn on the setting option here.
 // so don't use iterators in multi goroutines
-func WithThreadSafe() Option {
+func WithGoroutineSafe() Option {
 	return func(option *Options) {
 		option.locker = &gosync.RWMutex{}
 	}

@@ -79,8 +79,8 @@ func WithComparator(cmp comparator.Comparator) Option {
 	}
 }
 
-// WithThreadSafe sets the ThreadSafe option
-func WithThreadSafe() Option {
+// WithGoroutineSafe sets the GoroutineSafe option
+func WithGoroutineSafe() Option {
 	return func(option *Options) {
 		option.locker = &gosync.RWMutex{}
 	}

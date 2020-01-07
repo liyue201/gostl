@@ -27,7 +27,7 @@ func TestMulitMap(t *testing.T) {
 }
 
 func TestMultiMapIterator(t *testing.T) {
-	m := NewMultiMap(WithThreadSafe())
+	m := NewMultiMap(WithGoroutineSafe())
 
 	for i := 1; i <= 10; i++ {
 		m.Insert(i, i)

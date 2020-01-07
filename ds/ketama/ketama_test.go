@@ -6,7 +6,7 @@ import (
 )
 
 func TestKetama(t *testing.T) {
-	k := New(WithReplicas(7), WithThreadSafe())
+	k := New(WithReplicas(7), WithGoroutineSafe())
 	k.Add("1.1.1.1", "2.2.2.2", "3.3.3.3")
 	for i := 0; i < 10; i++ {
 		node, ok := k.Get(strconv.Itoa(i))

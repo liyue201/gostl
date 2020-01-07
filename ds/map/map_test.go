@@ -27,7 +27,7 @@ func TestMap(t *testing.T) {
 }
 
 func TestMapIterator(t *testing.T) {
-	m := New(WithThreadSafe())
+	m := New(WithGoroutineSafe())
 
 	for i := 1; i <= 10; i++ {
 		m.Insert(i, i)
@@ -59,7 +59,7 @@ func TestMapIterator(t *testing.T) {
 }
 
 func TestMapIteratorSetValue(t *testing.T) {
-	m := New(WithThreadSafe())
+	m := New(WithGoroutineSafe())
 	m.Insert(1, "aaa")
 	m.Insert(2, "bbb")
 	m.Insert(3, "hhh")

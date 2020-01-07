@@ -14,25 +14,25 @@ var (
 
 const salt = "ni9fkh72hgh1g"
 
-// Option hold Ketama's options
-type Option struct {
+// Options hold Ketama's options
+type Options struct {
 	replicas int
 	locker   sync.Locker
 }
 
 // Options configures Ketama's options
-type Options func(option *Option)
+type Option func(option *Options)
 
-// WithThreadSafe configures thread-safety
-func WithThreadSafe() Options {
-	return func(option *Option) {
+// WithGoroutineSafe configures goroutine-safe
+func WithGoroutineSafe() Option {
+	return func(option *Options) {
 		option.locker = &gosync.RWMutex{}
 	}
 }
 
 // WithReplicas configures replicas
-func WithReplicas(replicas int) Options {
-	return func(option *Option) {
+func WithReplicas(replicas int) Option {
+	return func(option *Options) {
 		option.replicas = replicas
 	}
 }
@@ -45,9 +45,9 @@ type Ketama struct {
 }
 
 // New new a ketama ring
-// Ketama is a thread-safe implementation of consistent hash
-func New(opts ...Options) *Ketama {
-	option := Option{
+// Ketama is a goroutine-safe implementation of consistent hash
+func New(opts ...Option) *Ketama {
+	option := Options{
 		replicas: defaultReplicas,
 		locker:   defaultLocker,
 	}

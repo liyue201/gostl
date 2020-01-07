@@ -9,7 +9,7 @@
 English | [简体中文](./README_CN.md)
 
 ## Introduction
-GoSTL is a data structure and algorithm library for go,designed to provide functions similar to C++ STL,but more powerful.Combined with the characteristics of go language, most of the data structures have realized thread safety. When creating objects, you can specify whether to turn it on through configuration parameters.
+GoSTL is a data structure and algorithm library for go,designed to provide functions similar to C++ STL,but more powerful.Combined with the characteristics of go language, most of the data structures have realized goroutine-safe. When creating objects, you can specify whether to turn it on or not through configuration parameters.
 
 
 ## Function list
@@ -219,7 +219,7 @@ func main() {
 ```
 
 ### <a name="queue">queue</a>
-Queue is a first-in-first-out data structure. The bottom layer uses the deque or list as the container. By default, the deque is used. If you want to use the list, you can use the `queue.WithListContainer()` parameter when creating an object. Thread safety is supported.
+Queue is a first-in-first-out data structure. The bottom layer uses the deque or list as the container. By default, the deque is used. If you want to use the list, you can use the `queue.WithListContainer()` parameter when creating an object. Goroutine safety is supported.
 
 ```go
 package main
@@ -255,11 +255,11 @@ func example2()  {
 }
 
 
-// thread-save
+// goroutine-save
 func example3() {
 	fmt.Printf("example3:\n")
 
-	s := queue.New(queue.WithThreadSafe())
+	s := queue.New(queue.WithGoroutineSafe())
 	sw := sync.WaitGroup{}
 	sw.Add(2)
 	go func() {
@@ -293,7 +293,7 @@ func main() {
 ```
 
 ### <a name="priority_queue">priority_queue</a>
-priority_queue is based on the  `container/heap`  package of go standard library, which supports thread safety.
+priority_queue is based on the  `container/heap`  package of go standard library, which supports goroutine safety.
 
 ```go
 package main
@@ -306,7 +306,7 @@ import (
 
 func main() {
 	q := priorityqueue.New(priorityqueue.WithComparator(comparator.Reverse(comparator.BuiltinTypeComparator)),
-		priorityqueue.WithThreadSafe())
+		priorityqueue.WithGoroutineSafe())
 	q.Push(5)
 	q.Push(13)
 	q.Push(7)
@@ -320,7 +320,7 @@ func main() {
 ```
 
 ### <a name="stack">stack</a>
-Stack is a kind of last-in-first-out data structure. The bottom layer uses the deque or list as the container. By default, the deque is used. If you want to use the list, you can use the `queue.WithListContainer()` parameter when creating an object.  Thread safety is supported.
+Stack is a kind of last-in-first-out data structure. The bottom layer uses the deque or list as the container. By default, the deque is used. If you want to use the list, you can use the `queue.WithListContainer()` parameter when creating an object.  Goroutine safety is supported.
 
 ```go
 package main
@@ -357,11 +357,11 @@ func example2() {
 	}
 }
 
-// thread-save
+// goroutine-save
 func example3() {
 	fmt.Printf("example3:\n")
 
-	s := stack.New(stack.WithThreadSafe())
+	s := stack.New(stack.WithGoroutineSafe())
 	sw := sync.WaitGroup{}
 	sw.Add(2)
 	go func() {
@@ -422,7 +422,7 @@ func main()  {
 ```
 
 ### <a name="map">map</a>
-The Map bottom layer is implemented by using red black tree, and supports iterative access in key order, which is different from the go native map type (the go native map bottom layer is hash, and does not support iterative access in key order). Thread safety is supported.
+The Map bottom layer is implemented by using red black tree, and supports iterative access in key order, which is different from the go native map type (the go native map bottom layer is hash, and does not support iterative access in key order). Goroutine safety is supported.
 
 ```go
 package main
@@ -433,7 +433,7 @@ import (
 )
 
 func main() {
-	m := treemap.New(treemap.WithThreadSafe())
+	m := treemap.New(treemap.WithGoroutineSafe())
 
 	m.Insert("a", "aaa")
 	m.Insert("b", "bbb")
@@ -446,7 +446,7 @@ func main() {
 ```
 
 ### <a name="set">set</a>
-The Set bottom layer is implemented by red black tree, which supports thread safety. Support basic operations of set, such as union, intersection and difference. Thread safety is supported.
+The Set bottom layer is implemented by red black tree, which supports goroutine safety. Support basic operations of set, such as union, intersection and difference. Goroutine safety is supported.
 
 ```go
 package main
@@ -457,7 +457,7 @@ import (
 )
 
 func main()  {
-	s := set.New(set.WithThreadSafe())
+	s := set.New(set.WithGoroutineSafe())
 	s.Insert(1)
 	s.Insert(5)
 	s.Insert(3)
@@ -498,7 +498,7 @@ func main() {
 }
 ```
 ### <a name="bloom_filter">bloom_filter</a>
-Boomfilter is used to quickly determine whether the data is in the collection. The bottom layer is implemented with bitmap, which uses less memory than map. The disadvantage is that it does not support deletion and has a certain error rate. Thread safety is supported , supports data export and reconstruction through exported data.
+Boomfilter is used to quickly determine whether the data is in the collection. The bottom layer is implemented with bitmap, which uses less memory than map. The disadvantage is that it does not support deletion and has a certain error rate. Goroutine safety is supported , supports data export and reconstruction through exported data.
 
 ```go
 package main
@@ -509,7 +509,7 @@ import (
 )
 
 func main() {
-	filter := bloom.New(100, 4, bloom.WithThreadSafe())
+	filter := bloom.New(100, 4, bloom.WithGoroutineSafe())
 	filter.Add("hhhh")
 	filter.Add("gggg")
 
@@ -519,7 +519,7 @@ func main() {
 ```
 
 ### <a name="hamt">hamt</a>
-Compared with the traditional hash (open address method or linked list method hash), hamt has lower probability of hash conflict and higher space utilization. The time complexity of capacity expansion is low. Thread safety is supported.
+Compared with the traditional hash (open address method or linked list method hash), hamt has lower probability of hash conflict and higher space utilization. The time complexity of capacity expansion is low. Goroutine safety is supported.
 
 ```go
 package main
@@ -531,7 +531,7 @@ import (
 
 func main() {
 	h := hamt.New()
-	// h := hamt.New(hamt.WithThreadSafe())
+	// h := hamt.New(hamt.WithGoroutineSafe())
 	key := []byte("aaaaa")
 	val := "bbbbbbbbbbbbb"
 
@@ -544,7 +544,7 @@ func main() {
 ```
 
 ### <a name="ketama">ketama</a>
-Consistent hash Ketama algorithm, using 64 bit hash function and map storage, has less conflict probability. Thread safety is supported.
+Consistent hash Ketama algorithm, using 64 bit hash function and map storage, has less conflict probability. Goroutine safety is supported.
 
 ```go
 package main
@@ -566,7 +566,7 @@ func main() {
 
 ```
 ### <a name="skliplist">skliplist</a>
-Skliplist is a kind of data structure which can search quickly by exchanging space for time. Thread safety is supported.
+Skliplist is a kind of data structure which can search quickly by exchanging space for time. Goroutine safety is supported.
 
 ```go
 package main
