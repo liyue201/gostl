@@ -7,7 +7,7 @@ import (
 
 // Constants definition
 const (
-	SegmentCapacity = 64
+	SegmentCapacity = 128
 )
 
 // Define internal errors
@@ -57,12 +57,18 @@ func (d *Deque) segUsed() int {
 func (d *Deque) PushFront(value interface{}) {
 	d.firstAvailableSegment().pushFront(value)
 	d.size++
+	if d.segUsed() >= len(d.segs) {
+		d.expand()
+	}
 }
 
 // PushBack pushed value to the back of d
 func (d *Deque) PushBack(value interface{}) {
 	d.lastAvailableSegment().pushBack(value)
 	d.size++
+	if d.segUsed() >= len(d.segs) {
+		d.expand()
+	}
 }
 
 // Insert inserts value to the position of d
@@ -79,30 +85,42 @@ func (d *Deque) Insert(position int, value interface{}) {
 		return
 	}
 	seg, pos := d.pos(position)
+
 	if seg < d.segUsed()-seg {
 		if d.firstSegment().full() {
-			if d.segUsed() == cap(d.segs) {
+			if d.segUsed() >= len(d.segs) {
 				d.expand()
 			}
+			d.begin = d.preIndex(d.begin)
+			d.segs[d.begin] = d.pool.get()
 			if pos == 0 {
 				pos = SegmentCapacity - 1
 			} else {
 				seg++
 				pos--
 			}
-			d.begin = d.preIndex(d.begin)
-			d.segs[d.begin] = d.pool.get()
+		} else {
+			if pos == 0 {
+				seg--
+				pos = SegmentCapacity - 1
+			} else {
+				if seg != 0 {
+					pos--
+				}
+			}
 		}
+
 		for i := 0; i < seg; i++ {
 			cur := d.segmentAt(i)
 			next := d.segmentAt(i + 1)
 			cur.pushBack(next.popFront())
 		}
 		d.segmentAt(seg).insert(pos, value)
+
 	} else {
 		// move back
 		if d.lastSegment().full() {
-			if d.segUsed() == len(d.segs) {
+			if d.segUsed() >= len(d.segs) {
 				d.expand()
 			}
 			d.segs[d.end] = d.pool.get()
@@ -115,7 +133,11 @@ func (d *Deque) Insert(position int, value interface{}) {
 		}
 		d.segmentAt(seg).insert(pos, value)
 	}
+
 	d.size++
+	if d.segUsed() >= len(d.segs) {
+		d.expand()
+	}
 }
 
 // Front returns the front value of d
@@ -153,14 +175,15 @@ func (d *Deque) PopFront() interface{} {
 		return nil
 	}
 	s := d.segs[d.begin]
-	if s.size() == 1 {
-		d.putToPool(d.segs[d.begin])
+	v := s.popFront()
+	if s.size() == 0 {
+		d.putToPool(s)
 		d.segs[d.begin] = nil
 		d.begin = d.nextIndex(d.begin)
 	}
 	d.size--
 	d.shrinkIfNeeded()
-	return s.popFront()
+	return v
 }
 
 // PopBack returns the back value fo d, and removes it
@@ -170,14 +193,17 @@ func (d *Deque) PopBack() interface{} {
 	}
 	seg := d.preIndex(d.end)
 	s := d.segs[seg]
-	if s.size() == 1 {
-		d.putToPool(d.segs[seg])
+	v := s.popBack()
+
+	if s.size() == 0 {
+		d.putToPool(s)
 		d.segs[seg] = nil
 		d.end = seg
 	}
+
 	d.size--
 	d.shrinkIfNeeded()
-	return s.popBack()
+	return v
 }
 
 // EraseAt erases the item at position
@@ -246,7 +272,9 @@ func (d *Deque) Clear() {
 }
 
 func (d *Deque) putToPool(s *Segment) {
+	s.clear()
 	d.pool.put(s)
+
 	if d.pool.size()*6/5 > d.segUsed() {
 		d.pool.shrinkToSize(d.segUsed() / 5)
 	}
@@ -256,26 +284,32 @@ func (d *Deque) firstAvailableSegment() *Segment {
 	if d.firstSegment() != nil && !d.firstSegment().full() {
 		return d.firstSegment()
 	}
-	if d.segUsed() == len(d.segs) {
+	if d.segUsed() >= len(d.segs) {
 		d.expand()
 	}
-	d.begin = d.preIndex(d.begin)
-	s := d.pool.get()
-	d.segs[d.begin] = s
-	return s
+	if d.firstSegment() == nil || d.firstSegment().full() {
+		d.begin = d.preIndex(d.begin)
+		s := d.pool.get()
+		d.segs[d.begin] = s
+		return s
+	}
+	return d.firstSegment()
 }
 
 func (d *Deque) lastAvailableSegment() *Segment {
 	if d.lastSegment() != nil && !d.lastSegment().full() {
 		return d.lastSegment()
 	}
-	if d.segUsed() == len(d.segs) {
+	if d.segUsed() >= len(d.segs) {
 		d.expand()
 	}
-	s := d.pool.get()
-	d.segs[d.end] = s
-	d.end = d.nextIndex(d.end)
-	return s
+	if d.lastSegment() == nil || d.lastSegment().full() {
+		s := d.pool.get()
+		d.segs[d.end] = s
+		d.end = d.nextIndex(d.end)
+		return s
+	}
+	return d.lastSegment()
 }
 
 func (d *Deque) firstSegment() *Segment {
@@ -314,22 +348,27 @@ func (d *Deque) expand() {
 	for i := 0; i < d.segUsed(); i++ {
 		seg[i] = d.segs[(d.begin+i)%d.segUsed()]
 	}
-	d.segs = seg
+	u := d.segUsed()
+
 	d.begin = 0
-	d.end = d.segUsed()
+	d.end = u
+	d.segs = seg
 }
 
 //shrinkIfNeeded shrinks the Deque if is has too many unused space .
 func (d *Deque) shrinkIfNeeded() {
+	return
+
 	if int(float64(d.segUsed()*2)*1.2) < cap(d.segs) {
 		newCapacity := cap(d.segs) / 2
 		seg := make([]*Segment, newCapacity)
 		for i := 0; i < d.segUsed(); i++ {
 			seg[i] = d.segs[(d.begin+i)%cap(d.segs)]
 		}
-		d.segs = seg
+		u := d.segUsed()
 		d.begin = 0
-		d.end = d.segUsed()
+		d.end = u
+		d.segs = seg
 	}
 }
 

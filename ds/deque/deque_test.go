@@ -1,8 +1,11 @@
 package deque
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
+	"math/rand"
 	"testing"
+	"time"
 )
 
 func TestPushPop(t *testing.T) {
@@ -92,4 +95,152 @@ func TestIterator(t *testing.T) {
 
 	iter.SetValue(555)
 	assert.Equal(t, 555, iter.Value())
+}
+
+func TestRandom(t *testing.T) {
+	q := New()
+	rand.Seed(time.Now().UnixNano())
+	a := make([]int, 0)
+	for i := 0; i < 11000; i++ {
+		k := rand.Int()
+		if k%6 == 0 {
+			q.PushBack(i)
+			a = append(a, i)
+		} else if k%6 == 1 {
+			q.PushFront(i)
+			a = append([]int{i}, a...)
+		} else if k%6 == 2 {
+			q.PopFront()
+			if len(a) > 0 {
+				a = a[1:]
+			}
+		} else if k%6 == 3 {
+			q.PopBack()
+			if len(a) > 0 {
+				a = a[:len(a)-1]
+			}
+		} else if k%6 == 4 {
+			if q.Size() == 0 {
+				continue
+			}
+			s1 := fmt.Sprintf("%v", a)
+			s2 := q.String()
+
+			k = k % q.Size()
+			b := make([]int, 0)
+			b = append(b, a[k:]...)
+			a = a[:k]
+			a = append(a, i)
+			a = append(a, b...)
+			q.Insert(k, i)
+			if !assert.Equal(t, fmt.Sprintf("%v", a), q.String()) {
+				fmt.Printf("%v %v\n", s1, s2)
+				fmt.Printf("%v %v\n", k, i)
+				return
+			}
+		} else {
+			if q.Size() == 0 {
+				continue
+			}
+			k = k % q.Size()
+			q.EraseAt(k)
+			a = append(a[:k], a[k+1:]...)
+			if !assert.Equal(t, fmt.Sprintf("%v", a), q.String()) {
+				return
+			}
+		}
+		if !assert.Equal(t, fmt.Sprintf("%v", a), q.String()) {
+			return
+		}
+		//t.Logf("%v", q.String())
+		//t.Logf("%v", a)
+	}
+}
+
+func TestInsert1(t *testing.T) {
+	q := New()
+	for i := 0; i < 5; i++ {
+		q.PushBack(i)
+	}
+	assert.Equal(t, "[0 1 2 3 4]", q.String())
+
+	q.Insert(0, 5)
+	assert.Equal(t, "[5 0 1 2 3 4]", q.String())
+
+	q = New()
+	for i := 0; i < 5; i++ {
+		q.PushBack(i)
+	}
+	assert.Equal(t, "[0 1 2 3 4]", q.String())
+
+	q.Insert(1, 5)
+	assert.Equal(t, "[0 5 1 2 3 4]", q.String())
+
+	q = New()
+	for i := 0; i < 5; i++ {
+		q.PushBack(i)
+	}
+	assert.Equal(t, "[0 1 2 3 4]", q.String())
+
+	q.Insert(2, 5)
+	assert.Equal(t, "[0 1 5 2 3 4]", q.String())
+
+	q = New()
+	for i := 0; i < 5; i++ {
+		q.PushBack(i)
+	}
+	q.Insert(3, 5)
+	assert.Equal(t, "[0 1 2 5 3 4]", q.String())
+
+	q = New()
+	for i := 0; i < 5; i++ {
+		q.PushBack(i)
+	}
+	q.Insert(4, 5)
+	assert.Equal(t, "[0 1 2 3 5 4]", q.String())
+
+	q = New()
+	for i := 0; i < 6; i++ {
+		q.PushBack(i)
+	}
+	assert.Equal(t, "[0 1 2 3 4 5]", q.String())
+
+	q.Insert(5, 6)
+	assert.Equal(t, "[0 1 2 3 4 6 5]", q.String())
+}
+
+func TestInsert2(t *testing.T) {
+	q := New()
+	for i := 0; i < 4; i++ {
+		q.PushBack(i)
+	}
+	q.PushFront(4) //[4 | 0 1 2 3]
+	assert.Equal(t, "[4 0 1 2 3]", q.String())
+
+	q.Insert(0, 5)
+	assert.Equal(t, "[5 4 0 1 2 3]", q.String())
+
+	q = New()
+	for i := 0; i < 4; i++ {
+		q.PushBack(i)
+	}
+	q.PushFront(4) //[4 | 0 1 2 3]
+	q.Insert(1, 5)
+	assert.Equal(t, "[4 5 0 1 2 3]", q.String())
+
+	q = New()
+	for i := 0; i < 4; i++ {
+		q.PushBack(i)
+	}
+	q.PushFront(4) //[4 | 0 1 2 3]
+	q.Insert(2, 5)
+	assert.Equal(t, "[4 0 5 1 2 3]", q.String())
+
+	q = New()
+	for i := 0; i < 4; i++ {
+		q.PushBack(i)
+	}
+	q.PushFront(4) //[4 | 0 1 2 3]
+	q.Insert(3, 5)
+	assert.Equal(t, "[4 0 1 5 2 3]", q.String())
 }

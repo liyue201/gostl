@@ -14,7 +14,7 @@ func (p *Pool) get() *Segment {
 		return newSegment(SegmentCapacity)
 	}
 	s := p.segs[len(p.segs)-1]
-	p.segs = p.segs[len(p.segs)-1:]
+	p.segs = p.segs[:len(p.segs)-1]
 	return s
 }
 
