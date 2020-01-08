@@ -283,7 +283,7 @@ func (d *Deque) putToPool(s *Segment) {
 
 	if d.pool.size()*6/5 > d.segUsed() {
 		d.pool.shrinkToSize(d.segUsed() / 5)
-	}
+	} 
 }
 
 func (d *Deque) firstAvailableSegment() *Segment {
@@ -363,8 +363,6 @@ func (d *Deque) expand() {
 
 //shrinkIfNeeded shrinks the Deque if is has too many unused space .
 func (d *Deque) shrinkIfNeeded() {
-	return
-
 	if int(float64(d.segUsed()*2)*1.2) < cap(d.segs) {
 		newCapacity := cap(d.segs) / 2
 		seg := make([]*Segment, newCapacity)
