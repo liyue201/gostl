@@ -20,7 +20,7 @@ type Options struct {
 	locker   sync.Locker
 }
 
-// Options configures Ketama's options
+// Option configures Ketama's options
 type Option func(option *Options)
 
 // WithGoroutineSafe configures goroutine-safe

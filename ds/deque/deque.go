@@ -85,59 +85,65 @@ func (d *Deque) Insert(position int, value interface{}) {
 		return
 	}
 	seg, pos := d.pos(position)
-
 	if seg < d.segUsed()-seg {
-		if d.firstSegment().full() {
-			if d.segUsed() >= len(d.segs) {
-				d.expand()
-			}
-			d.begin = d.preIndex(d.begin)
-			d.segs[d.begin] = d.pool.get()
-			if pos == 0 {
-				pos = SegmentCapacity - 1
-			} else {
-				seg++
-				pos--
-			}
-		} else {
-			if pos == 0 {
-				seg--
-				pos = SegmentCapacity - 1
-			} else {
-				if seg != 0 {
-					pos--
-				}
-			}
-		}
-
-		for i := 0; i < seg; i++ {
-			cur := d.segmentAt(i)
-			next := d.segmentAt(i + 1)
-			cur.pushBack(next.popFront())
-		}
-		d.segmentAt(seg).insert(pos, value)
-
+		// seg is closer to the front
+		d.moveFrontInsert(seg, pos, value)
 	} else {
-		// move back
-		if d.lastSegment().full() {
-			if d.segUsed() >= len(d.segs) {
-				d.expand()
-			}
-			d.segs[d.end] = d.pool.get()
-			d.end = d.nextIndex(d.end)
-		}
-		for i := d.segUsed() - 1; i > seg; i-- {
-			cur := d.segmentAt(i)
-			pre := d.segmentAt(i - 1)
-			cur.pushFront(pre.popBack())
-		}
-		d.segmentAt(seg).insert(pos, value)
+		// seg is closer to the back
+		d.moveBackInsert(seg, pos, value)
 	}
-
 	d.size++
 	if d.segUsed() >= len(d.segs) {
 		d.expand()
 	}
+}
+
+func (d *Deque) moveFrontInsert(seg, pos int, value interface{}) {
+	if d.firstSegment().full() {
+		if d.segUsed() >= len(d.segs) {
+			d.expand()
+		}
+		d.begin = d.preIndex(d.begin)
+		d.segs[d.begin] = d.pool.get()
+		if pos == 0 {
+			pos = SegmentCapacity - 1
+		} else {
+			seg++
+			pos--
+		}
+	} else {
+		if pos == 0 {
+			seg--
+			pos = SegmentCapacity - 1
+		} else {
+			if seg != 0 {
+				pos--
+			}
+		}
+	}
+	for i := 0; i < seg; i++ {
+		cur := d.segmentAt(i)
+		next := d.segmentAt(i + 1)
+		cur.pushBack(next.popFront())
+	}
+	d.segmentAt(seg).insert(pos, value)
+}
+
+func (d *Deque) moveBackInsert(seg, pos int, value interface{}) {
+	// move back
+	if d.lastSegment().full() {
+		if d.segUsed() >= len(d.segs) {
+			d.expand()
+		}
+		d.segs[d.end] = d.pool.get()
+		d.end = d.nextIndex(d.end)
+	}
+	for i := d.segUsed() - 1; i > seg; i-- {
+		cur := d.segmentAt(i)
+		pre := d.segmentAt(i - 1)
+		cur.pushFront(pre.popBack())
+	}
+	d.segmentAt(seg).insert(pos, value)
 }
 
 // Front returns the front value of d
