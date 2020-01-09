@@ -1,7 +1,11 @@
 package rbtree
 
 import (
+	"github.com/liyue201/gostl/utils/comparator"
+	"github.com/stretchr/testify/assert"
+	"math/rand"
 	"testing"
+	"time"
 )
 
 func TestRbTeeFind(t *testing.T) {
@@ -9,20 +13,16 @@ func TestRbTeeFind(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		tree.Insert(i, i+10000)
 	}
+	assert.False(t, tree.Empty())
+	assert.Equal(t, 10, tree.Size())
+
 	for i := 0; i < 10; i++ {
 		val := tree.Find(i)
-		if val == nil || val.(int) != i+10000 {
-			t.Fatalf("find %d not found.", i)
-		}
+		assert.Equal(t, i+10000, val)
 	}
 	for i := 0; i < 10; i++ {
 		iter := tree.FindLowerBoundNode(i)
-		if iter == nil {
-			t.Fatalf("findIt %v nil", i)
-		}
-		if iter.value != i+10000 {
-			t.Fatalf("findIt %v: found %v, %v ", i, iter.key, iter.value)
-		}
+		assert.Equal(t, i+10000, iter.Value())
 	}
 	for i := 0; i < 10; i++ {
 		tree.Insert(i, i+20000)
@@ -30,74 +30,132 @@ func TestRbTeeFind(t *testing.T) {
 
 	for i := 0; i < 10; i++ {
 		iter := tree.FindLowerBoundNode(i)
-		if iter == nil {
-			t.Fatalf("findIt %v nil", i)
-		}
+		count := 0
 		for n := iter; n != nil; n = n.Next() {
 			if n.key != i {
 				break
 			}
-			t.Logf("travesal: %v = %v ", n.key, n.value)
+			count++
+			//t.Logf("travesal: %v = %v ", n.key, n.value)
 		}
+		assert.Equal(t, 2, count)
 	}
 }
 
 func TestRbTeeDelete(t *testing.T) {
 	tree := New()
-	for i := 0; i < 10; i++ {
-		tree.Insert(i, i+10000)
+	m := make(map[int]int)
+	for i := 0; i < 1000; i++ {
+		tree.Insert(i, i)
+		m[i] = i
 	}
-	for i := 0; i < 10; i++ {
-		tree.Insert(i, i+20000)
-	}
-
-	for n := tree.Begin(); n != nil; n = n.Next() {
-		t.Logf("found: %v = %v ", n.key, n.value)
-	}
-
-	t.Logf("==============")
-	tree.Delete(tree.findFirstNode(7))
-	for n := tree.Begin(); n != nil; n = n.Next() {
-		t.Logf("found: %v = %v ", n.key, n.value)
-	}
-
-	t.Logf("==============")
-	tree.Delete(tree.findFirstNode(5))
-	tree.Delete(tree.findFirstNode(7))
-	tree.Delete(tree.findFirstNode(1))
-	tree.Delete(tree.findFirstNode(8))
-	for n := tree.Begin(); n != nil; n = n.Next() {
-		t.Logf("found: %v = %v ", n.key, n.value)
+	count := 1000
+	for k, v := range m {
+		//t.Logf("%v", k)
+		node := tree.FindNode(k)
+		assert.Equal(t, v, node.Value())
+		tree.Delete(node)
+		assert.Nil(t, tree.FindNode(k))
+		count--
+		assert.Equal(t, count, tree.Size())
 	}
 }
 
-func TestTravesal(t *testing.T) {
+func TestTraversal(t *testing.T) {
 	tree := New()
-	for i := 20; i >= 1; i-- {
-		tree.Insert(i, 0)
+	for i := 0; i < 10; i++ {
+		tree.Insert(i, i+100)
 	}
-	for n := tree.Begin(); n != nil; n = n.Next() {
-		k := n.key
-		var p interface{}
-		d := 0
-		if n.parent != nil {
-			p = n.parent.key
-			if n.parent.left == n {
-				d = 0
-			} else {
-				d = 1
-			}
+	i := 0
+	tree.Traversal(func(key, value interface{}) bool {
+		assert.Equal(t, i, key.(int))
+		assert.Equal(t, i+100, value.(int))
+		i++
+		return true
+	})
+}
+
+func TestInsertDelete(t *testing.T) {
+	tree := New()
+	m := make(map[int]int)
+	rand.Seed(time.Now().Unix())
+	for i := 0; i < 10000; i++ {
+		key := rand.Int() % 1000
+		val := rand.Int()
+		if v, ok := m[key]; ok {
+			n := tree.findNode(key)
+			assert.Equal(t, v, n.Value())
+			delete(m, key)
+			tree.Delete(n)
+		} else {
+			n := tree.findNode(key)
+			assert.Nil(t, n)
+
+			m[key] = val
+			tree.Insert(key, val)
 		}
-		t.Logf("found: %v, %v, %v ", k, p, d)
+		assert.Equal(t, len(m), tree.Size())
+		b, _ := tree.IsRbTree()
+		assert.True(t, b)
 	}
+	tree.Clear()
+	assert.Equal(t, 0, tree.Size())
 }
 
 func TestIterator(t *testing.T) {
-	tree := New()
-	for i := 10; i >= 1; i-- {
+	tree := New(WithKeyComparator(comparator.IntComparator))
+	for i := 0; i < 10; i++ {
 		tree.Insert(i, i+100)
 	}
+
+	i := 0
+	for iter := tree.IterFirst().Clone().(*RbTreeIterator); iter.IsValid(); iter.Next() {
+		assert.Equal(t, i, iter.Key())
+		assert.Equal(t, i+100, iter.Value())
+		i++
+	}
+
+	i = 9
+	for iter := tree.IterLast(); iter.IsValid(); iter.Prev() {
+		assert.Equal(t, i, iter.Key())
+		assert.Equal(t, i+100, iter.Value())
+		iter.SetValue(i * 2)
+		i--
+	}
+
+	i = 0
 	for iter := tree.IterFirst(); iter.IsValid(); iter.Next() {
-		t.Logf("found: %v, %v", iter.Key(), iter.Value())
+		assert.Equal(t, i, iter.Key())
+		assert.Equal(t, i*2, iter.Value())
+		i++
+	}
+}
+
+func TestNode(t *testing.T) {
+	tree := New()
+	for i := 0; i < 10; i++ {
+		tree.Insert(i, i+100)
+	}
+
+	i := 0
+	for n := tree.Begin(); n != nil; n = n.Next() {
+		assert.Equal(t, i, n.Key())
+		assert.Equal(t, i+100, n.Value())
+		i++
+	}
+
+	i = 9
+	for n := tree.RBegin(); n != nil; n = n.Prev() {
+		assert.Equal(t, i, n.Key())
+		assert.Equal(t, i+100, n.Value())
+		n.SetValue(i * 2)
+		i--
+	}
+
+	i = 0
+	for n := tree.Begin(); n != nil; n = n.Next() {
+		assert.Equal(t, i, n.Key())
+		assert.Equal(t, i*2, n.Value())
+		i++
 	}
 }
