@@ -34,7 +34,7 @@ func TestNewFromData(t *testing.T) {
 	bm.Set(20)
 	bm.Set(77)
 
-	bm2 := NewFromData(bm.data)
+	bm2 := NewFromData(bm.Data())
 
 	assert.Equal(t, bm.Size(), bm2.Size())
 

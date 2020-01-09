@@ -1,6 +1,8 @@
 package skiplist
 
 import (
+	"github.com/bmizerany/assert"
+	"github.com/liyue201/gostl/utils/comparator"
 	"math/rand"
 	"testing"
 )
@@ -16,18 +18,13 @@ func TestInsert(t *testing.T) {
 	}
 	for key, v := range m {
 		ret := list.Get(key)
-		//t.Logf("%v = %v", key, ret)
-		if ret != v {
-			t.Fatalf("get value of %v error, expect %v but get %v", key, v, ret)
-		}
+		assert.Equal(t, v, ret)
 	}
-	if len(m) != list.Len() {
-		t.Fatalf("get list len error, expect %v but get %v", len(m), list.Len())
-	}
+	assert.Equal(t, len(m), list.Len())
 }
 
 func TestRemove(t *testing.T) {
-	list := New()
+	list := New(WithGoroutineSafe(), WithKeyComparator(comparator.IntComparator))
 
 	m := make(map[int]int)
 	for i := 0; i < 1000; i++ {
@@ -35,32 +32,38 @@ func TestRemove(t *testing.T) {
 		list.Insert(key, i)
 		m[key] = i
 	}
-
-	t.Logf("len = %v %v", len(m), list.Len())
-	if len(m) != list.Len() {
-		t.Fatalf("11 get list len error, expect %v but get %v", len(m), list.Len())
-	}
+	assert.Equal(t, len(m), list.Len())
 
 	for i := 0; i < 300; i++ {
 		key := rand.Int() % 1000
 		list.Remove(key)
 		delete(m, key)
-
 		key2 := rand.Int() % 10440
-
 		list.Insert(key2, key)
 		m[key2] = key
 	}
 
 	for key, v := range m {
 		ret := list.Get(key)
-		//t.Logf("%v = %v", key, ret)
-		if ret != v {
-			t.Fatalf("get value of %v error, expect %v but get %v", key, v, ret)
-		}
+		assert.Equal(t, v, ret)
 	}
-	t.Logf("len = %v %v", len(m), list.Len())
-	if len(m) != list.Len() {
-		t.Fatalf("get list len error, expect %v but get %v", len(m), list.Len())
+	assert.Equal(t, len(m), list.Len())
+}
+
+func TestSkiplist_Traversal(t *testing.T) {
+	list := New()
+	for i := 0; i < 10; i++ {
+		list.Insert(i, i*10)
 	}
+	keys := list.Keys()
+	for i := 0; i < 10; i++ {
+		assert.Equal(t, i, keys[i])
+	}
+	i := 0
+	list.Traversal(func(key, value interface{}) bool {
+		assert.Equal(t, i, key.(int))
+		assert.Equal(t, i*10, value.(int))
+		i++
+		return true
+	})
 }

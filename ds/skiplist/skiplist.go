@@ -217,7 +217,7 @@ func (sl *Skiplist) Keys() []interface{} {
 	var keys []interface{}
 	sl.Traversal(func(key, value interface{}) bool {
 		keys = append(keys, key)
-		return false
+		return true
 	})
 	return keys
 }
