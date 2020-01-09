@@ -283,7 +283,7 @@ func (d *Deque) putToPool(s *Segment) {
 
 	if d.pool.size()*6/5 > d.segUsed() {
 		d.pool.shrinkToSize(d.segUsed() / 5)
-	} 
+	}
 }
 
 func (d *Deque) firstAvailableSegment() *Segment {
