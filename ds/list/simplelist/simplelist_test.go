@@ -38,6 +38,36 @@ func TestList(t *testing.T) {
 	assert.Equal(t, "[1 3 4 2]", fmt.Sprintf("%v", ret))
 }
 
+func TestList_InsertAfter(t *testing.T) {
+	list := New()
+	for i := 1; i <= 5; i++ {
+		list.PushBack(i)
+	}
+	list.InsertAfter(6, list.FrontNode())
+	assert.Equal(t, "[1 6 2 3 4 5]", list.String())
+
+	list.InsertAfter(7, list.FrontNode().Next())
+	assert.Equal(t, "[1 6 7 2 3 4 5]", list.String())
+
+	list.InsertAfter(8, list.BackNode())
+	assert.Equal(t, "[1 6 7 2 3 4 5 8]", list.String())
+}
+
+func TestList_Remove(t *testing.T) {
+	list := New()
+	for i := 1; i <= 5; i++ {
+		list.PushBack(i)
+	}
+	list.Remove(nil, list.FrontNode())
+	assert.Equal(t, "[2 3 4 5]", list.String())
+
+	list.Remove(list.FrontNode(), list.FrontNode().Next())
+	assert.Equal(t, "[2 4 5]", list.String())
+
+	list.PushFront(6)
+	assert.Equal(t, "[6 2 4 5]", list.String())
+}
+
 func TestListIterator(t *testing.T) {
 	list := New()
 	for i := 1; i <= 5; i++ {

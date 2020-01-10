@@ -1,35 +1,25 @@
 package vector
 
 import (
+	"fmt"
 	"github.com/liyue201/gostl/algorithm/sort"
 	"github.com/liyue201/gostl/utils/comparator"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestVectorBase(t *testing.T) {
 	v := New(WithCapacity(10))
-
-	if !v.Empty() {
-		t.Fatalf("is not empty")
-	}
-	if v.Capacity() != 10 {
-		t.Fatalf("capacity error")
-	}
+	assert.True(t, v.Empty())
+	assert.Equal(t, 10, v.Capacity())
 	v.PushBack(1)
 	v.PushBack(2)
-	if v.Empty() {
-		t.Fatalf("v is empty")
-	}
-	if v.Size() != 2 {
-		t.Fatalf("size error")
-	}
 
-	if val := v.Front(); val == nil || val.(int) != 1 {
-		t.Fatalf("val error: %v", val)
-	}
-	if val := v.Back(); val == nil || val.(int) != 2 {
-		t.Fatalf("val error: %v ", val)
-	}
+	assert.False(t, v.Empty())
+	assert.Equal(t, 2, v.Size())
+
+	assert.Equal(t, 1, v.Front())
+	assert.Equal(t, 2, v.Back())
 }
 
 func TestVectorResize(t *testing.T) {
@@ -37,23 +27,32 @@ func TestVectorResize(t *testing.T) {
 	v.PushBack(1)
 	v.PushBack(2)
 	v.ShrinkToFit()
-	if v.Capacity() != 2 {
-		t.Fatalf("capacity error")
-	}
-	if val := v.At(0); val == nil || val.(int) != 1 {
-		t.Fatalf("val error: %v ", val)
-	}
+	assert.Equal(t, 2, v.Capacity())
+
+	assert.Equal(t, 1, v.At(0))
+	assert.Equal(t, 1, v.Front())
+
 	v.Reserve(20)
-	if v.Capacity() != 20 || v.Size() != 2 {
-		t.Fatalf("capacity or size error")
-	}
-	if val := v.At(1); val.(int) != 2 {
-		t.Fatalf("val error: %v", val)
-	}
+
+	assert.Equal(t, 20, v.Capacity())
+	assert.Equal(t, 2, v.Size())
+	assert.Equal(t, 2, v.At(1))
 	v.Clear()
-	if v.Size() != 0 || !v.Empty() {
-		t.Fatalf("size error")
+	assert.Equal(t, 0, v.Size())
+	assert.True(t, v.Empty())
+
+	for i := 0; i < 10; i++ {
+		v.PushBack(i)
 	}
+	assert.Equal(t, 10, v.Size())
+	v.Resize(20)
+	assert.Equal(t, 10, v.Size())
+	v.Resize(4)
+	assert.Equal(t, 4, v.Size())
+
+	b := NewFromVector(v)
+	assert.Equal(t, 4, b.Size())
+	assert.Equal(t, "[0 1 2 3]", fmt.Sprintf("%v", b.Data()))
 }
 
 func TestModifyVector(t *testing.T) {
@@ -62,26 +61,21 @@ func TestModifyVector(t *testing.T) {
 	v.PushBack(2)
 	v.PushBack(3)
 	//[1,2,3]
-	if val := v.PopBack(); val == nil || val.(int) != 3 {
-		t.Fatalf("val error: %v", val)
-	}
+	assert.Equal(t, 3, v.PopBack())
 	//[1 2]
 	v.PushBack(4)
 	//[1 2 4]
 
 	v.SetAt(1, 9)
-	if val := v.At(1); val == nil || val.(int) != 9 {
-		t.Fatalf("val error: %v", val)
-	}
+	assert.Equal(t, 9, v.At(1))
 	//[1 9 4]
 
 	v.InsertAt(0, 8)
 	//[8 1 9 4]
 
-	t.Logf("data: %v", v)
-	if v.String() != "[8 1 9 4]" {
-		t.Fatalf("data error: %v", v.String())
-	}
+	assert.Equal(t, "[8 1 9 4]", v.String())
+	v.Clear()
+	assert.Nil(t, v.At(10))
 }
 
 func TestVectorIter(t *testing.T) {
@@ -93,26 +87,20 @@ func TestVectorIter(t *testing.T) {
 	//[1 2 3 4]
 
 	i := 0
-	t.Logf("v: %v", v.String())
 	for iter := v.Begin(); iter.IsValid(); iter.Next() {
-		if val := v.At(i); val.(int) != iter.Value().(int) {
-			t.Fatalf("value error: expect %v, but get %v", val, iter.Value().(int))
-		}
+		assert.Equal(t, i+1, v.At(i))
 		i++
 	}
 
 	i = 3
 	for iter := v.Last(); iter.IsValid(); iter.Prev() {
-		if val := v.At(i); val.(int) != iter.Value().(int) {
-			t.Fatalf("traversal value error: expect %v, but get %v", val, iter.Value().(int))
-		}
+		assert.Equal(t, i+1, v.At(i))
 		i--
 	}
 	iter := v.Erase(v.Begin())
 	t.Logf("v: %v", v.String())
-	if iter.Value().(int) != 2 {
-		t.Fatalf("erase error: expect %v, but get %v", 2, iter.Value().(int))
-	}
+
+	assert.Equal(t, 2, iter.Value())
 	//[2 3 4]
 
 	v.PushBack(5)
@@ -121,23 +109,19 @@ func TestVectorIter(t *testing.T) {
 
 	iter = v.EraseRange(v.Begin().Next(), v.Begin().Next().Next().Next())
 	//[2 5 6]
-	t.Logf("v: %v", v.String())
-	if iter.Value().(int) != 5 {
-		t.Fatalf("erase error: expect 5, but get %v", iter.Value().(int))
-	}
-	if v.String() != "[2 5 6]" {
-		t.Fatalf("erase error: expect [2 5 6], but get %v", v.String())
-	}
-	//
+
+	assert.Equal(t, 5, iter.Value())
+	assert.Equal(t, "[2 5 6]", v.String())
+
 	iter = v.Begin()
 	iter = v.Insert(iter, 7)
 	//[7 2 5 6]
-	if iter.Value().(int) != 7 {
-		t.Fatalf("erase error: expect 7, but get %v", iter.Value().(int))
-	}
-	if v.String() != "[7 2 5 6]" {
-		t.Fatalf("erase error: expect [7 2 5 6], but get %v", v.String())
-	}
+
+	assert.Equal(t, 7, iter.Value())
+	assert.Equal(t, "[7 2 5 6]", v.String())
+
+	assert.True(t, v.Begin().Equal(v.Begin().Clone()))
+	assert.False(t, v.Begin().Equal(v.Last()))
 }
 
 func TestSort(t *testing.T) {
@@ -147,17 +131,11 @@ func TestSort(t *testing.T) {
 	}
 	sort.Sort(v.Begin(), v.End(), comparator.BuiltinTypeComparator)
 	for i := 0; i < v.Size(); i++ {
-		t.Logf("%v", v.At(i))
-		if i != v.At(i).(int) {
-			t.Fatalf("sort error")
-		}
+		assert.Equal(t, i, v.At(i))
 	}
 
 	sort.Sort(v.Begin(), v.End(), comparator.Reverse(comparator.BuiltinTypeComparator))
 	for i := 0; i < v.Size(); i++ {
-		t.Logf("%v", v.At(i))
-		if v.Size()-i-1 != v.At(i).(int) {
-			t.Fatalf("sort error")
-		}
+		assert.Equal(t, v.Size()-i-1, v.At(i))
 	}
 }
