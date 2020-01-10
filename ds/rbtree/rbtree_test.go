@@ -129,6 +129,9 @@ func TestIterator(t *testing.T) {
 		assert.Equal(t, i*2, iter.Value())
 		i++
 	}
+	assert.True(t, tree.IterFirst().Equal(tree.IterFirst().Clone()))
+	assert.False(t, tree.IterFirst().Equal(nil))
+	assert.False(t, tree.IterFirst().Equal(tree.IterLast()))
 }
 
 func TestNode(t *testing.T) {

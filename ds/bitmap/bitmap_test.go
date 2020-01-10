@@ -22,7 +22,10 @@ func TestBitmap(t *testing.T) {
 		bm.Unset(k)
 		assert.Equal(t, false, bm.IsSet(k))
 	}
-	bm.Set(10)
+	assert.True(t, bm.Set(10))
+	assert.False(t, bm.Set(1000))
+	assert.False(t, bm.Unset(1000))
+
 	bm.Clear()
 	assert.Equal(t, false, bm.IsSet(10))
 }

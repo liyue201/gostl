@@ -1,6 +1,7 @@
 package set
 
 import (
+	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -58,5 +59,23 @@ func TestSet_Erase(t *testing.T) {
 	for i := 0; i < 1000; i++ {
 		s.Erase(i)
 	}
+	assert.Equal(t, 0, s.Size())
+}
+
+func TestSetIterator(t *testing.T) {
+	s := New(WithGoroutineSafe(), WithKeyComparator(comparator.IntComparator))
+	for i := 0; i < 10; i++ {
+		s.Insert(i)
+	}
+	iter := s.Begin()
+	assert.True(t, iter.Equal(iter.Clone()))
+
+	assert.False(t, iter.Equal(nil))
+	assert.False(t, iter.Equal(s.Last()))
+
+	iter = s.Find(5)
+	assert.Equal(t, 5, iter.Value())
+
+	s.Clear()
 	assert.Equal(t, 0, s.Size())
 }

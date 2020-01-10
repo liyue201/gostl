@@ -3,6 +3,7 @@ package sort
 import (
 	"github.com/liyue201/gostl/ds/deque"
 	"github.com/liyue201/gostl/utils/comparator"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -19,26 +20,19 @@ func TestSearch(t *testing.T) {
 	Sort(a.Begin(), a.End())
 
 	t.Logf("a: %v", a)
-	if !BinarySearch(a.Begin(), a.End(), 5, comparator.BuiltinTypeComparator) {
-		t.Fatalf("BinarySearch 5 error: expect true,but get flase")
-	}
-	if BinarySearch(a.Begin(), a.End(), 10, comparator.BuiltinTypeComparator) {
-		t.Fatalf("BinarySearch 10 error: expect false,but get ture")
-	}
+	assert.True(t, BinarySearch(a.Begin(), a.End(), 5, comparator.BuiltinTypeComparator))
+	assert.False(t, BinarySearch(a.Begin(), a.End(), 10))
 
 	iter := LowerBound(a.Begin(), a.End(), 3, comparator.BuiltinTypeComparator)
-	if !iter.IsValid() {
-		t.Fatalf("LowerBound 3 error, not found")
-	}
-	if iter.Value() != 3 && iter.Clone().Next().Value() != 3 {
-		t.Fatalf("LowerBound 3 error:")
-	}
+	assert.Equal(t, 3, iter.Value())
+	assert.Equal(t, 3, iter.Clone().Next().Value())
+
+	iter = LowerBound(a.Begin(), a.End(), 4)
+	assert.Equal(t, 4, iter.Value())
 
 	iter = UpperBound(a.Begin(), a.End(), 4, comparator.BuiltinTypeComparator)
-	if !iter.IsValid() {
-		t.Fatalf("UpperBound 4 error")
-	}
-	if iter.Value() != 5 {
-		t.Fatalf("UpperBound 4 error: expect %v, but get %v", 5, iter.Value())
-	}
+	assert.Equal(t, 5, iter.Value())
+
+	iter = UpperBound(a.Begin(), a.End(), 15)
+	assert.True(t, iter.Equal(a.End()))
 }

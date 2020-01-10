@@ -132,7 +132,7 @@ func (s *Set) Last() *SetIterator {
 // Clear clears the Set
 func (s *Set) Clear() {
 	s.locker.Lock()
-	defer s.locker.Lock()
+	defer s.locker.Unlock()
 
 	s.tree.Clear()
 }

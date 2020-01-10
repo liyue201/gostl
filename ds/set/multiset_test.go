@@ -6,7 +6,7 @@ import (
 )
 
 func TestMultiSet(t *testing.T) {
-	mset := NewMultiSet()
+	mset := NewMultiSet(WithGoroutineSafe())
 
 	mset.Insert(1)
 	mset.Insert(5)
@@ -14,6 +14,8 @@ func TestMultiSet(t *testing.T) {
 
 	assert.Equal(t, 3, mset.Size())
 	assert.True(t, mset.Contains(1))
+	assert.Equal(t, 1, mset.Begin().Value())
+	assert.Equal(t, 5, mset.Last().Value())
 
 	for iter := mset.First(); iter.IsValid(); iter.Next() {
 		t.Logf("%v\n", iter.Value())

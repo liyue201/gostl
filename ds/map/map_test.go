@@ -48,6 +48,7 @@ func TestMapIterator(t *testing.T) {
 	assert.True(t, m.Begin().Equal(m.First()))
 
 	iter := m.Find(8)
+	assert.Equal(t, 8, iter.Key().(int))
 	assert.Equal(t, 8, iter.Value().(int))
 
 	iter = m.LowerBound(8)
