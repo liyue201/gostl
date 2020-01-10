@@ -1,8 +1,8 @@
 package skiplist
 
 import (
-	"github.com/bmizerany/assert"
 	"github.com/liyue201/gostl/utils/comparator"
+	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"testing"
 )
