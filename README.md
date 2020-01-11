@@ -28,7 +28,7 @@ GoSTL is a data structure and algorithm library for go,designed to provide funct
     - [set/multiset](#set)
     - [bitmap](#bitmap)
     - [bloom_filter](#bloom_filter)
-    - [hamt(hash_array_map_tree)](#hamt)
+    - [hamt(hash_array_mapped_trie)](#hamt)
     - [ketama](#ketama)
     - [skiplist](#skliplist)
 - algorithm

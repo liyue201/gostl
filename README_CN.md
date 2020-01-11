@@ -26,7 +26,7 @@ GoSTL是一个go语言数据结构和算法库，类似C++的STL，但功能更�
     - [集合（set/multiset）](#set)
     - [位映射（bitmap）](#bitmap)
     - [布隆过滤器（bloom_filter）](#bloom_filter)
-    - [哈希映射树（hamt）](#hamt)
+    - [哈希数组映射字典树（hash_array_mapped_trie）](#hamt)
     - [一致性哈希（ketama）](#ketama)
     - [跳表（skiplist）](#skliplist)
 - 算法
@@ -519,8 +519,8 @@ func main() {
 }
 ```
 
-### <a name="hamt">哈希映射树（hamt）</a>
-哈希映射树相对于传统哈希（开放地址法或链表法哈希），出现哈希冲突的概率更小，空间利用率更高。扩容缩容性时间复杂度低。支持线程安全。
+### <a name="hamt">哈希数组映射字典树（hash_array_mapped_trie）</a>
+哈希数组映射字典树相对于传统哈希（开放地址法或链表法哈希），出现哈希冲突的概率更小，空间利用率更高。扩容缩容性时间复杂度低。支持线程安全。
 
 ```go
 package main

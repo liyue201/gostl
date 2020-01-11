@@ -240,7 +240,7 @@ func (h *KvNode) BitPosNum(depth int) uint64 {
 	return uint64(1) << pos(h.hash, depth)
 }
 
-// New news a Hamt(hash array map tree) instance
+// New news a Hamt(hash array mapped trie) instance
 func New(opts ...Option) *Hamt {
 	option := Options{
 		locker: defaultLocker,
