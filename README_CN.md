@@ -1,11 +1,11 @@
 # GoSTL
 
 [![GoDoc](https://godoc.org/github.com/liyue201/gostl?status.svg)](https://godoc.org/github.com/liyue201/gostl)
-[![](https://goreportcard.com/badge/github.com/liyue201/gostl)](https://goreportcard.com/report/github.com/liyue201/gostl)
+[![Goreportcard](https://goreportcard.com/badge/github.com/liyue201/gostl)](https://goreportcard.com/report/github.com/liyue201/gostl)
 [![Build Status](https://travis-ci.org/liyue201/gostl.svg?branch=master)](https://travis-ci.org/liyue201/gostl)
-[![](https://coveralls.io/repos/github/liyue201/gostl/badge.svg?branch=master)](https://coveralls.io/github/liyue201/gostl)
-[![licence](https://img.shields.io/badge/license-GPLv3-brightgreen.svg)]()
-[![view examples](https://img.shields.io/badge/learn-examples-brightgreen.svg)](/examples)
+[![Coverall](https://coveralls.io/repos/github/liyue201/gostl/badge.svg?branch=master)](https://coveralls.io/github/liyue201/gostl)
+[![License](https://img.shields.io/badge/license-GPLv3-brightgreen.svg)](/LICENSE)
+[![View examples](https://img.shields.io/badge/learn-examples-brightgreen.svg)](/examples)
 
 [English](./README.md) | 简体中文
 
