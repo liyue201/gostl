@@ -10,7 +10,7 @@ type SetIterator struct {
 	node *rbtree.Node
 }
 
-// IsValid returns whether iter is valid or not
+// IsValid returns true if the iterator is valid, otherwise returns false
 func (iter *SetIterator) IsValid() bool {
 	if iter.node != nil {
 		return true
@@ -18,7 +18,7 @@ func (iter *SetIterator) IsValid() bool {
 	return false
 }
 
-// Next moves iter to next node and returns iter
+// Next moves the pointer of the iterator to the next node and returns itself
 func (iter *SetIterator) Next() iterator.ConstIterator {
 	if iter.IsValid() {
 		iter.node = iter.node.Next()
@@ -26,7 +26,7 @@ func (iter *SetIterator) Next() iterator.ConstIterator {
 	return iter
 }
 
-// Prev moves iter to previous node and returns iter
+// Prev moves the pointer of the iterator to the previous node and returns itself
 func (iter *SetIterator) Prev() iterator.ConstBidIterator {
 	if iter.IsValid() {
 		iter.node = iter.node.Prev()
@@ -34,17 +34,17 @@ func (iter *SetIterator) Prev() iterator.ConstBidIterator {
 	return iter
 }
 
-// Value returns the internal value of iter
+// Value returns the element of the iterator point to
 func (iter *SetIterator) Value() interface{} {
 	return iter.node.Key()
 }
 
-// Clone clones iter to a new SetIterator
+// Clone clones the iterator into a new SetIterator
 func (iter *SetIterator) Clone() iterator.ConstIterator {
 	return &SetIterator{iter.node}
 }
 
-// Equal returns whether iter is equal to other or not
+// Equal returns true if the iterator is equal to the passed iterator
 func (iter *SetIterator) Equal(other iterator.ConstIterator) bool {
 	otherIter, ok := other.(*SetIterator)
 	if !ok {

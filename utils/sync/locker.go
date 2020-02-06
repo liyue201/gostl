@@ -14,7 +14,7 @@ type Locker interface {
 
 var _ Locker = (*gosync.RWMutex)(nil)
 
-// FakeLocker is a fack locker
+// FakeLocker is a fake locker
 type FakeLocker struct {
 }
 

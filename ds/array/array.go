@@ -1,119 +1,110 @@
 package array
 
 import (
-	"errors"
 	"fmt"
 )
 
-//ErrArraySizeNotEqual defines "array size are not equal"
-var ErrArraySizeNotEqual = errors.New("array size are not equal")
-
-//ErrOutOffRange defines "out off range error"
-var ErrOutOffRange = errors.New("out off range")
-
-// Array internal is a slice
+// Array is a fixed size slice
 type Array struct {
-	data []interface{}
+	values []interface{}
 }
 
-// New news an array with size passed
+// New creates a new array with passed size
 func New(size int) *Array {
-	return &Array{data: make([]interface{}, size, size)}
+	return &Array{values: make([]interface{}, size, size)}
 }
 
-// NewFromArray news an array from other array
+// NewFromArray creates a new array from another array, and copy its values
 func NewFromArray(other *Array) *Array {
-	a := &Array{data: make([]interface{}, other.Size(), other.Size())}
-	for i := range other.data {
-		a.data[i] = other.data[i]
+	a := &Array{values: make([]interface{}, other.Size(), other.Size())}
+	for i := range other.values {
+		a.values[i] = other.values[i]
 	}
 	return a
 }
 
-// Fill fills a with value val
+// Fill fills Array a with value val
 func (a *Array) Fill(val interface{}) {
-	for i := range a.data {
-		a.data[i] = val
+	for i := range a.values {
+		a.values[i] = val
 	}
 }
 
-// Set sets a with value val at position
-func (a *Array) Set(position int, val interface{}) error {
-	if position < 0 || position >= len(a.data) {
-		return ErrOutOffRange
+// Set sets value val to the position pos of the array
+func (a *Array) Set(pos int, val interface{}) {
+	if pos < 0 || pos >= len(a.values) {
+		return
 	}
-	a.data[position] = val
-	return nil
+	a.values[pos] = val
 }
 
-// At returns the value at position
-func (a *Array) At(position int) interface{} {
-	if position < 0 || position >= len(a.data) {
+// At returns the value at position pos in the array
+func (a *Array) At(pos int) interface{} {
+	if pos < 0 || pos >= len(a.values) {
 		return nil
 	}
-	return a.data[position]
+	return a.values[pos]
 }
 
-// Front returns the first value of a
+// Front returns the first value in the array
 func (a *Array) Front() interface{} {
 	return a.At(0)
 }
 
-// Back returns the last value of a
+// Back returns the last value in the array
 func (a *Array) Back() interface{} {
-	return a.At(len(a.data) - 1)
+	return a.At(len(a.values) - 1)
 }
 
-// Size returns the size  of a
+// Size returns number of elements within the array
 func (a *Array) Size() int {
-	return len(a.data)
+	return len(a.values)
 }
 
-// Empty returns whether a is empty
+// Empty returns whether the array is empty or not
 func (a *Array) Empty() bool {
-	return len(a.data) == 0
+	return len(a.values) == 0
 }
 
-// SwapArray swaps the data of a with other
-func (a *Array) SwapArray(other *Array) error {
+// SwapArray swaps the values of two arrays
+func (a *Array) SwapArray(other *Array) {
 	if a.Size() != other.Size() {
-		return ErrArraySizeNotEqual
+		return
 	}
-	a.data, other.data = other.data, a.data
-	return nil
+	a.values, other.values = other.values, a.values
 }
 
-// Data returns the internal data of a
+// Data returns the internal values of the array
 func (a *Array) Data() []interface{} {
-	return a.data
+	return a.values
 }
 
-// Begin returns the first iterator of a
+// Begin returns an iterator of the array with the first position
 func (a *Array) Begin() *ArrayIterator {
 	return a.First()
 }
 
-// End returns an end iterator of a
+// End returns an iterator of the array with the position a.Size()
 func (a *Array) End() *ArrayIterator {
 	return a.IterAt(a.Size())
 }
 
-// First returns the first iterator of a
+// First returns an iterator of the array with the first position
 func (a *Array) First() *ArrayIterator {
 	return a.IterAt(0)
 }
 
-// Last returns the last iterator of a
+// Last returns an iterator of the array with the last position
 func (a *Array) Last() *ArrayIterator {
 	return a.IterAt(a.Size() - 1)
 }
 
-// IterAt returns an iterator of a at position
-func (a *Array) IterAt(position int) *ArrayIterator {
-	return &ArrayIterator{array: a, position: position}
+// IterAt returns an iterator of the array with position pos
+func (a *Array) IterAt(pos int) *ArrayIterator {
+	return &ArrayIterator{array: a, position: pos}
 }
 
-// String returns a with string format
+// String returns a string representation of the array
 func (a *Array) String() string {
-	return fmt.Sprintf("%v", a.data)
+	return fmt.Sprintf("%v", a.values)
 }

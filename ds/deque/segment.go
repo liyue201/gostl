@@ -1,6 +1,6 @@
 package deque
 
-//Segment is a fixed nSize ring
+//Segment is a fixed capacity ring
 type Segment struct {
 	data  []interface{}
 	begin int

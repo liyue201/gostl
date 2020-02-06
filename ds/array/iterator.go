@@ -4,16 +4,16 @@ import (
 	"github.com/liyue201/gostl/utils/iterator"
 )
 
-//ArrayIterator is a RandomAccessIterator
+//ArrayIterator is an implementation of RandomAccessIterator
 var _ iterator.RandomAccessIterator = (*ArrayIterator)(nil)
 
-// ArrayIterator is an implementation of iterator for Array
+// ArrayIterator is an an implementation of Array iterator
 type ArrayIterator struct {
 	array    *Array
 	position int
 }
 
-// IsValid returns whether iter is valid
+// IsValid returns true if  the iterator is valid, otherwise returns false
 func (iter *ArrayIterator) IsValid() bool {
 	if iter.position >= 0 && iter.position < iter.array.Size() {
 		return true
@@ -21,17 +21,17 @@ func (iter *ArrayIterator) IsValid() bool {
 	return false
 }
 
-// Value returns the internal value of iter
+// Value returns the value of array at the position of the iterator point to
 func (iter *ArrayIterator) Value() interface{} {
 	return iter.array.At(iter.position)
 }
 
-// SetValue sets the value of iter
-func (iter *ArrayIterator) SetValue(val interface{}) error {
-	return iter.array.Set(iter.position, val)
+// SetValue sets the value of the array at the position of the iterator point to
+func (iter *ArrayIterator) SetValue(val interface{}) {
+	iter.array.Set(iter.position, val)
 }
 
-// Next moves iter to next position and returns iter
+// Next moves the position of iterator to the next position and returns itself
 func (iter *ArrayIterator) Next() iterator.ConstIterator {
 	if iter.position < iter.array.Size() {
 		iter.position++
@@ -39,7 +39,7 @@ func (iter *ArrayIterator) Next() iterator.ConstIterator {
 	return iter
 }
 
-// Prev moves iter to previous position and returns iter
+// Prev moves the position of iterator to the previous position and returns itself
 func (iter *ArrayIterator) Prev() iterator.ConstBidIterator {
 	if iter.position >= 0 {
 		iter.position--
@@ -47,22 +47,22 @@ func (iter *ArrayIterator) Prev() iterator.ConstBidIterator {
 	return iter
 }
 
-// Clone clones iter to a new ArrayIterator
+// Clone clones the iterator to a new iterator
 func (iter *ArrayIterator) Clone() iterator.ConstIterator {
 	return &ArrayIterator{array: iter.array, position: iter.position}
 }
 
-// IteratorAt new and iterator with position at the passed position
-func (iter *ArrayIterator) IteratorAt(position int) iterator.RandomAccessIterator {
-	return &ArrayIterator{array: iter.array, position: position}
+// IteratorAt creates a new iterator with position pos
+func (iter *ArrayIterator) IteratorAt(pos int) iterator.RandomAccessIterator {
+	return &ArrayIterator{array: iter.array, position: pos}
 }
 
-// Position return the position of iterator
+// Position returns the position of the iterator
 func (iter *ArrayIterator) Position() int {
 	return iter.position
 }
 
-// Equal returns whether iter is equal to other
+// Equal returns true if the iterator is equal to the passed iterator, otherwise returns false
 func (iter *ArrayIterator) Equal(other iterator.ConstIterator) bool {
 	otherIter, ok := other.(*ArrayIterator)
 	if !ok {

@@ -15,10 +15,10 @@ type Options struct {
 	keyCmp comparator.Comparator
 }
 
-// Option is a function used to set Options
+// Option is a function type used to set Options
 type Option func(option *Options)
 
-//WithKeyComparator uses cmp for key comparator
+//WithKeyComparator is used to set RbTree's key comparator
 func WithKeyComparator(cmp comparator.Comparator) Option {
 	return func(option *Options) {
 		option.keyCmp = cmp
@@ -35,7 +35,7 @@ type RbTree struct {
 	keyCmp comparator.Comparator
 }
 
-//New news a RbTree
+//New creates a new RbTree
 func New(opts ...Option) *RbTree {
 	option := Options{
 		keyCmp: defaultKeyComparator,
@@ -46,13 +46,13 @@ func New(opts ...Option) *RbTree {
 	return &RbTree{keyCmp: option.keyCmp}
 }
 
-// Clear clears the tree
+// Clear clears the RbTree
 func (t *RbTree) Clear() {
 	t.root = nil
 	t.size = 0
 }
 
-// Find finds the first Node by the key and return its value.
+// Find finds the first node that the key is equal to the passed key, and returns its value
 func (t *RbTree) Find(key interface{}) interface{} {
 	n := t.findFirstNode(key)
 	if n != nil {
@@ -61,17 +61,17 @@ func (t *RbTree) Find(key interface{}) interface{} {
 	return nil
 }
 
-// FindNode finds the first Node and return it as an iterator.
+// FindNode the first node that the key is equal to the passed key and return it
 func (t *RbTree) FindNode(key interface{}) *Node {
 	return t.findFirstNode(key)
 }
 
-// Begin returns the Node with minimum key in the tree
+// Begin returns the node with minimum key in the RbTree
 func (t *RbTree) Begin() *Node {
 	return t.First()
 }
 
-// First returns the Node with minimum key in the tree
+// First returns the node with minimum key in the RbTree
 func (t *RbTree) First() *Node {
 	if t.root == nil {
 		return nil
@@ -79,12 +79,12 @@ func (t *RbTree) First() *Node {
 	return minimum(t.root)
 }
 
-// RBegin returns the Node with maximum key in the tree
+// RBegin returns the Node with maximum key in the RbTree
 func (t *RbTree) RBegin() *Node {
 	return t.Last()
 }
 
-// Last returns the Node with maximum key in the tree
+// Last returns the Node with maximum key in the RbTree
 func (t *RbTree) Last() *Node {
 	if t.root == nil {
 		return nil
@@ -92,12 +92,12 @@ func (t *RbTree) Last() *Node {
 	return maximum(t.root)
 }
 
-// IterFirst returns the iterator of first Node
+// IterFirst returns the iterator of first node
 func (t *RbTree) IterFirst() *RbTreeIterator {
 	return NewIterator(t.First())
 }
 
-// IterLast returns the iterator of first Node
+// IterLast returns the iterator of first node
 func (t *RbTree) IterLast() *RbTreeIterator {
 	return NewIterator(t.Last())
 }
@@ -115,7 +115,7 @@ func (t *RbTree) Size() int {
 	return t.size
 }
 
-// Insert inserts a key-value pair into the rbtree.
+// Insert inserts a key-value pair into the RbTree.
 func (t *RbTree) Insert(key, value interface{}) {
 	x := t.root
 	var y *Node
@@ -184,7 +184,7 @@ func (t *RbTree) rbInsertFixup(z *Node) {
 	t.root.color = BLACK
 }
 
-// Delete deletes the Node
+// Delete deletes node from the RbTree
 func (t *RbTree) Delete(node *Node) {
 	z := node
 	if z == nil {
@@ -342,7 +342,7 @@ func (t *RbTree) rightRotate(x *Node) {
 	x.parent = y
 }
 
-// findNode finds the Node by key and return it's Node, if not exists return nil.
+// findNode finds the node that its key is equal to the passed key, and returns it.
 func (t *RbTree) findNode(key interface{}) *Node {
 	x := t.root
 	for x != nil {
@@ -358,7 +358,7 @@ func (t *RbTree) findNode(key interface{}) *Node {
 	return nil
 }
 
-// findNode returns the first Node that equal to key, if not exists return nil.
+// findNode finds the first node that its key is equal to the passed key, and returns it
 func (t *RbTree) findFirstNode(key interface{}) *Node {
 	node := t.FindLowerBoundNode(key)
 	if node == nil {
@@ -370,7 +370,7 @@ func (t *RbTree) findFirstNode(key interface{}) *Node {
 	return nil
 }
 
-// FindLowerBoundNode returns the first Node that equal or greater than key, if not exists return nil.
+// FindLowerBoundNode finds the first node that its key is equal or greater than the passed key, and returns it
 func (t *RbTree) FindLowerBoundNode(key interface{}) *Node {
 	return t.findLowerBoundNode(t.root, key)
 }
@@ -392,7 +392,7 @@ func (t *RbTree) findLowerBoundNode(x *Node, key interface{}) *Node {
 	return t.findLowerBoundNode(x.right, key)
 }
 
-// Traversal traversals elements in rbtree, it will not stop until to the end or visitor returns false
+// Traversal traversals elements in the RbTree, it will not stop until to the end of RbTree or the visitor returns false
 func (t *RbTree) Traversal(visitor visitor.KvVisitor) {
 	for node := t.First(); node != nil; node = node.Next() {
 		if !visitor(node.key, node.value) {
@@ -453,7 +453,7 @@ func (t *RbTree) test(n *Node) (int, int, bool) {
 	return blackCount, 0, true
 }
 
-// getColor gets color of the Node.
+// getColor returns the node's color
 func getColor(n *Node) Color {
 	if n == nil {
 		return BLACK

@@ -20,17 +20,17 @@ type Options struct {
 	locker   sync.Locker
 }
 
-// Option configures Ketama's options
+// Option is a function type used to set Options
 type Option func(option *Options)
 
-// WithGoroutineSafe configures goroutine-safe
+// WithGoroutineSafe is used to config a Ketama with goroutine-safe
 func WithGoroutineSafe() Option {
 	return func(option *Options) {
 		option.locker = &gosync.RWMutex{}
 	}
 }
 
-// WithReplicas configures replicas
+// WithReplicas is used to config the hash replicas of a Ketama
 func WithReplicas(replicas int) Option {
 	return func(option *Options) {
 		option.replicas = replicas
@@ -44,8 +44,7 @@ type Ketama struct {
 	m        *treemap.Map
 }
 
-// New new a ketama ring
-// Ketama is a goroutine-safe implementation of consistent hash
+// New creates a new ketama
 func New(opts ...Option) *Ketama {
 	option := Options{
 		replicas: defaultReplicas,
@@ -62,7 +61,7 @@ func New(opts ...Option) *Ketama {
 	return k
 }
 
-// Empty returns true if  Ketama is empty, or false if not empty
+// Empty returns true if the ketama is empty, otherwise returns false
 func (k *Ketama) Empty() bool {
 	k.locker.RLock()
 	defer k.locker.RUnlock()
@@ -70,7 +69,7 @@ func (k *Ketama) Empty() bool {
 	return k.m.Size() == 0
 }
 
-// Add add nodes to ketama ring
+// Add adds nodes to the ketama ring
 func (k *Ketama) Add(nodes ...string) {
 	k.locker.Lock()
 	defer k.locker.Unlock()
@@ -86,7 +85,7 @@ func (k *Ketama) Add(nodes ...string) {
 	}
 }
 
-// Remove remove nodes from ketama ring
+// Remove removes nodes from the ketama ring
 func (k *Ketama) Remove(nodes ...string) {
 	k.locker.Lock()
 	defer k.locker.Unlock()
@@ -103,7 +102,7 @@ func (k *Ketama) Remove(nodes ...string) {
 	}
 }
 
-// Get returns the node which closest to key in the clockwise direction
+// Get returns the node closest to key in the clockwise direction
 func (k *Ketama) Get(key string) (string, bool) {
 	if k.Empty() {
 		return "", false

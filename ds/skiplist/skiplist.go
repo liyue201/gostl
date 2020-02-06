@@ -90,7 +90,7 @@ func New(opts ...Option) *Skiplist {
 	return l
 }
 
-// Insert inserts a key-value pair into skiplist
+// Insert inserts a key-value pair into the skiplist
 func (sl *Skiplist) Insert(key, value interface{}) {
 	sl.locker.Lock()
 	defer sl.locker.Unlock()
@@ -120,7 +120,7 @@ func (sl *Skiplist) Insert(key, value interface{}) {
 	sl.len++
 }
 
-// Get gets the value associated with the key passed if exist, or nil if not exist
+// Get returns the value associated with the passed key if the key is in the skiplist, otherwise returns nil
 func (sl *Skiplist) Get(key interface{}) interface{} {
 	sl.locker.RLock()
 	defer sl.locker.RUnlock()
@@ -142,7 +142,7 @@ func (sl *Skiplist) Get(key interface{}) interface{} {
 	return nil
 }
 
-// Remove removes the element associated with the key passed and returns true if exist,or false if not exist
+// Remove removes the key-value pair associated with the passed key and returns true if the key is in the skiplist, otherwise returns false
 func (sl *Skiplist) Remove(key interface{}) bool {
 	sl.locker.Lock()
 	defer sl.locker.Unlock()
@@ -163,7 +163,7 @@ func (sl *Skiplist) Remove(key interface{}) bool {
 	return true
 }
 
-// Len returns the number of elements in the skiplist
+// Len returns the amount of key-value pair in the skiplist
 func (sl *Skiplist) Len() int {
 	sl.locker.RLock()
 	defer sl.locker.RUnlock()
@@ -200,7 +200,7 @@ func (sl *Skiplist) findPrevNodes(key interface{}) []*Node {
 	return prevs
 }
 
-// Traversal traversals elements in Skiplist, it will stop until to the end or visitor returns false
+// Traversal traversals elements in the skiplist, it will stop until to the end or the visitor returns false
 func (sl *Skiplist) Traversal(visitor visitor.KvVisitor) {
 	sl.locker.RLock()
 	defer sl.locker.RUnlock()
@@ -212,7 +212,7 @@ func (sl *Skiplist) Traversal(visitor visitor.KvVisitor) {
 	}
 }
 
-// Keys returns all keys in the Skiplist
+// Keys returns all keys in the skiplist
 func (sl *Skiplist) Keys() []interface{} {
 	var keys []interface{}
 	sl.Traversal(func(key, value interface{}) bool {

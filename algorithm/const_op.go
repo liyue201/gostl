@@ -31,7 +31,7 @@ func CountIf(first, last iterator.ConstIterator, f func(iterator.ConstIterator) 
 	return count
 }
 
-// Find finds the first element that it's value is equal to value in range [first, last), and returns it's iterator, or last if not found
+// Find finds the first element that its value is equal to value in range [first, last), and returns its iterator, or last if not found
 func Find(first, last iterator.ConstIterator, value interface{}, cmps ...comparator.Comparator) iterator.ConstIterator {
 	cmp := comparator.BuiltinTypeComparator
 	if len(cmps) > 0 {
@@ -45,7 +45,7 @@ func Find(first, last iterator.ConstIterator, value interface{}, cmps ...compara
 	return last
 }
 
-// FindIf finds the first element that is satisfied the function f, and returns it's iterator, or last if not found
+// FindIf finds the first element that is satisfied the function f, and returns its iterator, or last if not found
 func FindIf(first, last iterator.ConstIterator, f func(iterator.ConstIterator) bool) iterator.ConstIterator {
 	for iter := first.Clone(); !iter.Equal(last); iter.Next() {
 		if f(iter) {

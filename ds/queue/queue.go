@@ -19,37 +19,37 @@ type Options struct {
 	container container.Container
 }
 
-// Option is a function used to set Options
+// Option is a function type used to set Options
 type Option func(option *Options)
 
-// WithGoroutineSafe uses GoroutineSafe
+// WithGoroutineSafe is used to set a Queue goroutine-safe
 func WithGoroutineSafe() Option {
 	return func(option *Options) {
 		option.locker = &gosync.RWMutex{}
 	}
 }
 
-// WithContainer uses c for internal Container
+// WithContainer is used to set a Queue's underlying container
 func WithContainer(c container.Container) Option {
 	return func(option *Options) {
 		option.container = c
 	}
 }
 
-// WithListContainer uses List for internal Container
+// WithListContainer is used to set List as a Queue's underlying container
 func WithListContainer() Option {
 	return func(option *Options) {
 		option.container = bidlist.New()
 	}
 }
 
-//Queue is a first-in-first-out data structure
+// Queue is a first-in-first-out data structure
 type Queue struct {
 	container container.Container
 	locker    sync.Locker
 }
 
-//New new a queue
+//New creates a new queue
 func New(opts ...Option) *Queue {
 	option := Options{
 		locker:    defaultLocker,
@@ -65,7 +65,7 @@ func New(opts ...Option) *Queue {
 	}
 }
 
-// Size returns the size of q
+// Size returns the amount of elements in the queue
 func (q *Queue) Size() int {
 	q.locker.RLock()
 	defer q.locker.RUnlock()
@@ -73,7 +73,7 @@ func (q *Queue) Size() int {
 	return q.container.Size()
 }
 
-// Empty returns whether q is empty or not
+// Empty returns true if the queue is empty, otherwise returns false
 func (q *Queue) Empty() bool {
 	q.locker.RLock()
 	defer q.locker.RUnlock()
@@ -81,7 +81,7 @@ func (q *Queue) Empty() bool {
 	return q.container.Empty()
 }
 
-// Push pushes value to q
+// Push pushes a value to the end of the queue
 func (q *Queue) Push(value interface{}) {
 	q.locker.Lock()
 	defer q.locker.Unlock()
@@ -89,7 +89,7 @@ func (q *Queue) Push(value interface{}) {
 	q.container.PushBack(value)
 }
 
-// Front returns the first value in q
+// Front returns the front value in the queue
 func (q *Queue) Front() interface{} {
 	q.locker.RLock()
 	defer q.locker.RUnlock()
@@ -97,7 +97,7 @@ func (q *Queue) Front() interface{} {
 	return q.container.Front()
 }
 
-// Back returns the last value in q
+// Back returns the back value in the queue
 func (q *Queue) Back() interface{} {
 	q.locker.RLock()
 	defer q.locker.RUnlock()
@@ -105,7 +105,7 @@ func (q *Queue) Back() interface{} {
 	return q.container.Back()
 }
 
-// Pop removes the the first item in q, and returns it's value
+// Pop removes the the front element in the queue, and returns its value
 func (q *Queue) Pop() interface{} {
 	q.locker.Lock()
 	defer q.locker.Unlock()
@@ -113,7 +113,7 @@ func (q *Queue) Pop() interface{} {
 	return q.container.PopFront()
 }
 
-// Clear clears all items in q
+// Clear clears all elements in the queue
 func (q *Queue) Clear() {
 	q.locker.Lock()
 	defer q.locker.Unlock()
@@ -121,7 +121,7 @@ func (q *Queue) Clear() {
 	q.container.Clear()
 }
 
-// String returns q in string format
+// String returns a string representation of the queue
 func (q *Queue) String() string {
 	q.locker.RLock()
 	defer q.locker.RUnlock()

@@ -12,18 +12,18 @@ var (
 	defaultLocker     sync.FakeLocker
 )
 
-// ElementHolder is the holder of elements
+// ElementHolder holds elements of the PriorityQueue
 type ElementHolder struct {
 	elements []interface{}
 	cmpFun   comparator.Comparator
 }
 
-// Push pushes an element to h
+// Push pushes an element to the ElementHolder
 func (h *ElementHolder) Push(element interface{}) {
 	h.elements = append(h.elements, element)
 }
 
-// Pop pops an element from h
+// Pop pops an element from the ElementHolder
 func (h *ElementHolder) Pop() interface{} {
 	if len(h.elements) == 0 {
 		return nil
@@ -40,17 +40,12 @@ func (h *ElementHolder) top() interface{} {
 	return h.elements[0]
 }
 
-// Size returns the size of h
-func (h *ElementHolder) Size() int {
-	return len(h.elements)
-}
-
-// Len returns the size of h
+// Len returns the amount of elements in ElementHolder
 func (h *ElementHolder) Len() int {
 	return len(h.elements)
 }
 
-// Len compare two elements at i and j position, and returns true if elements[i] < elements[j]
+// Len compare two elements at position i and j , and returns true if elements[i] < elements[j]
 func (h *ElementHolder) Less(i, j int) bool {
 	if h.cmpFun(h.elements[i], h.elements[j]) < 0 {
 		return true
@@ -58,7 +53,7 @@ func (h *ElementHolder) Less(i, j int) bool {
 	return false
 }
 
-// Swap swaps two elements at i and j position
+// Swap swaps two elements at position i and j
 func (h *ElementHolder) Swap(i, j int) {
 	h.elements[i], h.elements[j] = h.elements[j], h.elements[i]
 }
@@ -69,17 +64,17 @@ type Options struct {
 	locker sync.Locker
 }
 
-// Option is a function used to set Options
+// Option is a function type used to set Options
 type Option func(option *Options)
 
-// WithComparator sets the comparator option
+// WithComparator is used to set the PriorityQueue's comparator
 func WithComparator(cmp comparator.Comparator) Option {
 	return func(option *Options) {
 		option.cmp = cmp
 	}
 }
 
-// WithGoroutineSafe sets the GoroutineSafe option
+// WithGoroutineSafe is used to set the PriorityQueue goroutine-safe
 func WithGoroutineSafe() Option {
 	return func(option *Options) {
 		option.locker = &gosync.RWMutex{}
@@ -92,7 +87,7 @@ type PriorityQueue struct {
 	locker sync.Locker
 }
 
-// New news a PriorityQueue
+// New creates a PriorityQueue
 func New(opts ...Option) *PriorityQueue {
 	option := Options{
 		cmp:    defaultComparator,
@@ -111,15 +106,15 @@ func New(opts ...Option) *PriorityQueue {
 	}
 }
 
-// Push pushes an item to q
-func (q *PriorityQueue) Push(item interface{}) {
+// Push pushes an element to the PriorityQueue
+func (q *PriorityQueue) Push(e interface{}) {
 	q.locker.Lock()
 	defer q.locker.Unlock()
 
-	heap.Push(q.holder, item)
+	heap.Push(q.holder, e)
 }
 
-// Pop pops an item from q
+// Pop pops an element from the PriorityQueue
 func (q *PriorityQueue) Pop() interface{} {
 	q.locker.Lock()
 	defer q.locker.Unlock()
@@ -127,7 +122,7 @@ func (q *PriorityQueue) Pop() interface{} {
 	return heap.Pop(q.holder)
 }
 
-// Top returns the top item at q
+// Top returns the top element in the PriorityQueue
 func (q *PriorityQueue) Top() interface{} {
 	q.locker.RLock()
 	defer q.locker.RUnlock()
@@ -135,10 +130,10 @@ func (q *PriorityQueue) Top() interface{} {
 	return q.holder.top()
 }
 
-// Empty returns whether q is empty
+// Empty returns true if the PriorityQueue is empty, otherwise returns false
 func (q *PriorityQueue) Empty() bool {
 	q.locker.RLock()
 	defer q.locker.RUnlock()
 
-	return q.holder.Size() == 0
+	return q.holder.Len() == 0
 }
