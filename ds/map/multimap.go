@@ -14,7 +14,7 @@ type MultiMap struct {
 	locker sync.Locker
 }
 
-//NewMultiMap news a MultiMap
+//NewMultiMap creates a new MultiMap
 func NewMultiMap(opts ...Option) *MultiMap {
 	option := Options{
 		keyCmp: defaultKeyComparator,
@@ -29,7 +29,7 @@ func NewMultiMap(opts ...Option) *MultiMap {
 	}
 }
 
-//Insert inserts key-value to the set
+//Insert inserts a key-value to the MultiMap
 func (mm *MultiMap) Insert(key, value interface{}) {
 	mm.locker.Lock()
 	defer mm.locker.Unlock()
@@ -37,7 +37,7 @@ func (mm *MultiMap) Insert(key, value interface{}) {
 	mm.tree.Insert(key, value)
 }
 
-//Get returns the first node's value by key if found, or nil if not found
+//Get returns the first node's value by the passed key if the key is in the MultiMap, otherwise returns nil
 func (mm *MultiMap) Get(key interface{}) interface{} {
 	mm.locker.RLock()
 	defer mm.locker.RUnlock()
@@ -49,7 +49,7 @@ func (mm *MultiMap) Get(key interface{}) interface{} {
 	return nil
 }
 
-//Erase erases key in the Map
+//Erase erases the key in the MultiMap
 func (mm *MultiMap) Erase(key interface{}) {
 	mm.locker.Lock()
 	defer mm.locker.Unlock()
@@ -62,7 +62,7 @@ func (mm *MultiMap) Erase(key interface{}) {
 	}
 }
 
-//Find returns the iterator related to key in the set, or an invalid iterator if not exist.
+//Find finds the node by the passed key in the MultiMap and returns its iterator
 func (mm *MultiMap) Find(key interface{}) *MapIterator {
 	mm.locker.RLock()
 	defer mm.locker.RUnlock()
@@ -71,7 +71,7 @@ func (mm *MultiMap) Find(key interface{}) *MapIterator {
 	return &MapIterator{node: node}
 }
 
-//LowerBound returns the first iterator that equal or greater than key in the Map
+//LowerBound find the first node that its key is equal or greater than the passed key in the MultiMap, and returns its iterator
 func (mm *MultiMap) LowerBound(key interface{}) *MapIterator {
 	mm.locker.RLock()
 	defer mm.locker.RUnlock()
@@ -80,7 +80,7 @@ func (mm *MultiMap) LowerBound(key interface{}) *MapIterator {
 	return &MapIterator{node: node}
 }
 
-//Begin returns the iterator with the minimum key in the Map, return nil if empty.
+//Begin returns the first node's iterator
 func (mm *MultiMap) Begin() *MapIterator {
 	mm.locker.RLock()
 	defer mm.locker.RUnlock()
@@ -88,7 +88,7 @@ func (mm *MultiMap) Begin() *MapIterator {
 	return &MapIterator{node: mm.tree.First()}
 }
 
-//First returns the iterator with the minimum key in the Map, return nil if empty.
+//First returns the first node's iterator
 func (mm *MultiMap) First() *MapIterator {
 	mm.locker.RLock()
 	defer mm.locker.RUnlock()
@@ -96,7 +96,7 @@ func (mm *MultiMap) First() *MapIterator {
 	return &MapIterator{node: mm.tree.First()}
 }
 
-//Last returns the iterator with the maximum key in the Map, return nil if empty.
+//Last returns the last node's iterator
 func (mm *MultiMap) Last() *MapIterator {
 	mm.locker.RLock()
 	defer mm.locker.RUnlock()
@@ -104,7 +104,7 @@ func (mm *MultiMap) Last() *MapIterator {
 	return &MapIterator{node: mm.tree.Last()}
 }
 
-//Clear clears the Map
+//Clear clears the MultiMap
 func (mm *MultiMap) Clear() {
 	mm.locker.Lock()
 	defer mm.locker.Unlock()
@@ -112,7 +112,7 @@ func (mm *MultiMap) Clear() {
 	mm.tree.Clear()
 }
 
-// Contains returns true if value in the Map. otherwise returns false.
+// Contains returns true if the passed value is in the MultiMap. otherwise returns false.
 func (mm *MultiMap) Contains(value interface{}) bool {
 	mm.locker.RLock()
 	defer mm.locker.RUnlock()
@@ -123,7 +123,7 @@ func (mm *MultiMap) Contains(value interface{}) bool {
 	return false
 }
 
-// Size returns the size of Map
+// Size returns the amount of elements in the MultiMap
 func (mm *MultiMap) Size() int {
 	mm.locker.RLock()
 	defer mm.locker.RUnlock()
@@ -131,7 +131,7 @@ func (mm *MultiMap) Size() int {
 	return mm.tree.Size()
 }
 
-// Traversal traversals elements in the map, it will not stop until to the end or visitor returns false
+// Traversal traversals elements in the MultiMap, it will not stop until to the end of the MultiMap or the visitor returns false
 func (mm *MultiMap) Traversal(visitor visitor.KvVisitor) {
 	mm.locker.RLock()
 	defer mm.locker.RUnlock()

@@ -28,17 +28,17 @@ type Options struct {
 	locker sync.Locker
 }
 
-// Option is a function used to set Options
+// Option is a function type used to set Options
 type Option func(option *Options)
 
-// WithGoroutineSafe is the goroutine-safety option for Hamt
+// WithGoroutineSafe is used to config a Hamt with goroutine-safe
 func WithGoroutineSafe() Option {
 	return func(option *Options) {
 		option.locker = &gosync.RWMutex{}
 	}
 }
 
-// Entry is a tree node
+// Entry is a tree node interface
 type Entry interface {
 	// Type returns the node type
 	Type() int
@@ -67,7 +67,7 @@ type KvNode struct {
 	kvList *KvPair
 }
 
-// Hamt is an implementation of hash array map tree
+// Hamt is an implementation of hash-array-mapped-trie
 type Hamt struct {
 	root   BitmapNode
 	locker sync.Locker
@@ -240,7 +240,7 @@ func (h *KvNode) BitPosNum(depth int) uint64 {
 	return uint64(1) << pos(h.hash, depth)
 }
 
-// New news a Hamt(hash array mapped trie) instance
+// New creates a Hamt(hash array mapped trie) instance
 func New(opts ...Option) *Hamt {
 	option := Options{
 		locker: defaultLocker,
@@ -251,7 +251,7 @@ func New(opts ...Option) *Hamt {
 	return &Hamt{locker: option.locker}
 }
 
-// Insert inserts a key-value pair into hamt
+// Insert inserts a key-value pair into the hamt
 func (h *Hamt) Insert(key Key, value interface{}) {
 	keyHash := hash(key)
 
@@ -261,7 +261,7 @@ func (h *Hamt) Insert(key Key, value interface{}) {
 	h.root.insert(0, keyHash, &KvPair{key: key, value: value})
 }
 
-// Get returns the value by the passed key, or nil if not found
+// Get returns the value by the passed key if the key is in the hamt, otherwise returns nil
 func (h *Hamt) Get(key Key) interface{} {
 	keyHash := hash(key)
 
@@ -281,7 +281,7 @@ func (h *Hamt) Erase(key Key) bool {
 	return h.root.erase(0, keyHash, key)
 }
 
-// Keys returns the keys in Hamt
+// Keys returns keys in Hamt
 func (h *Hamt) Keys() []Key {
 	h.locker.RLock()
 	defer h.locker.RUnlock()
@@ -294,7 +294,7 @@ func (h *Hamt) Keys() []Key {
 	return keys
 }
 
-// StringKeys returns the keys in Hamt
+// StringKeys returns keys in Hamt
 func (h *Hamt) StringKeys() []string {
 	h.locker.RLock()
 	defer h.locker.RUnlock()
@@ -307,7 +307,7 @@ func (h *Hamt) StringKeys() []string {
 	return keys
 }
 
-// Traversal traversals elements in Hamt, it will not stop until to the end or visitor returns false
+// Traversal traversals elements in Hamt, it will not stop until to the end or the visitor returns false
 func (h *Hamt) Traversal(visitor visitor.KvVisitor) {
 	h.locker.RLock()
 	defer h.locker.RUnlock()

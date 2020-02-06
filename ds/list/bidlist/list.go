@@ -50,23 +50,23 @@ type List struct {
 	len  int   // current list length
 }
 
-// New news a list
+// New creates a list
 func New() *List {
 	list := &List{}
 	return list
 }
 
-// Len returns the number of nodes of list.
+// Len returns the amount of list nodes.
 func (l *List) Len() int {
 	return l.len
 }
 
-// Size returns the number of nodes of list.
+// Size returns the amount of list nodes.
 func (l *List) Size() int {
 	return l.len
 }
 
-// Empty returns true if l List is empty
+// Empty returns true if the list is empty
 func (l *List) Empty() bool {
 	return l.len == 0
 }
@@ -84,7 +84,7 @@ func (l *List) BackNode() *Node {
 	return l.head.prev
 }
 
-// Front returns the value of front node
+// Front returns the value of the front node
 func (l *List) Front() interface{} {
 	if l.len == 0 {
 		return nil
@@ -92,7 +92,7 @@ func (l *List) Front() interface{} {
 	return l.head.Value
 }
 
-// Back returns the value of last node
+// Back returns the value of the last node
 func (l *List) Back() interface{} {
 	if l.len == 0 {
 		return nil
@@ -183,13 +183,13 @@ func (l *List) remove(n *Node) *Node {
 	return n
 }
 
-// Clear remove all nodes
+// Clear removes all nodes
 func (l *List) Clear() {
 	l.head = nil
 	l.len = 0
 }
 
-// PopBack remove the last node in the list and returns it's value
+// PopBack removes the last node in the list and returns its value
 func (l *List) PopBack() interface{} {
 	n := l.BackNode()
 	if n != nil {
@@ -198,7 +198,7 @@ func (l *List) PopBack() interface{} {
 	return nil
 }
 
-// PopFront remove the first node in the list and returns it's value
+// PopFront removes the first node in the list and returns its value
 func (l *List) PopFront() interface{} {
 	n := l.FrontNode()
 	if n != nil {
@@ -207,8 +207,8 @@ func (l *List) PopFront() interface{} {
 	return nil
 }
 
-// MoveToFront moves node n to the front of l list.
-// If n is not a node of l list, the list is not modified.
+// MoveToFront moves node n to the front of the list.
+// If n is not a node of the list, the list is not modified.
 // The n must not be nil.
 func (l *List) MoveToFront(n *Node) {
 	if n.list != l {
@@ -220,8 +220,8 @@ func (l *List) MoveToFront(n *Node) {
 	}
 }
 
-// MoveToBack moves node  n to the back of l list.
-// If e is not a node of l list, the list is not modified.
+// MoveToBack moves node  n to the back of the list.
+// If e is not a node of the list, the list is not modified.
 // The node must not be nil.
 func (l *List) MoveToBack(n *Node) {
 	if n.list != l {
@@ -233,7 +233,7 @@ func (l *List) MoveToBack(n *Node) {
 }
 
 // MoveAfter moves node n to its new position after mark.
-// If n or mark is not a node of l list, or n == mark, the list is not modified.
+// If n or mark is not a node of the list, or n == mark, the list is not modified.
 // The node and mark must not be nil.
 func (l *List) MoveAfter(n, mark *Node) {
 	if n.list != l || n == mark || mark.list != l {
@@ -257,23 +257,23 @@ func (l *List) moveToAfter(n, at *Node) {
 	at.next = n
 }
 
-// PushBackList inserts a copy of an other list at the back of l list.
-// The l list and other may be the same. They must not be nil.
+// PushBackList inserts a copy of an other list at the back of the list.
+// The list and other may be the same. They must not be nil.
 func (l *List) PushBackList(other *List) {
 	for i, n := other.Len(), other.FrontNode(); i > 0; i, n = i-1, n.Next() {
 		l.InsertAfter(n.Value, l.head.prev)
 	}
 }
 
-// PushFrontList inserts a copy of an other list at the front of l list.
-// The l list and other may be the same. They must not be nil.
+// PushFrontList inserts a copy of an other list at the front of the list.
+// The list and other may be the same. They must not be nil.
 func (l *List) PushFrontList(other *List) {
 	for i, e := other.Len(), other.BackNode(); i > 0; i, e = i-1, e.Prev() {
 		l.InsertBefore(e.Value, l.head)
 	}
 }
 
-// String returns the list content in string format
+// String returns a string representation of the list
 func (l *List) String() string {
 	str := "["
 	for n := l.FrontNode(); n != nil; n = n.Next() {
@@ -286,7 +286,7 @@ func (l *List) String() string {
 	return str
 }
 
-// Traversal traversals elements in list, it will not stop until to the end or visitor returns false
+// Traversal traversals elements in the list, it will not stop until to the end of the list or the visitor returns false
 func (l *List) Traversal(visitor visitor.Visitor) {
 	for node := l.FrontNode(); node != nil; node = node.Next() {
 		if !visitor(node.Value) {

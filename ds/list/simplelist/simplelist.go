@@ -26,13 +26,13 @@ type List struct {
 	len  int   // current list length
 }
 
-// New news a list
+// New creates a list
 func New() *List {
 	list := &List{}
 	return list
 }
 
-// Len returns the number of nodes of list.
+// Len returns the amount of list nodes.
 func (l *List) Len() int {
 	return l.len
 }
@@ -42,7 +42,7 @@ func (l *List) FrontNode() *Node {
 	return l.head
 }
 
-// BackNode returns the lase node of the list or nil if the list is empty
+// BackNode returns the last node of the list or nil if the list is empty
 func (l *List) BackNode() *Node {
 	return l.tail
 }
@@ -74,7 +74,7 @@ func (l *List) PushBack(v interface{}) {
 }
 
 // InsertAfter inserts a new node n with value v immediately after mark and returns n.
-// If mark is not a node of l list, the list is not modified.
+// If mark is not a node of the list, the list is not modified.
 // The mark must not be nil.
 func (l *List) InsertAfter(v interface{}, mark *Node) *Node {
 	return l.insertAfter(&Node{Value: v}, mark)
@@ -90,7 +90,7 @@ func (l *List) insertAfter(n, at *Node) *Node {
 	return n
 }
 
-// Remove removes node n from l list.
+// Remove removes node n from the list.
 // The node must not be nil.
 func (l *List) Remove(pre, n *Node) interface{} {
 	if n == nil {
@@ -111,7 +111,7 @@ func (l *List) Remove(pre, n *Node) interface{} {
 	return n.Value
 }
 
-// MoveToFront moves node n to the front of l list.
+// MoveToFront moves node n to the front of the list.
 // The n must not be nil.
 func (l *List) MoveToFront(pre, n *Node) {
 	if pre == nil || pre.next != n || n == nil || l.len <= 1 {
@@ -125,7 +125,7 @@ func (l *List) MoveToFront(pre, n *Node) {
 	l.head = n
 }
 
-// MoveToBack moves node n to the back of l list.
+// MoveToBack moves node n to the back of the list.
 // The n must not be nil.
 func (l *List) MoveToBack(pre, n *Node) {
 	if n == nil || n.next == nil || l.len <= 1 {
@@ -141,7 +141,7 @@ func (l *List) MoveToBack(pre, n *Node) {
 	n.next = nil
 }
 
-// String returns the list content in string format
+// String returns a string representation of the list
 func (l *List) String() string {
 	str := "["
 	for n := l.FrontNode(); n != nil; n = n.Next() {
@@ -154,7 +154,7 @@ func (l *List) String() string {
 	return str
 }
 
-// Traversal traversals elements in list, it will not stop until to the end or visitor returns false
+// Traversal traversals elements in the list, it will not stop until to the end of the list or the visitor returns false
 func (l *List) Traversal(visitor visitor.Visitor) {
 	for node := l.head; node != nil; node = node.Next() {
 		if !visitor(node.Value) {

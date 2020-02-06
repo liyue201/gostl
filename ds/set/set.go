@@ -9,7 +9,7 @@ import (
 	gosync "sync"
 )
 
-// constants
+// constants definition
 const (
 	Empty = 0
 )
@@ -19,23 +19,23 @@ var (
 	defaultLocker        sync.FakeLocker
 )
 
-// Options holds Set's options
+// Options holds the Set's options
 type Options struct {
 	keyCmp comparator.Comparator
 	locker sync.Locker
 }
 
-// Option is a function used to set Options
+// Option is a function  type used to set Options
 type Option func(option *Options)
 
-// WithKeyComparator sets Key comparator option
+// WithKeyComparator is used to set the key comparator for a set
 func WithKeyComparator(cmp comparator.Comparator) Option {
 	return func(option *Options) {
 		option.keyCmp = cmp
 	}
 }
 
-// WithGoroutineSafe set Map goroutine-safety,
+// WithGoroutineSafe is used to set the set goroutine-safe
 // Note that iterators are not goroutine safe, and it is useless to turn on the setting option here.
 // so don't use iterators in multi goroutines
 func WithGoroutineSafe() Option {
@@ -51,7 +51,7 @@ type Set struct {
 	locker sync.Locker
 }
 
-// New news a set
+// New creates a new set
 func New(opts ...Option) *Set {
 	option := Options{
 		keyCmp: defaultKeyComparator,
@@ -67,7 +67,7 @@ func New(opts ...Option) *Set {
 	}
 }
 
-// Insert inserts element to the Set
+// Insert inserts an element to the set
 func (s *Set) Insert(element interface{}) {
 	s.locker.Lock()
 	defer s.locker.Unlock()
@@ -79,7 +79,7 @@ func (s *Set) Insert(element interface{}) {
 	s.tree.Insert(element, Empty)
 }
 
-// Erase erases element in the Set
+// Erase erases an element from the set
 func (s *Set) Erase(element interface{}) {
 	s.locker.Lock()
 	defer s.locker.Unlock()
@@ -90,7 +90,7 @@ func (s *Set) Erase(element interface{}) {
 	}
 }
 
-// Find returns the iterator related to element in the Set,or an invalid iterator if not exist.
+// Find finds the element's node in the set, and return its iterator
 func (s *Set) Find(element interface{}) *SetIterator {
 	s.locker.RLock()
 	defer s.locker.RUnlock()
@@ -99,7 +99,7 @@ func (s *Set) Find(element interface{}) *SetIterator {
 	return &SetIterator{node: node}
 }
 
-// LowerBound returns the first iterator that equal or greater than element in the Set
+// LowerBound finds the first element that equal or greater than the passed element in the set, and returns its iterator
 func (s *Set) LowerBound(element interface{}) *SetIterator {
 	s.locker.RLock()
 	defer s.locker.RUnlock()
@@ -108,12 +108,12 @@ func (s *Set) LowerBound(element interface{}) *SetIterator {
 	return &SetIterator{node: node}
 }
 
-// Begin returns the iterator with the minimum element in the Set, return nil if empty.
+// Begin returns the iterator with the minimum element in the set
 func (s *Set) Begin() *SetIterator {
 	return s.First()
 }
 
-// First returns the iterator with the minimum element in the Set, return nil if empty.
+// First returns the iterator with the minimum element in the set
 func (s *Set) First() *SetIterator {
 	s.locker.RLock()
 	defer s.locker.RUnlock()
@@ -121,7 +121,7 @@ func (s *Set) First() *SetIterator {
 	return &SetIterator{node: s.tree.First()}
 }
 
-// Last returns the iterator with the maximum element in the Set, return nil if empty.
+// Last returns the iterator with the maximum element in the set
 func (s *Set) Last() *SetIterator {
 	s.locker.RLock()
 	defer s.locker.RUnlock()
@@ -129,7 +129,7 @@ func (s *Set) Last() *SetIterator {
 	return &SetIterator{node: s.tree.Last()}
 }
 
-// Clear clears the Set
+// Clear clears the set
 func (s *Set) Clear() {
 	s.locker.Lock()
 	defer s.locker.Unlock()
@@ -137,7 +137,7 @@ func (s *Set) Clear() {
 	s.tree.Clear()
 }
 
-// Contains returns true if element in the Set. otherwise returns false.
+// Contains returns true if the passed element is in the Set. otherwise returns false.
 func (s *Set) Contains(element interface{}) bool {
 	s.locker.RLock()
 	defer s.locker.RUnlock()
@@ -148,7 +148,7 @@ func (s *Set) Contains(element interface{}) bool {
 	return false
 }
 
-// Size returns the size of Set
+// Size returns the amount of element in the set
 func (s *Set) Size() int {
 	s.locker.RLock()
 	defer s.locker.RUnlock()
@@ -156,7 +156,7 @@ func (s *Set) Size() int {
 	return s.tree.Size()
 }
 
-// Traversal traversals elements in set, it will not stop until to the end or visitor returns false
+// Traversal traversals elements in the set, it will not stop until to the end of the set or the visitor returns false
 func (s *Set) Traversal(visitor visitor.Visitor) {
 	s.locker.RLock()
 	defer s.locker.RUnlock()
@@ -168,7 +168,7 @@ func (s *Set) Traversal(visitor visitor.Visitor) {
 	}
 }
 
-// String returns the set's elements in string format
+// String returns a string representation of the set
 func (s *Set) String() string {
 	str := "["
 	s.Traversal(func(value interface{}) bool {
@@ -182,7 +182,7 @@ func (s *Set) String() string {
 	return str
 }
 
-// Intersect returns a set with the common elements in s set and the other set
+// Intersect returns a new set with the common elements in the set s and the passed set
 // Please ensure s set and other set uses the same keyCmp
 func (s *Set) Intersect(other *Set) *Set {
 	s.locker.RLock()
@@ -206,7 +206,7 @@ func (s *Set) Intersect(other *Set) *Set {
 	return set
 }
 
-// Union returns  a set with the all elements in s set and the other set
+// Union returns a new set with the all elements in the set s and the passed set
 // Please ensure s set and other set uses the same keyCmp
 func (s *Set) Union(other *Set) *Set {
 	s.locker.RLock()
@@ -238,7 +238,7 @@ func (s *Set) Union(other *Set) *Set {
 	return set
 }
 
-// Diff returns a set with the elements in s set but not in the other set
+// Diff returns a new set with the elements in the set s but not in the passed set
 // Please ensure s set and other set uses the same keyCmp
 func (s *Set) Diff(other *Set) *Set {
 	s.locker.RLock()

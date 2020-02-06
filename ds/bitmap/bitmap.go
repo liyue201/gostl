@@ -6,7 +6,7 @@ type Bitmap struct {
 	size uint64 //bitmap's size in bit, is the multiple of 8
 }
 
-//New create a bitmap with size bit
+//New creates a new bitmap
 func New(size uint64) *Bitmap {
 	size = (size + 7) / 8 * 8
 	bitmap := &Bitmap{
@@ -16,7 +16,7 @@ func New(size uint64) *Bitmap {
 	return bitmap
 }
 
-// NewFromData creates a bitmap from exported data
+// NewFromData creates a bitmap from the exported data
 func NewFromData(data []byte) *Bitmap {
 	bitmap := &Bitmap{
 		size: uint64(len(data)) * 8,
@@ -25,36 +25,36 @@ func NewFromData(data []byte) *Bitmap {
 	return bitmap
 }
 
-// Set set 1 at position
-func (b *Bitmap) Set(position uint64) bool {
-	if position >= b.size {
+// Set sets 1 at position pos
+func (b *Bitmap) Set(pos uint64) bool {
+	if pos >= b.size {
 		return false
 	}
-	b.data[position>>3] |= 1 << (position & 0x07)
+	b.data[pos>>3] |= 1 << (pos & 0x07)
 	return true
 }
 
-// Unset sets 0 at position
-func (b *Bitmap) Unset(position uint64) bool {
-	if position >= b.size {
+// Unset sets 0 at position pos
+func (b *Bitmap) Unset(pos uint64) bool {
+	if pos >= b.size {
 		return false
 	}
-	b.data[position>>3] &= ^(1 << (position & 0x07))
+	b.data[pos>>3] &= ^(1 << (pos & 0x07))
 	return true
 }
 
-// IsSet returns whether the position is set 1
-func (b *Bitmap) IsSet(position uint64) bool {
-	if position >= b.size {
+// IsSet returns true if the position pos is 1
+func (b *Bitmap) IsSet(pos uint64) bool {
+	if pos >= b.size {
 		return false
 	}
-	if b.data[position>>3]&(1<<(position&0x07)) > 0 {
+	if b.data[pos>>3]&(1<<(pos&0x07)) > 0 {
 		return true
 	}
 	return false
 }
 
-// Resize resize the bitmap
+// Resize resizes the bitmap with the passed size
 func (b *Bitmap) Resize(size uint64) {
 	size = (size + 7) / 8 * 8
 	if b.size == size {
@@ -76,7 +76,7 @@ func (b *Bitmap) Clear() {
 	b.data = make([]byte, b.size/8, b.size/8)
 }
 
-// Data returns the internal data
+// Data returns the bitmap's internal data slice
 func (b *Bitmap) Data() []byte {
 	return b.data
 }

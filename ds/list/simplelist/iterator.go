@@ -2,7 +2,7 @@ package simplelist
 
 import "github.com/liyue201/gostl/utils/iterator"
 
-//ListIterator is an implementation Iterator
+//ListIterator is an implementation of Iterator
 var _ iterator.Iterator = (*ListIterator)(nil)
 
 // ListIterator is an iterator for list
@@ -37,11 +37,10 @@ func (iter *ListIterator) Value() interface{} {
 }
 
 // SetValue sets the value of iter
-func (iter *ListIterator) SetValue(value interface{}) error {
+func (iter *ListIterator) SetValue(value interface{}) {
 	if iter.node != nil {
 		iter.node.Value = value
 	}
-	return nil
 }
 
 // Clone clones iter to a new ListIterator

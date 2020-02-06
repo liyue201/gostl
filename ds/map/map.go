@@ -20,19 +20,19 @@ type Options struct {
 	locker sync.Locker
 }
 
-// Option is a function used to set Options
+// Option is a function type used to set Options
 type Option func(option *Options)
 
-// WithKeyComparator sets Key comparator option
+// WithKeyComparator is used to set the key comparator of map
 func WithKeyComparator(cmp comparator.Comparator) Option {
 	return func(option *Options) {
 		option.keyCmp = cmp
 	}
 }
 
-// WithGoroutineSafe set Map goroutine-safety,
+// WithGoroutineSafe is used to set a map goroutine-safe
 // Note that iterators are not goroutine safe, and it is useless to turn on the setting option here.
-// so don't use iterators in multi goroutines
+// so don't use iterator in multi goroutines
 func WithGoroutineSafe() Option {
 	return func(option *Options) {
 		option.locker = &gosync.RWMutex{}
@@ -45,7 +45,7 @@ type Map struct {
 	locker sync.Locker
 }
 
-// New new a map
+// New creates a new map
 func New(opts ...Option) *Map {
 	option := Options{
 		keyCmp: defaultKeyComparator,
@@ -59,7 +59,7 @@ func New(opts ...Option) *Map {
 	}
 }
 
-//Insert inserts key-value to the map
+//Insert inserts a key-value to the map
 func (m *Map) Insert(key, value interface{}) {
 	m.locker.Lock()
 	defer m.locker.Unlock()
@@ -72,7 +72,7 @@ func (m *Map) Insert(key, value interface{}) {
 	m.tree.Insert(key, value)
 }
 
-//Get returns the value by key if found, or nil if not found
+//Get returns the value of the passed key if the key is in the map, otherwise returns nil
 func (m *Map) Get(key interface{}) interface{} {
 	m.locker.RLock()
 	defer m.locker.RUnlock()
@@ -84,7 +84,7 @@ func (m *Map) Get(key interface{}) interface{} {
 	return nil
 }
 
-//Erase erases node by key in the Map
+//Erase erases the node by the passed key from the map if the key in the Map
 func (m *Map) Erase(key interface{}) {
 	m.locker.Lock()
 	defer m.locker.Unlock()
@@ -95,7 +95,7 @@ func (m *Map) Erase(key interface{}) {
 	}
 }
 
-//EraseIter erases node by iter in the Map
+//EraseIter erases the node that iterator iter point to from the map
 func (m *Map) EraseIter(iter iterator.ConstKvIterator) {
 	m.locker.Lock()
 	defer m.locker.Unlock()
@@ -106,7 +106,7 @@ func (m *Map) EraseIter(iter iterator.ConstKvIterator) {
 	}
 }
 
-//Find returns the iterator related to value in the map, or an invalid iterator if not exist.
+//Find finds a node by the passed key and returns its iterator
 func (m *Map) Find(key interface{}) *MapIterator {
 	m.locker.RLock()
 	defer m.locker.RUnlock()
@@ -115,7 +115,7 @@ func (m *Map) Find(key interface{}) *MapIterator {
 	return &MapIterator{node: node}
 }
 
-//LowerBound returns the first iterator that equal or greater than key in the Map
+//LowerBound finds a node that its key is equal or greater than the passed key and returns its iterator
 func (m *Map) LowerBound(key interface{}) *MapIterator {
 	m.locker.RLock()
 	defer m.locker.RUnlock()
@@ -124,7 +124,7 @@ func (m *Map) LowerBound(key interface{}) *MapIterator {
 	return &MapIterator{node: node}
 }
 
-//Begin returns the iterator with the minimum key in the Map, return nil if empty.
+//Begin returns the first node's iterator
 func (m *Map) Begin() *MapIterator {
 	m.locker.RLock()
 	defer m.locker.RUnlock()
@@ -132,7 +132,7 @@ func (m *Map) Begin() *MapIterator {
 	return &MapIterator{node: m.tree.First()}
 }
 
-//First returns the iterator with the minimum key in the Map, return nil if empty.
+//First returns the first node's iterator
 func (m *Map) First() *MapIterator {
 	m.locker.RLock()
 	defer m.locker.RUnlock()
@@ -140,7 +140,7 @@ func (m *Map) First() *MapIterator {
 	return &MapIterator{node: m.tree.First()}
 }
 
-//Last returns the iterator with the maximum key in the Map, return nil if empty.
+//Last returns the last node's iterator
 func (m *Map) Last() *MapIterator {
 	m.locker.RLock()
 	defer m.locker.RUnlock()
@@ -148,7 +148,7 @@ func (m *Map) Last() *MapIterator {
 	return &MapIterator{node: m.tree.Last()}
 }
 
-//Clear clears the Map
+//Clear clears the map
 func (m *Map) Clear() {
 	m.locker.Lock()
 	defer m.locker.Unlock()
@@ -156,7 +156,7 @@ func (m *Map) Clear() {
 	m.tree.Clear()
 }
 
-// Contains returns true if key in the Map. otherwise returns false.
+// Contains returns true if the key is in the map. otherwise returns false.
 func (m *Map) Contains(key interface{}) bool {
 	m.locker.RLock()
 	defer m.locker.RUnlock()
@@ -167,7 +167,7 @@ func (m *Map) Contains(key interface{}) bool {
 	return false
 }
 
-// Size returns the size of Map
+// Size returns the amount of elements in the map
 func (m *Map) Size() int {
 	m.locker.RLock()
 	defer m.locker.RUnlock()
@@ -175,7 +175,7 @@ func (m *Map) Size() int {
 	return m.tree.Size()
 }
 
-// Traversal traversals elements in map, it will not stop until to the end or visitor returns false
+// Traversal traversals elements in the map, it will not stop until to the end or the visitor returns false
 func (m *Map) Traversal(visitor visitor.KvVisitor) {
 	m.locker.RLock()
 	defer m.locker.RUnlock()

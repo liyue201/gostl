@@ -12,7 +12,7 @@ type ConstIterator interface {
 // Iterator is an interface of mutable iterator
 type Iterator interface {
 	ConstIterator
-	SetValue(value interface{}) error
+	SetValue(value interface{})
 }
 
 // ConstKvIterator is an interface of const key-value type iterator
@@ -24,7 +24,7 @@ type ConstKvIterator interface {
 // KvIterator is an interface of mutable key-value type iterator
 type KvIterator interface {
 	ConstKvIterator
-	SetValue(value interface{}) error
+	SetValue(value interface{})
 }
 
 // ConstBidIterator is an interface of const bidirectional iterator
@@ -36,7 +36,7 @@ type ConstBidIterator interface {
 // BidIterator is an interface of mutable bidirectional iterator
 type BidIterator interface {
 	ConstBidIterator
-	SetValue(value interface{}) error
+	SetValue(value interface{})
 }
 
 // ConstKvBidIterator is an interface of const key-value type bidirectional iterator
@@ -49,7 +49,7 @@ type ConstKvBidIterator interface {
 type KvBidIterator interface {
 	ConstKvIterator
 	Prev() ConstBidIterator
-	SetValue(value interface{}) error
+	SetValue(value interface{})
 }
 
 // RandomAccessIterator is an interface of mutable random access iterator
