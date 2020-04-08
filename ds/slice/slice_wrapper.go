@@ -9,7 +9,7 @@ type SliceWrapper struct {
 	itemType   reflect.Type
 }
 
-// New creates a SliceWrapper
+// NewSliceWrapper creates a SliceWrapper
 func NewSliceWrapper(slice interface{}, itemType reflect.Type) *SliceWrapper {
 	return &SliceWrapper{
 		slice:      slice,
@@ -18,6 +18,7 @@ func NewSliceWrapper(slice interface{}, itemType reflect.Type) *SliceWrapper {
 	}
 }
 
+// Attach update the internal slice to newSlice
 func (s *SliceWrapper) Attach(newSlice interface{}) {
 	if reflect.ValueOf(newSlice).Kind() == s.sliceValue.Kind() {
 		s.slice = newSlice

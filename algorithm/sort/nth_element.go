@@ -14,32 +14,39 @@ func NthElement(first, last iterator.RandomAccessIterator, n int, cmps ...compar
 	if len(cmps) > 0 {
 		cmp = cmps[0]
 	}
-	randSeed := getSeed()
-	nthElement(first, last, n, cmp, randSeed)
+	len := last.Position() - first.Position()
+	nthElement(first, last.IteratorAt(first.Position()+len-1), n, cmp)
 }
 
-func nthElement(first, last iterator.RandomAccessIterator, n int, cmp comparator.Comparator, randSeed uint64) {
+func nthElement(first, last iterator.RandomAccessIterator, n int, cmp comparator.Comparator) {
 	if first.Position()+1 >= last.Position() {
 		return
 	}
-	randNum := randInt64(randSeed)
-	len := last.Position() - first.Position()
-	pos := int(randNum%uint64(len)) + first.Position()
-	baseItem := first.IteratorAt(pos)
-	baseValue := baseItem.Value()
-	if baseItem.Position() != first.Position() {
-		swapValue(baseItem, first)
+
+	len := last.Position() - first.Position() + 1
+	if len < 3 {
+		if cmp(first.Value(), last.Value()) > 0 {
+			swapValue(first, last)
+		}
+		return
 	}
 
-	leftIter := (first.Clone().(iterator.RandomAccessIterator).Next()).(iterator.RandomAccessIterator)
-	rightIter := (first.Clone().(iterator.RandomAccessIterator)).IteratorAt(first.Position() + len - 1)
+	mid := first.IteratorAt(first.Position() + len/2)
+	doPivot(first, mid, last, cmp)
+	swapValue(mid, first.IteratorAt(last.Position()-1))
+	if len == 3 {
+		return
+	}
+	baseItem := first.IteratorAt(last.Position() - 1)
+	leftIter := first.IteratorAt(first.Position() + 1)
+	rightIter := first.IteratorAt(last.Position() - 2)
 	for leftIter.Position() <= rightIter.Position() {
-		leftCmp := cmp(leftIter.Value(), baseValue)
+		leftCmp := cmp(leftIter.Value(), baseItem.Value())
 		if leftCmp <= 0 {
 			leftIter.Next()
 		} else {
-			rightCmp := cmp(rightIter.Value(), baseValue)
-			if rightCmp >= 0 {
+			rightCmp := cmp(rightIter.Value(), baseItem.Value())
+			if rightCmp > 0 {
 				rightIter.Prev()
 			} else {
 				swapValue(leftIter, rightIter)
@@ -48,16 +55,13 @@ func nthElement(first, last iterator.RandomAccessIterator, n int, cmp comparator
 			}
 		}
 	}
-	leftIter.Prev()
-	m := leftIter.Position()
-
-	if cmp(leftIter.Value(), first.Value()) < 0 {
-		swapValue(first, leftIter)
-	}
+	rightIter.Next()
+	m := rightIter.Position()
+	swapValue(baseItem, rightIter)
 
 	if n <= m-first.Position() {
-		nthElement(first, first.IteratorAt(m), n, cmp, randNum+uint64(pos))
+		nthElement(first, first.IteratorAt(m), n, cmp)
 	} else {
-		nthElement(first.IteratorAt(m).Next().(iterator.RandomAccessIterator), last, n-(m-first.Position()+1), cmp, randNum+uint64(pos+1))
+		nthElement(first.IteratorAt(m).Next().(iterator.RandomAccessIterator), last, n-(m-first.Position()+1), cmp)
 	}
 }

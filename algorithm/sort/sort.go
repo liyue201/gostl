@@ -1,67 +1,51 @@
 package sort
 
 import (
+	"fmt"
 	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/utils/iterator"
-	"math/rand"
-	"time"
 )
-
-var randTable [256]uint64
-var seedChan chan uint64
-
-func init() {
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	seedChan = make(chan uint64, 256)
-
-	for i := 0; i < len(randTable); i++ {
-		randTable[i] = r.Uint64()
-		seedChan <- r.Uint64()
-	}
-}
-
-func getSeed() uint64 {
-	id := <-seedChan
-	seedChan <- id + 78431
-	return id
-}
-
-func randInt64(seed uint64) uint64 {
-	return (randTable[seed&0xff] & 0xffff) | (randTable[seed>>16&0xff] & 0xffff0000) | (randTable[seed>>32&0xff] & 0xffff00000000) | (randTable[seed>>48&0xff] & 0xffff000000000000)
-}
 
 //Sort sorts the container by using quick sort
 func Sort(first, last iterator.RandomAccessIterator, cmp ...comparator.Comparator) {
-	randSeed := getSeed()
+	fmt.Printf("============================\n")
+	n := last.Position() - first.Position()
 	if len(cmp) == 0 {
-		quickSort(first, last, comparator.BuiltinTypeComparator, randSeed)
+		quickSort(first, first.IteratorAt(first.Position()+n-1), comparator.BuiltinTypeComparator)
 	} else {
-		quickSort(first, last, cmp[0], randSeed)
+		quickSort(first, first.IteratorAt(first.Position()+n-1), cmp[0])
 	}
 }
 
-func quickSort(first, last iterator.RandomAccessIterator, cmp comparator.Comparator, randSeed uint64) {
-	if first.Position()+1 >= last.Position() {
+func quickSort(first, last iterator.RandomAccessIterator, cmp comparator.Comparator) {
+	if first.Position() >= last.Position() {
 		return
 	}
-	randNum := randInt64(randSeed)
-	len := last.Position() - first.Position()
-	pos := int(randNum%uint64(len)) + first.Position()
-	baseItem := first.IteratorAt(pos)
-	baseValue := baseItem.Value()
-	if baseItem.Position() != first.Position() {
-		swapValue(baseItem, first)
+	len := last.Position() - first.Position() + 1
+	if len < 3 {
+		if cmp(first.Value(), last.Value()) > 0 {
+			swapValue(first, last)
+		}
+		return
 	}
 
-	leftIter := (first.Clone().(iterator.RandomAccessIterator).Next()).(iterator.RandomAccessIterator)
-	rightIter := (first.Clone().(iterator.RandomAccessIterator)).IteratorAt(first.Position() + len - 1)
+	mid := first.IteratorAt(first.Position() + len/2)
+	doPivot(first, mid, last, cmp)
+	swapValue(mid, first.IteratorAt(last.Position()-1))
+	if len == 3 {
+		return
+	}
+	baseItem := first.IteratorAt(last.Position() - 1)
+
+	leftIter := first.IteratorAt(first.Position() + 1)
+	rightIter := first.IteratorAt(last.Position() - 2)
 	for leftIter.Position() <= rightIter.Position() {
-		leftCmp := cmp(leftIter.Value(), baseValue)
+		leftCmp := cmp(leftIter.Value(), baseItem.Value())
 		if leftCmp <= 0 {
 			leftIter.Next()
 		} else {
-			rightCmp := cmp(rightIter.Value(), baseValue)
-			if rightCmp >= 0 {
+			rightCmp := cmp(rightIter.Value(), baseItem.Value())
+			if rightCmp > 0 {
 				rightIter.Prev()
 			} else {
 				swapValue(leftIter, rightIter)
@@ -70,15 +54,24 @@ func quickSort(first, last iterator.RandomAccessIterator, cmp comparator.Compara
 			}
 		}
 	}
-	leftIter.Prev()
-	m := leftIter.Position()
+	rightIter.Next()
+	m := rightIter.Position()
+	swapValue(baseItem, rightIter)
 
-	if cmp(leftIter.Value(), first.Value()) < 0 {
-		swapValue(first, leftIter)
+	quickSort(first, first.IteratorAt(m-1), cmp)
+	quickSort(first.IteratorAt(m).Next().(iterator.RandomAccessIterator), last, cmp)
+}
+
+func doPivot(first, mid, last iterator.RandomAccessIterator, cmp comparator.Comparator) {
+	if cmp(first.Value(), mid.Value()) > 0 {
+		swapValue(first, mid)
 	}
-
-	quickSort(first, first.IteratorAt(m), cmp, randNum+uint64(pos))
-	quickSort(first.IteratorAt(m).Next().(iterator.RandomAccessIterator), last, cmp, randNum+uint64(pos+1))
+	if cmp(first.Value(), last.Value()) > 0 {
+		swapValue(first, last)
+	}
+	if cmp(mid.Value(), last.Value()) > 0 {
+		swapValue(mid, last)
+	}
 }
 
 func swapValue(a, b iterator.RandomAccessIterator) {
