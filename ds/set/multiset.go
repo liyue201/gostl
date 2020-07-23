@@ -44,11 +44,12 @@ func (ms *MultiSet) Erase(element interface{}) {
 	ms.locker.Lock()
 	defer ms.locker.Unlock()
 
-	node := ms.tree.FindNode(element)
-	for node != nil && ms.keyCmp(node.Key(), element) == 0 {
-		nextNode := node.Next()
+	for {
+		node := ms.tree.FindNode(element)
+		if node == nil {
+			break
+		}
 		ms.tree.Delete(node)
-		node = nextNode
 	}
 }
 

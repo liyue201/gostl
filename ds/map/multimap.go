@@ -54,11 +54,12 @@ func (mm *MultiMap) Erase(key interface{}) {
 	mm.locker.Lock()
 	defer mm.locker.Unlock()
 
-	node := mm.tree.FindNode(key)
-	for node != nil && mm.keyCmp(node.Key(), key) == 0 {
-		nextNode := node.Next()
+	for {
+		node := mm.tree.FindNode(key)
+		if node == nil {
+			break
+		}
 		mm.tree.Delete(node)
-		node = nextNode
 	}
 }
 
