@@ -3,7 +3,6 @@ package slice
 import (
 	"github.com/liyue201/gostl/algorithm/sort"
 	"github.com/stretchr/testify/assert"
-	"reflect"
 	"testing"
 )
 
@@ -18,7 +17,7 @@ func TestSliceWrapper(t *testing.T) {
 	a = append(a, &User{age: 5, name: "nnn"})
 	a = append(a, &User{age: 2, name: "aaa"})
 
-	sw := NewSliceWrapper(a, reflect.TypeOf(&User{}))
+	sw := NewSliceWrapper(a)
 
 	assert.Equal(t, 3, sw.Len())
 

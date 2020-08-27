@@ -4,24 +4,19 @@ import "reflect"
 
 //SliceWrapper wraps a slice in order to provide functions related to iterators
 type SliceWrapper struct {
-	slice      interface{}
 	sliceValue reflect.Value
-	itemType   reflect.Type
 }
 
 // NewSliceWrapper creates a SliceWrapper
-func NewSliceWrapper(slice interface{}, itemType reflect.Type) *SliceWrapper {
+func NewSliceWrapper(slice interface{}) *SliceWrapper {
 	return &SliceWrapper{
-		slice:      slice,
 		sliceValue: reflect.ValueOf(slice),
-		itemType:   itemType,
 	}
 }
 
 // Attach update the internal slice to newSlice
 func (s *SliceWrapper) Attach(newSlice interface{}) {
 	if reflect.ValueOf(newSlice).Kind() == s.sliceValue.Kind() {
-		s.slice = newSlice
 		s.sliceValue = reflect.ValueOf(newSlice)
 	}
 }
