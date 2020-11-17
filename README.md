@@ -787,3 +787,7 @@ func main() {
 }
 
 ```
+
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/liyue201/gostl.svg)](https://starchart.cc/liyue201/gostl)
