@@ -137,3 +137,11 @@ func (q *PriorityQueue) Empty() bool {
 
 	return q.holder.Len() == 0
 }
+
+// Size returns the amount of elements in the queue
+func (q *PriorityQueue) Size() int {
+	q.locker.RLock()
+	defer q.locker.RUnlock()
+
+	return q.holder.Len()
+}
