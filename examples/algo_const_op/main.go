@@ -36,4 +36,12 @@ func main() {
 	if !iter.Equal(a.End()) {
 		fmt.Printf("FindIf greaterThan5 : %v\n", iter.Value())
 	}
+	iter = algorithm.MaxElement(a.Begin(), a.End())
+	if !iter.Equal(a.End()) {
+		fmt.Printf("largest value : %v\n", iter.Value())
+	}
+	iter = algorithm.MinElement(a.Begin(), a.End())
+	if !iter.Equal(a.End()) {
+		fmt.Printf("largest value : %v\n", iter.Value())
+	}
 }
