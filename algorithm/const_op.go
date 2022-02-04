@@ -54,3 +54,40 @@ func FindIf(first, last iterator.ConstIterator, f func(iterator.ConstIterator) b
 	}
 	return last
 }
+
+
+// MaxElement returns an Iterator to the largest element in the range [first, last). If several elements in the range are equivalent to the largest element, returns the iterator to the first such element. Returns last if the range is empty.
+func MaxElement(first, last iterator.ConstIterator, cmps ...comparator.Comparator) iterator.ConstIterator {
+	cmp := comparator.BuiltinTypeComparator
+	if len(cmps) > 0 {
+		cmp = cmps[0]
+	}
+	if first.Equal(last) {
+		return last
+	}
+	largest := first;
+	for iter := first.Clone(); !iter.Equal(last); iter.Next() {
+		if cmp(iter.Value(), largest.Value()) > 0 {
+			largest = iter.Clone();
+		}
+	}
+	return largest
+}
+
+// MinElement returns an Iterator to the smallest element value in the range [first, last). If several elements in the range are equivalent to the smallest element value, returns the iterator to the first such element. Returns last if the range is empty.
+func MinElement(first, last iterator.ConstIterator, cmps ...comparator.Comparator) iterator.ConstIterator {
+	cmp := comparator.BuiltinTypeComparator
+	if len(cmps) > 0 {
+		cmp = cmps[0]
+	}
+	if first.Equal(last) {
+		return last
+	}
+	smallest := first;
+	for iter := first.Clone(); !iter.Equal(last); iter.Next() {
+		if cmp(iter.Value(), smallest.Value()) < 0 {
+			smallest = iter.Clone();
+		}
+	}
+	return smallest
+}

@@ -43,6 +43,7 @@ GoSTL is a data structure and algorithm library for go, designed to provide func
     - [reverse](#algo_op)
     - [count/count_if](#algo_op_const)
     - [find/find_if](#algo_op_const)
+    - [min_element/max_element](#algo_op_const)
     
  ## Examples
 
@@ -744,6 +745,8 @@ func main() {
 - CountIf: Count the number of elements that satisfy the function f in the iterator interval
 - Find: Find the first element equal to the specified value in the iterator interval and returns its iterator
 - FindIf：Find the first element satisfying function f in the iterator interval and return its iterator
+- MaxElement : Find the largest element and return its iterator
+- MinElement : Find the smallest element and return its iterator
 
 ```go
 package main
@@ -783,6 +786,14 @@ func main() {
 	iter = algorithm.FindIf(a.Begin(), a.End(), greaterThan5)
 	if !iter.Equal(a.End()) {
 		fmt.Printf("FindIf greaterThan5 : %v\n", iter.Value())
+	}
+	iter = algorithm.MaxElement(a.Begin(), a.End())
+	if !iter.Equal(a.End()) {
+		fmt.Printf("Largest value : %v\n", iter.Value())
+	}
+	iter = algorithm.MinElement(a.Begin(), a.End())
+	if !iter.Equal(a.End()) {
+		fmt.Printf("Smallest value : %v\n", iter.Value())
 	}
 }
 
