@@ -54,9 +54,11 @@ func TestMapIterator(t *testing.T) {
 	iter = m.LowerBound(8)
 	assert.Equal(t, 8, iter.Value().(int))
 
-	m.EraseIter(iter)
-	assert.False(t, m.Contains(8))
+	iter = m.UpperBound(6)
+	assert.Equal(t, 7, iter.Value().(int))
 
+	m.EraseIter(iter)
+	assert.False(t, m.Contains(7))
 }
 
 func TestMapIteratorSetValue(t *testing.T) {

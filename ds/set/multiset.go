@@ -71,6 +71,15 @@ func (ms *MultiSet) LowerBound(element interface{}) *SetIterator {
 	return &SetIterator{node: node}
 }
 
+//UpperBound finds the first element that is greater than the passed element in the MultiSet, and returns its iterator
+func (ms *MultiSet) UpperBound(element interface{}) *SetIterator {
+	ms.locker.RLock()
+	defer ms.locker.RUnlock()
+
+	node := ms.tree.FindUpperBoundNode(element)
+	return &SetIterator{node: node}
+}
+
 // Begin returns the iterator with the minimum element in the MultiSet
 func (ms *MultiSet) Begin() *SetIterator {
 	return ms.First()

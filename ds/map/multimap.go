@@ -81,6 +81,15 @@ func (mm *MultiMap) LowerBound(key interface{}) *MapIterator {
 	return &MapIterator{node: node}
 }
 
+//UpperBound find the first node that its key is greater than the passed key in the MultiMap, and returns its iterator
+func (mm *MultiMap) UpperBound(key interface{}) *MapIterator {
+	mm.locker.RLock()
+	defer mm.locker.RUnlock()
+
+	node := mm.tree.FindUpperBoundNode(key)
+	return &MapIterator{node: node}
+}
+
 //Begin returns the first node's iterator
 func (mm *MultiMap) Begin() *MapIterator {
 	mm.locker.RLock()

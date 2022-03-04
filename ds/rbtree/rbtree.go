@@ -392,6 +392,28 @@ func (t *RbTree) findLowerBoundNode(x *Node, key interface{}) *Node {
 	return t.findLowerBoundNode(x.right, key)
 }
 
+// FindUpperBoundNode finds the first node that its key is greater than the passed key, and returns it
+func (t *RbTree) FindUpperBoundNode(key interface{}) *Node {
+	return t.findUpperBoundNode(t.root, key)
+}
+
+func (t *RbTree) findUpperBoundNode(x *Node, key interface{}) *Node {
+	if x == nil {
+		return nil
+	}
+	if t.keyCmp(key, x.key) >= 0 {
+		return t.findUpperBoundNode(x.right, key)
+	}
+	ret := t.findUpperBoundNode(x.left, key)
+	if ret == nil {
+		return x
+	}
+	if t.keyCmp(ret.key, x.key) <= 0 {
+		return ret
+	}
+	return x
+}
+
 // Traversal traversals elements in the RbTree, it will not stop until to the end of RbTree or the visitor returns false
 func (t *RbTree) Traversal(visitor visitor.KvVisitor) {
 	for node := t.First(); node != nil; node = node.Next() {

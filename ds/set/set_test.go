@@ -32,6 +32,9 @@ func TestSet(t *testing.T) {
 	iter := s.LowerBound(3)
 	assert.Equal(t, 3, iter.Value())
 
+	iter = s.UpperBound(3)
+	assert.Equal(t, 4, iter.Value())
+
 	s.Erase(3)
 	iter = s.LowerBound(3)
 	assert.Equal(t, 4, iter.Value())

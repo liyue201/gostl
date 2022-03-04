@@ -124,6 +124,15 @@ func (m *Map) LowerBound(key interface{}) *MapIterator {
 	return &MapIterator{node: node}
 }
 
+//UpperBound finds a node that its key is greater than the passed key and returns its iterator
+func (m *Map) UpperBound(key interface{}) *MapIterator {
+	m.locker.RLock()
+	defer m.locker.RUnlock()
+
+	node := m.tree.FindUpperBoundNode(key)
+	return &MapIterator{node: node}
+}
+
 //Begin returns the first node's iterator
 func (m *Map) Begin() *MapIterator {
 	m.locker.RLock()

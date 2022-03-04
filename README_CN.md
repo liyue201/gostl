@@ -41,7 +41,7 @@ GoSTL是一个go语言数据结构和算法库，类似C++的STL，但功能更�
     - [翻转（reverse）](#algo_op)
     - [统计（count/count_if）](#algo_op_const)
     - [查找（find/find_if）](#algo_op_const)
-  
+    - [最大最小值（min_element/max_element）](#algo_op_const)
       
 ## 例子
 
@@ -739,7 +739,7 @@ func main() {
 
 ```
 
-### <a name="algo_op_const"> count/count_if/find/find_if </a>
+### <a name="algo_op_const"> count/count_if/find/find_if/min_element/max_element </a>
 - Count : 在迭代器区间内统计等于指定值的数量
 - CountIf： 在迭代器区间内统计等于满足函数f的数量
 - Find：在迭代器区间内找到第一个等于指定值的元素，返回其迭代器
@@ -749,41 +749,49 @@ func main() {
 package main
 
 import (
-	"fmt"
-	"github.com/liyue201/gostl/algorithm"
-	"github.com/liyue201/gostl/ds/deque"
-	"github.com/liyue201/gostl/utils/iterator"
+  "fmt"
+  "github.com/liyue201/gostl/algorithm"
+  "github.com/liyue201/gostl/ds/deque"
+  "github.com/liyue201/gostl/utils/iterator"
 )
 
 func isEven(iter iterator.ConstIterator) bool {
-	return iter.Value().(int)%2 == 0
+  return iter.Value().(int)%2 == 0
 }
 
 func greaterThan5(iter iterator.ConstIterator) bool {
-	return iter.Value().(int) > 5
+  return iter.Value().(int) > 5
 }
 
 func main() {
-	a := deque.New()
-	for i := 0; i < 10; i++ {
-		a.PushBack(i)
-	}
-	for i := 0; i < 5; i++ {
-		a.PushBack(i)
-	}
-	fmt.Printf("%v\n", a)
+  a := deque.New()
+  for i := 0; i < 10; i++ {
+    a.PushBack(i)
+  }
+  for i := 0; i < 5; i++ {
+    a.PushBack(i)
+  }
+  fmt.Printf("%v\n", a)
 
-	fmt.Printf("Count 2: %v\n", algorithm.Count(a.Begin(), a.End(), 2))
-	fmt.Printf("Count 2: %v\n", algorithm.CountIf(a.Begin(), a.End(), isEven))
+  fmt.Printf("Count 2: %v\n", algorithm.Count(a.Begin(), a.End(), 2))
+  fmt.Printf("Count 2: %v\n", algorithm.CountIf(a.Begin(), a.End(), isEven))
 
-	iter := algorithm.Find(a.Begin(), a.End(), 2)
-	if !iter.Equal(a.End()) {
-		fmt.Printf("Fund %v\n", iter.Value())
-	}
-	iter = algorithm.FindIf(a.Begin(), a.End(), greaterThan5)
-	if !iter.Equal(a.End()) {
-		fmt.Printf("FindIf greaterThan5 : %v\n", iter.Value())
-	}
+  iter := algorithm.Find(a.Begin(), a.End(), 2)
+  if !iter.Equal(a.End()) {
+    fmt.Printf("Fund %v\n", iter.Value())
+  }
+  iter = algorithm.FindIf(a.Begin(), a.End(), greaterThan5)
+  if !iter.Equal(a.End()) {
+    fmt.Printf("FindIf greaterThan5 : %v\n", iter.Value())
+  }
+  iter = algorithm.MaxElement(a.Begin(), a.End())
+  if !iter.Equal(a.End()) {
+    fmt.Printf("Largest value : %v\n", iter.Value())
+  }
+  iter = algorithm.MinElement(a.Begin(), a.End())
+  if !iter.Equal(a.End()) {
+    fmt.Printf("Smallest value : %v\n", iter.Value())
+  }
 }
 
 ```

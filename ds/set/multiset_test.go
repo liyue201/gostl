@@ -36,6 +36,9 @@ func TestMultiSet(t *testing.T) {
 	iter := mset.LowerBound(5)
 	assert.Equal(t, 7, iter.Value())
 
+	iter = mset.UpperBound(3)
+	assert.Equal(t, 7, iter.Value())
+
 	iter = mset.Find(3)
 	assert.Equal(t, 3, iter.Value())
 }

@@ -108,6 +108,15 @@ func (s *Set) LowerBound(element interface{}) *SetIterator {
 	return &SetIterator{node: node}
 }
 
+// UpperBound finds the first element that greater than the passed element in the set, and returns its iterator
+func (s *Set) UpperBound(element interface{}) *SetIterator {
+	s.locker.RLock()
+	defer s.locker.RUnlock()
+
+	node := s.tree.FindUpperBoundNode(element)
+	return &SetIterator{node: node}
+}
+
 // Begin returns the iterator with the minimum element in the set
 func (s *Set) Begin() *SetIterator {
 	return s.First()

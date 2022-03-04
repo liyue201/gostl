@@ -52,6 +52,9 @@ func TestMultiMapIterator(t *testing.T) {
 
 	iter = m.LowerBound(8)
 	assert.Equal(t, 8, iter.Value().(int))
+
+	iter = m.UpperBound(5)
+	assert.Equal(t, 6, iter.Value().(int))
 }
 
 func TestMultiMap_Traversal(t *testing.T) {

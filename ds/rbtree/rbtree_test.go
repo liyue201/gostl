@@ -23,6 +23,9 @@ func TestRbTeeFind(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		iter := tree.FindLowerBoundNode(i)
 		assert.Equal(t, i+10000, iter.Value())
+
+		iter2 := tree.FindUpperBoundNode(i-1)
+		assert.Equal(t, i+10000, iter2.Value())
 	}
 	for i := 0; i < 10; i++ {
 		tree.Insert(i, i+20000)
@@ -30,6 +33,19 @@ func TestRbTeeFind(t *testing.T) {
 
 	for i := 0; i < 10; i++ {
 		iter := tree.FindLowerBoundNode(i)
+		count := 0
+		for n := iter; n != nil; n = n.Next() {
+			if n.key != i {
+				break
+			}
+			count++
+			//t.Logf("travesal: %v = %v ", n.key, n.value)
+		}
+		assert.Equal(t, 2, count)
+	}
+
+	for i := 0; i < 10; i++ {
+		iter := tree.FindUpperBoundNode(i-1)
 		count := 0
 		for n := iter; n != nil; n = n.Next() {
 			if n.key != i {
