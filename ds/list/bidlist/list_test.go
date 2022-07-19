@@ -64,6 +64,18 @@ func TestList(t *testing.T) {
 	list.MoveToFront(list.FrontNode().Next())
 	assert.Equal(t, "[5 7 2 1 8]", list.String())
 
+	list.MoveToFront(list.BackNode())
+	assert.Equal(t, "[8 5 7 2 1]", list.String())
+
+	list.MoveToBack(list.FrontNode())
+	assert.Equal(t, "[5 7 2 1 8]", list.String())
+
+	list.MoveToFront(list.FrontNode())
+	assert.Equal(t, "[5 7 2 1 8]", list.String())
+
+	list.MoveToBack(list.BackNode())
+	assert.Equal(t, "[5 7 2 1 8]", list.String())
+
 	list.moveToAfter(list.FrontNode().Next(), list.BackNode().Prev())
 	assert.Equal(t, "[5 2 1 7 8]", list.String())
 

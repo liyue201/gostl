@@ -228,6 +228,9 @@ func (l *List) MoveToBack(n *Node) {
 		return
 	}
 	if l.head.prev != n {
+		if l.head == n {
+			l.head = n.next
+		}
 		l.moveToAfter(n, l.head.prev)
 	}
 }
@@ -243,7 +246,7 @@ func (l *List) MoveAfter(n, mark *Node) {
 }
 
 func (l *List) moveToAfter(n, at *Node) {
-	if n == at.next {
+	if n == at.next || n == at {
 		return
 	}
 	if n == l.head {
