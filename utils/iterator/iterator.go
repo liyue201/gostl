@@ -1,61 +1,60 @@
 package iterator
 
 // ConstIterator is an interface of const iterator
-type ConstIterator interface {
+type ConstIterator[T any] interface {
 	IsValid() bool
-	Next() ConstIterator
-	Value() interface{}
-	Clone() ConstIterator
-	Equal(other ConstIterator) bool
+	Next() ConstIterator[T]
+	Value() T
+	Clone() ConstIterator[T]
+	Equal(other ConstIterator[T]) bool
 }
 
 // Iterator is an interface of mutable iterator
-type Iterator interface {
-	ConstIterator
+type Iterator[T any] interface {
+	ConstIterator[T]
 	SetValue(value interface{})
 }
 
 // ConstKvIterator is an interface of const key-value type iterator
-type ConstKvIterator interface {
-	ConstIterator
-	Key() interface{}
+type ConstKvIterator[T any] interface {
+	ConstIterator[T]
+	Key() T
 }
 
 // KvIterator is an interface of mutable key-value type iterator
-type KvIterator interface {
-	ConstKvIterator
-	SetValue(value interface{})
+type KvIterator[T any] interface {
+	ConstKvIterator[T]
+	SetValue(value T)
 }
 
 // ConstBidIterator is an interface of const bidirectional iterator
-type ConstBidIterator interface {
-	ConstIterator
-	Prev() ConstBidIterator
+type ConstBidIterator[T any] interface {
+	ConstIterator[T]
+	Prev() ConstBidIterator[T]
 }
 
 // BidIterator is an interface of mutable bidirectional iterator
-type BidIterator interface {
-	ConstBidIterator
-	SetValue(value interface{})
+type BidIterator[T any] interface {
+	ConstBidIterator[T]
+	SetValue(value T)
 }
 
 // ConstKvBidIterator is an interface of const key-value type bidirectional iterator
-type ConstKvBidIterator interface {
-	ConstKvIterator
-	Prev() ConstBidIterator
+type ConstKvBidIterator[T any] interface {
+	ConstKvIterator[T]
+	BidIterator[T]
 }
 
 // KvBidIterator is an interface of mutable key-value type bidirectional iterator
-type KvBidIterator interface {
-	ConstKvIterator
-	Prev() ConstBidIterator
-	SetValue(value interface{})
+type KvBidIterator[T any] interface {
+	KvIterator[T]
+	BidIterator[T]
 }
 
 // RandomAccessIterator is an interface of mutable random access iterator
-type RandomAccessIterator interface {
-	BidIterator
+type RandomAccessIterator[T any] interface {
+	BidIterator[T]
 	//IteratorAt returns a new iterator at position
-	IteratorAt(position int) RandomAccessIterator
+	IteratorAt(position int) RandomAccessIterator[T]
 	Position() int
 }

@@ -16,34 +16,34 @@ var (
 )
 
 // Deque is double-ended queue supports efficient data insertion from the head and tail, random access and iterator access.
-type Deque struct {
-	pool  *Pool
-	segs  []*Segment
+type Deque[T any] struct {
+	pool  *Pool[T]
+	segs  []*Segment[T]
 	begin int
 	end   int
 	size  int
 }
 
 // New creates a new deque
-func New() *Deque {
-	dq := &Deque{
-		pool: newPool(),
-		segs: make([]*Segment, 0),
+func New[T any]() *Deque[T] {
+	dq := &Deque[T]{
+		pool: newPool[T](),
+		segs: make([]*Segment[T], 0),
 	}
 	return dq
 }
 
 // Size returns the amount of values in the deque
-func (d *Deque) Size() int {
+func (d *Deque[T]) Size() int {
 	return d.size
 }
 
 // Empty returns true if the deque is empty,otherwise returns false.
-func (d *Deque) Empty() bool {
+func (d *Deque[T]) Empty() bool {
 	return d.size == 0
 }
 
-func (d *Deque) segUsed() int {
+func (d *Deque[T]) segUsed() int {
 	if d.size == 0 {
 		return 0
 	}
@@ -54,7 +54,7 @@ func (d *Deque) segUsed() int {
 }
 
 // PushFront pushed a value to the front of the deque
-func (d *Deque) PushFront(value interface{}) {
+func (d *Deque[T]) PushFront(value T) {
 	d.firstAvailableSegment().pushFront(value)
 	d.size++
 	if d.segUsed() >= len(d.segs) {
@@ -63,7 +63,7 @@ func (d *Deque) PushFront(value interface{}) {
 }
 
 // PushBack pushed a value to the back of deque
-func (d *Deque) PushBack(value interface{}) {
+func (d *Deque[T]) PushBack(value T) {
 	d.lastAvailableSegment().pushBack(value)
 	d.size++
 	if d.segUsed() >= len(d.segs) {
@@ -72,7 +72,7 @@ func (d *Deque) PushBack(value interface{}) {
 }
 
 // Insert inserts a value to the position pos of the deque
-func (d *Deque) Insert(pos int, value interface{}) {
+func (d *Deque[T]) Insert(pos int, value T) {
 	if pos < 0 || pos > d.size {
 		return
 	}
@@ -98,7 +98,7 @@ func (d *Deque) Insert(pos int, value interface{}) {
 	}
 }
 
-func (d *Deque) moveFrontInsert(seg, pos int, value interface{}) {
+func (d *Deque[T]) moveFrontInsert(seg, pos int, value T) {
 	if d.firstSegment().full() {
 		if d.segUsed() >= len(d.segs) {
 			d.expand()
@@ -129,7 +129,7 @@ func (d *Deque) moveFrontInsert(seg, pos int, value interface{}) {
 	d.segmentAt(seg).insert(pos, value)
 }
 
-func (d *Deque) moveBackInsert(seg, pos int, value interface{}) {
+func (d *Deque[T]) moveBackInsert(seg, pos int, value T) {
 	// move back
 	if d.lastSegment().full() {
 		if d.segUsed() >= len(d.segs) {
@@ -147,26 +147,26 @@ func (d *Deque) moveBackInsert(seg, pos int, value interface{}) {
 }
 
 // Front returns the value at the first position of the deque
-func (d *Deque) Front() interface{} {
+func (d *Deque[T]) Front() T {
 	return d.firstSegment().front()
 }
 
 // Back returns the value at the last position of the deque
-func (d *Deque) Back() interface{} {
+func (d *Deque[T]) Back() T {
 	return d.lastSegment().back()
 }
 
 // At returns the value at position pos of the deque
-func (d *Deque) At(pos int) interface{} {
+func (d *Deque[T]) At(pos int) T {
 	if pos < 0 || pos >= d.Size() {
-		return nil
+		panic("out off range")
 	}
 	seg, pos := d.pos(pos)
 	return d.segmentAt(seg).at(pos)
 }
 
 // Set sets the value of the deque's position pos with value val
-func (d *Deque) Set(pos int, val interface{}) error {
+func (d *Deque[T]) Set(pos int, val T) error {
 	if pos < 0 || pos >= d.size {
 		return ErrOutOffRange
 	}
@@ -176,9 +176,9 @@ func (d *Deque) Set(pos int, val interface{}) error {
 }
 
 // PopFront returns the value at the first position of the deque and removes it
-func (d *Deque) PopFront() interface{} {
+func (d *Deque[T]) PopFront() T {
 	if d.size == 0 {
-		return nil
+		panic("deque is empty")
 	}
 	s := d.segs[d.begin]
 	v := s.popFront()
@@ -193,9 +193,9 @@ func (d *Deque) PopFront() interface{} {
 }
 
 // PopBack returns the value at the lase position of the deque and removes it
-func (d *Deque) PopBack() interface{} {
+func (d *Deque[T]) PopBack() T {
 	if d.size == 0 {
-		return nil
+		panic("deque is empty")
 	}
 	seg := d.preIndex(d.end)
 	s := d.segs[seg]
@@ -213,7 +213,7 @@ func (d *Deque) PopBack() interface{} {
 }
 
 // EraseAt erases the element at the position pos
-func (d *Deque) EraseAt(pos int) {
+func (d *Deque[T]) EraseAt(pos int) {
 	if pos < 0 || pos >= d.size {
 		return
 	}
@@ -248,7 +248,7 @@ func (d *Deque) EraseAt(pos int) {
 }
 
 // EraseRange erases elements in range [firstPos, lastPos)
-func (d *Deque) EraseRange(firstPos, lastPos int) {
+func (d *Deque[T]) EraseRange(firstPos, lastPos int) {
 	if firstPos < 0 || firstPos >= lastPos || lastPos > d.size {
 		return
 	}
@@ -273,11 +273,11 @@ func (d *Deque) EraseRange(firstPos, lastPos int) {
 }
 
 // Clear erases all elements in the deque
-func (d *Deque) Clear() {
+func (d *Deque[T]) Clear() {
 	d.EraseRange(0, d.size)
 }
 
-func (d *Deque) putToPool(s *Segment) {
+func (d *Deque[T]) putToPool(s *Segment[T]) {
 	s.clear()
 	d.pool.put(s)
 
@@ -286,7 +286,7 @@ func (d *Deque) putToPool(s *Segment) {
 	}
 }
 
-func (d *Deque) firstAvailableSegment() *Segment {
+func (d *Deque[T]) firstAvailableSegment() *Segment[T] {
 	if d.firstSegment() != nil && !d.firstSegment().full() {
 		return d.firstSegment()
 	}
@@ -302,7 +302,7 @@ func (d *Deque) firstAvailableSegment() *Segment {
 	return d.firstSegment()
 }
 
-func (d *Deque) lastAvailableSegment() *Segment {
+func (d *Deque[T]) lastAvailableSegment() *Segment[T] {
 	if d.lastSegment() != nil && !d.lastSegment().full() {
 		return d.lastSegment()
 	}
@@ -318,25 +318,25 @@ func (d *Deque) lastAvailableSegment() *Segment {
 	return d.lastSegment()
 }
 
-func (d *Deque) firstSegment() *Segment {
+func (d *Deque[T]) firstSegment() *Segment[T] {
 	if len(d.segs) == 0 {
 		return nil
 	}
 	return d.segs[d.begin]
 }
 
-func (d *Deque) lastSegment() *Segment {
+func (d *Deque[T]) lastSegment() *Segment[T] {
 	if len(d.segs) == 0 {
 		return nil
 	}
 	return d.segs[d.preIndex(d.end)]
 }
 
-func (d *Deque) segmentAt(seg int) *Segment {
+func (d *Deque[T]) segmentAt(seg int) *Segment[T] {
 	return d.segs[(seg+d.begin)%cap(d.segs)]
 }
 
-func (d *Deque) pos(position int) (int, int) {
+func (d *Deque[T]) pos(position int) (int, int) {
 	if position <= d.firstSegment().size()-1 {
 		return 0, position
 	}
@@ -344,12 +344,12 @@ func (d *Deque) pos(position int) (int, int) {
 	return position/SegmentCapacity + 1, position % SegmentCapacity
 }
 
-func (d *Deque) expand() {
+func (d *Deque[T]) expand() {
 	newCapacity := d.segUsed() * 2
 	if newCapacity == 0 {
 		newCapacity = 1
 	}
-	seg := make([]*Segment, newCapacity)
+	seg := make([]*Segment[T], newCapacity)
 	for i := 0; i < d.segUsed(); i++ {
 		seg[i] = d.segs[(d.begin+i)%d.segUsed()]
 	}
@@ -361,10 +361,10 @@ func (d *Deque) expand() {
 }
 
 //shrinkIfNeeded shrinks the deque if it has too many unused space.
-func (d *Deque) shrinkIfNeeded() {
+func (d *Deque[T]) shrinkIfNeeded() {
 	if int(float64(d.segUsed()*2)*1.2) < cap(d.segs) {
 		newCapacity := cap(d.segs) / 2
-		seg := make([]*Segment, newCapacity)
+		seg := make([]*Segment[T], newCapacity)
 		for i := 0; i < d.segUsed(); i++ {
 			seg[i] = d.segs[(d.begin+i)%cap(d.segs)]
 		}
@@ -375,16 +375,16 @@ func (d *Deque) shrinkIfNeeded() {
 	}
 }
 
-func (d *Deque) nextIndex(index int) int {
+func (d *Deque[T]) nextIndex(index int) int {
 	return (index + 1) % cap(d.segs)
 }
 
-func (d *Deque) preIndex(index int) int {
+func (d *Deque[T]) preIndex(index int) int {
 	return (index - 1 + cap(d.segs)) % cap(d.segs)
 }
 
 // String returns a string representation of the deque
-func (d *Deque) String() string {
+func (d *Deque[T]) String() string {
 	str := "["
 	for i := 0; i < d.Size(); i++ {
 		if str != "[" {
@@ -398,26 +398,26 @@ func (d *Deque) String() string {
 }
 
 // Begin returns an iterator of the deque with the first position
-func (d *Deque) Begin() *DequeIterator {
+func (d *Deque[T]) Begin() *DequeIterator[T] {
 	return d.First()
 }
 
 // End returns an iterator of the deque with the position d.Size()
-func (d *Deque) End() *DequeIterator {
+func (d *Deque[T]) End() *DequeIterator[T] {
 	return d.IterAt(d.Size())
 }
 
 // First returns an iterator of the deque with the first position
-func (d *Deque) First() *DequeIterator {
+func (d *Deque[T]) First() *DequeIterator[T] {
 	return d.IterAt(0)
 }
 
 // Last returns an iterator of the deque with the last position
-func (d *Deque) Last() *DequeIterator {
+func (d *Deque[T]) Last() *DequeIterator[T] {
 	return d.IterAt(d.Size() - 1)
 }
 
 // IterAt returns an iterator of the deque with the position pos
-func (d *Deque) IterAt(pos int) *DequeIterator {
-	return &DequeIterator{dq: d, position: pos}
+func (d *Deque[T]) IterAt(pos int) *DequeIterator[T] {
+	return &DequeIterator[T]{dq: d, position: pos}
 }
