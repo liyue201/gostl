@@ -12,7 +12,7 @@ func main() {
 	fmt.Printf("aaa = %v\n", list.Get("aaa"))
 	fmt.Printf("aaa = %v\n\n", list.Get("bbb"))
 
-	list.Traversal(func(key, value interface{}) bool {
+	list.Traversal(func(key, value any) bool {
 		fmt.Printf("key:%v value:%v\n", key, value)
 		return true
 	})

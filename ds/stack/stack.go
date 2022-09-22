@@ -82,7 +82,7 @@ func (s *Stack) Empty() bool {
 }
 
 // Push pushes a value to the stack
-func (s *Stack) Push(value interface{}) {
+func (s *Stack) Push(value any) {
 	s.locker.Lock()
 	defer s.locker.Unlock()
 
@@ -90,7 +90,7 @@ func (s *Stack) Push(value interface{}) {
 }
 
 // Top returns the top value in the stack
-func (s *Stack) Top() interface{} {
+func (s *Stack) Top() any {
 	s.locker.RLock()
 	defer s.locker.RUnlock()
 
@@ -98,7 +98,7 @@ func (s *Stack) Top() interface{} {
 }
 
 // Pop removes the the top value in the stack and returns it
-func (s *Stack) Pop() interface{} {
+func (s *Stack) Pop() any {
 	s.locker.Lock()
 	defer s.locker.Unlock()
 

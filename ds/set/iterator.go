@@ -35,7 +35,7 @@ func (iter *SetIterator) Prev() iterator.ConstBidIterator {
 }
 
 // Value returns the element of the iterator point to
-func (iter *SetIterator) Value() interface{} {
+func (iter *SetIterator) Value() any {
 	return iter.node.Key()
 }
 

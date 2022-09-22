@@ -31,7 +31,7 @@ func TestList(t *testing.T) {
 	assert.Equal(t, "[1 3 4 2]", list.String())
 
 	ret := make([]int, 0)
-	list.Traversal(func(value interface{}) bool {
+	list.Traversal(func(value any) bool {
 		ret = append(ret, value.(int))
 		return true
 	})

@@ -60,7 +60,7 @@ func New(opts ...Option) *Map {
 }
 
 //Insert inserts a key-value to the map
-func (m *Map) Insert(key, value interface{}) {
+func (m *Map) Insert(key, value any) {
 	m.locker.Lock()
 	defer m.locker.Unlock()
 
@@ -73,7 +73,7 @@ func (m *Map) Insert(key, value interface{}) {
 }
 
 //Get returns the value of the passed key if the key is in the map, otherwise returns nil
-func (m *Map) Get(key interface{}) interface{} {
+func (m *Map) Get(key any) any {
 	m.locker.RLock()
 	defer m.locker.RUnlock()
 
@@ -85,7 +85,7 @@ func (m *Map) Get(key interface{}) interface{} {
 }
 
 //Erase erases the node by the passed key from the map if the key in the Map
-func (m *Map) Erase(key interface{}) {
+func (m *Map) Erase(key any) {
 	m.locker.Lock()
 	defer m.locker.Unlock()
 
@@ -107,7 +107,7 @@ func (m *Map) EraseIter(iter iterator.ConstKvIterator) {
 }
 
 //Find finds a node by the passed key and returns its iterator
-func (m *Map) Find(key interface{}) *MapIterator {
+func (m *Map) Find(key any) *MapIterator {
 	m.locker.RLock()
 	defer m.locker.RUnlock()
 
@@ -116,7 +116,7 @@ func (m *Map) Find(key interface{}) *MapIterator {
 }
 
 //LowerBound finds a node that its key is equal or greater than the passed key and returns its iterator
-func (m *Map) LowerBound(key interface{}) *MapIterator {
+func (m *Map) LowerBound(key any) *MapIterator {
 	m.locker.RLock()
 	defer m.locker.RUnlock()
 
@@ -125,7 +125,7 @@ func (m *Map) LowerBound(key interface{}) *MapIterator {
 }
 
 //UpperBound finds a node that its key is greater than the passed key and returns its iterator
-func (m *Map) UpperBound(key interface{}) *MapIterator {
+func (m *Map) UpperBound(key any) *MapIterator {
 	m.locker.RLock()
 	defer m.locker.RUnlock()
 
@@ -166,7 +166,7 @@ func (m *Map) Clear() {
 }
 
 // Contains returns true if the key is in the map. otherwise returns false.
-func (m *Map) Contains(key interface{}) bool {
+func (m *Map) Contains(key any) bool {
 	m.locker.RLock()
 	defer m.locker.RUnlock()
 

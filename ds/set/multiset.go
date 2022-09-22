@@ -32,7 +32,7 @@ func NewMultiSet(opts ...Option) *MultiSet {
 }
 
 // Insert inserts an element to the MultiSet
-func (ms *MultiSet) Insert(element interface{}) {
+func (ms *MultiSet) Insert(element any) {
 	ms.locker.Lock()
 	defer ms.locker.Unlock()
 
@@ -40,7 +40,7 @@ func (ms *MultiSet) Insert(element interface{}) {
 }
 
 // Erase erases all node with passed element in the MultiSet
-func (ms *MultiSet) Erase(element interface{}) {
+func (ms *MultiSet) Erase(element any) {
 	ms.locker.Lock()
 	defer ms.locker.Unlock()
 
@@ -54,7 +54,7 @@ func (ms *MultiSet) Erase(element interface{}) {
 }
 
 // Find finds the first element that is equal to the passed element in the MultiSet, and returns its iterator
-func (ms *MultiSet) Find(element interface{}) *SetIterator {
+func (ms *MultiSet) Find(element any) *SetIterator {
 	ms.locker.RLock()
 	defer ms.locker.RUnlock()
 
@@ -63,7 +63,7 @@ func (ms *MultiSet) Find(element interface{}) *SetIterator {
 }
 
 //LowerBound finds the first element that is equal to or greater than the passed element in the MultiSet, and returns its iterator
-func (ms *MultiSet) LowerBound(element interface{}) *SetIterator {
+func (ms *MultiSet) LowerBound(element any) *SetIterator {
 	ms.locker.RLock()
 	defer ms.locker.RUnlock()
 
@@ -72,7 +72,7 @@ func (ms *MultiSet) LowerBound(element interface{}) *SetIterator {
 }
 
 //UpperBound finds the first element that is greater than the passed element in the MultiSet, and returns its iterator
-func (ms *MultiSet) UpperBound(element interface{}) *SetIterator {
+func (ms *MultiSet) UpperBound(element any) *SetIterator {
 	ms.locker.RLock()
 	defer ms.locker.RUnlock()
 
@@ -110,7 +110,7 @@ func (ms *MultiSet) Clear() {
 }
 
 // Contains returns true if the passed element is in the MultiSet. otherwise returns false.
-func (ms *MultiSet) Contains(element interface{}) bool {
+func (ms *MultiSet) Contains(element any) bool {
 	ms.locker.RLock()
 	defer ms.locker.RUnlock()
 
@@ -143,7 +143,7 @@ func (ms *MultiSet) Traversal(visitor visitor.Visitor) {
 // String returns s string representation of the MultiSet
 func (ms *MultiSet) String() string {
 	str := "["
-	ms.Traversal(func(value interface{}) bool {
+	ms.Traversal(func(value any) bool {
 		if str != "[" {
 			str += " "
 		}

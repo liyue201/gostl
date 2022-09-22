@@ -10,42 +10,42 @@ const (
 )
 
 // Node is a tree node
-type Node struct {
-	parent *Node
-	left   *Node
-	right  *Node
+type Node[K, V any] struct {
+	parent *Node[K, V]
+	left   *Node[K, V]
+	right  *Node[K, V]
 	color  Color
-	key    interface{}
-	value  interface{}
+	key    K
+	value  V
 }
 
 // Key returns node's key
-func (n *Node) Key() interface{} {
+func (n *Node[K, V]) Key() K {
 	return n.key
 }
 
 // Value returns node's value
-func (n *Node) Value() interface{} {
+func (n *Node[K, V]) Value() V {
 	return n.value
 }
 
 // SetValue sets node's value
-func (n *Node) SetValue(val interface{}) {
+func (n *Node[K, V]) SetValue(val V) {
 	n.value = val
 }
 
 // Next returns the Node's successor as an iterator.
-func (n *Node) Next() *Node {
+func (n *Node[K, V]) Next() *Node[K, V] {
 	return successor(n)
 }
 
 // Prev returns the Node's predecessor as an iterator.
-func (n *Node) Prev() *Node {
+func (n *Node[K, V]) Prev() *Node[K, V] {
 	return presuccessor(n)
 }
 
 // successor returns the successor of the Node
-func successor(x *Node) *Node {
+func successor[K, V any](x *Node[K, V]) *Node[K, V] {
 	if x.right != nil {
 		return minimum(x.right)
 	}
@@ -58,7 +58,7 @@ func successor(x *Node) *Node {
 }
 
 // presuccessor returns the presuccessor of the Node
-func presuccessor(x *Node) *Node {
+func presuccessor[K, V any](x *Node[K, V]) *Node[K, V] {
 	if x.left != nil {
 		return maximum(x.left)
 	}
@@ -75,7 +75,7 @@ func presuccessor(x *Node) *Node {
 }
 
 // minimum finds the minimum Node of subtree n.
-func minimum(n *Node) *Node {
+func minimum[K any, V any](n *Node[K, V]) *Node[K, V] {
 	for n.left != nil {
 		n = n.left
 	}
@@ -83,7 +83,7 @@ func minimum(n *Node) *Node {
 }
 
 // maximum finds the maximum Node of subtree n.
-func maximum(n *Node) *Node {
+func maximum[K any, V any](n *Node[K, V]) *Node[K, V] {
 	for n.right != nil {
 		n = n.right
 	}

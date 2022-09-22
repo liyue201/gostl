@@ -1,8 +1,8 @@
 package array
 
 import (
-	//"github.com/liyue201/gostl/algorithm/sort"
-	//"github.com/liyue201/gostl/utils/comparator"
+	"github.com/liyue201/gostl/algorithm/sort"
+	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -63,17 +63,17 @@ func TestNewFromArray(t *testing.T) {
 	}
 }
 
-//func TestSort(t *testing.T) {
-//	a := New[int](10)
-//	for i := 0; i < 10; i++ {
-//		a.Set(i, 10-i)
-//	}
-//	sort.Stable(a.Begin(), a.End(), comparator.BuiltinTypeComparator)
-//	t.Logf("a: %v", a.String())
-//	for i := 0; i < a.Size()-1; i++ {
-//		assert.LessOrEqual(t, a.At(i), a.At(i))
-//	}
-//}
+func TestSort(t *testing.T) {
+	a := New[int](10)
+	for i := 0; i < 10; i++ {
+		a.Set(i, 10-i)
+	}
+	sort.Stable[int](a.Begin(), a.End(), comparator.BuiltinTypeComparator)
+	t.Logf("a: %v", a.String())
+	for i := 0; i < a.Size()-1; i++ {
+		assert.LessOrEqual(t, a.At(i), a.At(i))
+	}
+}
 
 func TestIterator(t *testing.T) {
 	a := New[int](10)

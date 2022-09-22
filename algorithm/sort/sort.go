@@ -1,14 +1,12 @@
 package sort
 
 import (
-	"fmt"
 	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/utils/iterator"
 )
 
 //Sort sorts the container by using quick sort
-func Sort(first, last iterator.RandomAccessIterator, cmp ...comparator.Comparator) {
-	fmt.Printf("============================\n")
+func Sort[T any](first, last iterator.RandomAccessIterator[T], cmp ...comparator.Comparator) {
 	n := last.Position() - first.Position()
 	if len(cmp) == 0 {
 		quickSort(first, first.IteratorAt(first.Position()+n-1), comparator.BuiltinTypeComparator)
@@ -17,7 +15,7 @@ func Sort(first, last iterator.RandomAccessIterator, cmp ...comparator.Comparato
 	}
 }
 
-func quickSort(first, last iterator.RandomAccessIterator, cmp comparator.Comparator) {
+func quickSort[T any](first, last iterator.RandomAccessIterator[T], cmp comparator.Comparator) {
 	if first.Position() >= last.Position() {
 		return
 	}
@@ -59,10 +57,10 @@ func quickSort(first, last iterator.RandomAccessIterator, cmp comparator.Compara
 	swapValue(baseItem, rightIter)
 
 	quickSort(first, first.IteratorAt(m-1), cmp)
-	quickSort(first.IteratorAt(m).Next().(iterator.RandomAccessIterator), last, cmp)
+	quickSort(first.IteratorAt(m).Next().(iterator.RandomAccessIterator[T]), last, cmp)
 }
 
-func doPivot(first, mid, last iterator.RandomAccessIterator, cmp comparator.Comparator) {
+func doPivot[T any](first, mid, last iterator.RandomAccessIterator[T], cmp comparator.Comparator) {
 	if cmp(first.Value(), mid.Value()) > 0 {
 		swapValue(first, mid)
 	}
@@ -74,7 +72,7 @@ func doPivot(first, mid, last iterator.RandomAccessIterator, cmp comparator.Comp
 	}
 }
 
-func swapValue(a, b iterator.RandomAccessIterator) {
+func swapValue[T any](a, b iterator.RandomAccessIterator[T]) {
 	valA := a.Value()
 	valB := b.Value()
 	a.SetValue(valB)

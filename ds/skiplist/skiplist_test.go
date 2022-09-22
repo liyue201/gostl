@@ -60,7 +60,7 @@ func TestSkiplist_Traversal(t *testing.T) {
 		assert.Equal(t, i, keys[i])
 	}
 	i := 0
-	list.Traversal(func(key, value interface{}) bool {
+	list.Traversal(func(key, value any) bool {
 		assert.Equal(t, i, key.(int))
 		assert.Equal(t, i*10, value.(int))
 		i++

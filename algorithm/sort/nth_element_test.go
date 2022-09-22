@@ -15,16 +15,16 @@ func TestNthElement(t *testing.T) {
 		a = append(a, rand.Int()%100)
 		b = append(b, a[i])
 	}
-	sliceA := slice.IntSlice(a)
-	sliceB := slice.IntSlice(b)
-	Sort(sliceB.Begin(), sliceB.End())
+	sliceA := slice.NewSliceWrapper(a)
+	sliceB := slice.NewSliceWrapper(b)
+	Sort[int](sliceB.Begin(), sliceB.End())
 
 	t.Logf("a: %v\n", a)
 	t.Logf("b: %v\n", b)
 
 	for i := 0; i < 2; i++ {
 		k := rand.Int() % 10
-		NthElement(sliceA.Begin(), sliceA.End(), k)
+		NthElement[int](sliceA.Begin(), sliceA.End(), k)
 		t.Logf("%v : %v\n", k, a)
 		if b[k] != a[k] {
 			t.Errorf("errror")

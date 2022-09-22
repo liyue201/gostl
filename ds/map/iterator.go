@@ -35,17 +35,17 @@ func (iter *MapIterator) Prev() iterator.ConstBidIterator {
 }
 
 // Key returns the node's key of the iterator point to
-func (iter *MapIterator) Key() interface{} {
+func (iter *MapIterator) Key() any {
 	return iter.node.Key()
 }
 
 // Value returns the node's value of the iterator point to
-func (iter *MapIterator) Value() interface{} {
+func (iter *MapIterator) Value() any {
 	return iter.node.Value()
 }
 
 // SetValue sets the node's value of the iterator point to
-func (iter *MapIterator) SetValue(val interface{}) {
+func (iter *MapIterator) SetValue(val any) {
 	iter.node.SetValue(val)
 }
 

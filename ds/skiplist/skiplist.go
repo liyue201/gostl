@@ -54,8 +54,8 @@ type Node struct {
 // Element is a kind of node with key-value data
 type Element struct {
 	Node
-	key   interface{}
-	value interface{}
+	key   any
+	value any
 }
 
 // Skiplist is a kind of data structure which can search quickly by exchanging space for time
@@ -91,7 +91,7 @@ func New(opts ...Option) *Skiplist {
 }
 
 // Insert inserts a key-value pair into the skiplist
-func (sl *Skiplist) Insert(key, value interface{}) {
+func (sl *Skiplist) Insert(key, value any) {
 	sl.locker.Lock()
 	defer sl.locker.Unlock()
 	prevs := sl.findPrevNodes(key)
@@ -121,7 +121,7 @@ func (sl *Skiplist) Insert(key, value interface{}) {
 }
 
 // Get returns the value associated with the passed key if the key is in the skiplist, otherwise returns nil
-func (sl *Skiplist) Get(key interface{}) interface{} {
+func (sl *Skiplist) Get(key any) any {
 	sl.locker.RLock()
 	defer sl.locker.RUnlock()
 
@@ -143,7 +143,7 @@ func (sl *Skiplist) Get(key interface{}) interface{} {
 }
 
 // Remove removes the key-value pair associated with the passed key and returns true if the key is in the skiplist, otherwise returns false
-func (sl *Skiplist) Remove(key interface{}) bool {
+func (sl *Skiplist) Remove(key any) bool {
 	sl.locker.Lock()
 	defer sl.locker.Unlock()
 
@@ -183,7 +183,7 @@ func (sl *Skiplist) randomLevel() int {
 	return level
 }
 
-func (sl *Skiplist) findPrevNodes(key interface{}) []*Node {
+func (sl *Skiplist) findPrevNodes(key any) []*Node {
 	prevs := sl.prevNodesCache
 	prev := &sl.head
 	for i := sl.maxLevel - 1; i >= 0; i-- {
@@ -213,9 +213,9 @@ func (sl *Skiplist) Traversal(visitor visitor.KvVisitor) {
 }
 
 // Keys returns all keys in the skiplist
-func (sl *Skiplist) Keys() []interface{} {
-	var keys []interface{}
-	sl.Traversal(func(key, value interface{}) bool {
+func (sl *Skiplist) Keys() []any {
+	var keys []any
+	sl.Traversal(func(key, value any) bool {
 		keys = append(keys, key)
 		return true
 	})

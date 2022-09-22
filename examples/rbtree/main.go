@@ -12,7 +12,7 @@ func main() {
 	tree.Insert(3, "ccc")
 	fmt.Printf("find %v returns %v\n", 5, tree.Find(5))
 
-	tree.Traversal(func(key, value interface{}) bool {
+	tree.Traversal(func(key, value any) bool {
 		fmt.Printf("%v : %v\n", key, value)
 		return true
 	})

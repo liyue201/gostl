@@ -68,7 +68,7 @@ func New(opts ...Option) *Set {
 }
 
 // Insert inserts an element to the set
-func (s *Set) Insert(element interface{}) {
+func (s *Set) Insert(element any) {
 	s.locker.Lock()
 	defer s.locker.Unlock()
 
@@ -80,7 +80,7 @@ func (s *Set) Insert(element interface{}) {
 }
 
 // Erase erases an element from the set
-func (s *Set) Erase(element interface{}) {
+func (s *Set) Erase(element any) {
 	s.locker.Lock()
 	defer s.locker.Unlock()
 
@@ -91,7 +91,7 @@ func (s *Set) Erase(element interface{}) {
 }
 
 // Find finds the element's node in the set, and return its iterator
-func (s *Set) Find(element interface{}) *SetIterator {
+func (s *Set) Find(element any) *SetIterator {
 	s.locker.RLock()
 	defer s.locker.RUnlock()
 
@@ -100,7 +100,7 @@ func (s *Set) Find(element interface{}) *SetIterator {
 }
 
 // LowerBound finds the first element that equal or greater than the passed element in the set, and returns its iterator
-func (s *Set) LowerBound(element interface{}) *SetIterator {
+func (s *Set) LowerBound(element any) *SetIterator {
 	s.locker.RLock()
 	defer s.locker.RUnlock()
 
@@ -109,7 +109,7 @@ func (s *Set) LowerBound(element interface{}) *SetIterator {
 }
 
 // UpperBound finds the first element that greater than the passed element in the set, and returns its iterator
-func (s *Set) UpperBound(element interface{}) *SetIterator {
+func (s *Set) UpperBound(element any) *SetIterator {
 	s.locker.RLock()
 	defer s.locker.RUnlock()
 
@@ -147,7 +147,7 @@ func (s *Set) Clear() {
 }
 
 // Contains returns true if the passed element is in the Set. otherwise returns false.
-func (s *Set) Contains(element interface{}) bool {
+func (s *Set) Contains(element any) bool {
 	s.locker.RLock()
 	defer s.locker.RUnlock()
 
@@ -180,7 +180,7 @@ func (s *Set) Traversal(visitor visitor.Visitor) {
 // String returns a string representation of the set
 func (s *Set) String() string {
 	str := "["
-	s.Traversal(func(value interface{}) bool {
+	s.Traversal(func(value any) bool {
 		if str != "[" {
 			str += " "
 		}

@@ -290,7 +290,7 @@ func (h *Hamt[T]) Keys() []Key {
 	defer h.locker.RUnlock()
 
 	keys := make([]Key, 0)
-	h.root.traversal(func(key, value interface{}) bool {
+	h.root.traversal(func(key, value any) bool {
 		keys = append(keys, key.(Key))
 		return true
 	})
@@ -303,7 +303,7 @@ func (h *Hamt[T]) StringKeys() []string {
 	defer h.locker.RUnlock()
 
 	keys := make([]string, 0)
-	h.root.traversal(func(key, value interface{}) bool {
+	h.root.traversal(func(key, value any) bool {
 		keys = append(keys, string(key.(Key)))
 		return true
 	})

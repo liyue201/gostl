@@ -6,7 +6,7 @@ import (
 )
 
 // Count returns the number of elements that their value is equal to value in range [first, last)
-func Count(first, last iterator.ConstIterator, value interface{}, cmps ...comparator.Comparator) int {
+func Count[T any](first, last iterator.ConstIterator[T], value any, cmps ...comparator.Comparator) int {
 	var count int
 	cmp := comparator.BuiltinTypeComparator
 	if len(cmps) > 0 {
@@ -21,7 +21,7 @@ func Count(first, last iterator.ConstIterator, value interface{}, cmps ...compar
 }
 
 // CountIf returns the number of elements are satisfied the function f in range [first, last)
-func CountIf(first, last iterator.ConstIterator, f func(iterator.ConstIterator) bool) int {
+func CountIf[T any](first, last iterator.ConstIterator[T], f func(iterator.ConstIterator[T]) bool) int {
 	var count int
 	for iter := first.Clone(); !iter.Equal(last); iter.Next() {
 		if f(iter) {
@@ -32,7 +32,7 @@ func CountIf(first, last iterator.ConstIterator, f func(iterator.ConstIterator) 
 }
 
 // Find finds the first element that its value is equal to value in range [first, last), and returns its iterator, or last if not found
-func Find(first, last iterator.ConstIterator, value interface{}, cmps ...comparator.Comparator) iterator.ConstIterator {
+func Find[T any](first, last iterator.ConstIterator[T], value any, cmps ...comparator.Comparator) iterator.ConstIterator[T] {
 	cmp := comparator.BuiltinTypeComparator
 	if len(cmps) > 0 {
 		cmp = cmps[0]
@@ -46,7 +46,7 @@ func Find(first, last iterator.ConstIterator, value interface{}, cmps ...compara
 }
 
 // FindIf finds the first element that is satisfied the function f, and returns its iterator, or last if not found
-func FindIf(first, last iterator.ConstIterator, f func(iterator.ConstIterator) bool) iterator.ConstIterator {
+func FindIf[T any](first, last iterator.ConstIterator[T], f func(iterator.ConstIterator[T]) bool) iterator.ConstIterator[T] {
 	for iter := first.Clone(); !iter.Equal(last); iter.Next() {
 		if f(iter) {
 			return iter
@@ -55,9 +55,8 @@ func FindIf(first, last iterator.ConstIterator, f func(iterator.ConstIterator) b
 	return last
 }
 
-
 // MaxElement returns an Iterator to the largest element in the range [first, last). If several elements in the range are equivalent to the largest element, returns the iterator to the first such element. Returns last if the range is empty.
-func MaxElement(first, last iterator.ConstIterator, cmps ...comparator.Comparator) iterator.ConstIterator {
+func MaxElement[T any](first, last iterator.ConstIterator[T], cmps ...comparator.Comparator) iterator.ConstIterator[T] {
 	cmp := comparator.BuiltinTypeComparator
 	if len(cmps) > 0 {
 		cmp = cmps[0]
@@ -65,17 +64,17 @@ func MaxElement(first, last iterator.ConstIterator, cmps ...comparator.Comparato
 	if first.Equal(last) {
 		return last
 	}
-	largest := first;
+	largest := first
 	for iter := first.Clone(); !iter.Equal(last); iter.Next() {
 		if cmp(iter.Value(), largest.Value()) > 0 {
-			largest = iter.Clone();
+			largest = iter.Clone()
 		}
 	}
 	return largest
 }
 
 // MinElement returns an Iterator to the smallest element value in the range [first, last). If several elements in the range are equivalent to the smallest element value, returns the iterator to the first such element. Returns last if the range is empty.
-func MinElement(first, last iterator.ConstIterator, cmps ...comparator.Comparator) iterator.ConstIterator {
+func MinElement[T any](first, last iterator.ConstIterator[T], cmps ...comparator.Comparator) iterator.ConstIterator[T] {
 	cmp := comparator.BuiltinTypeComparator
 	if len(cmps) > 0 {
 		cmp = cmps[0]
@@ -83,10 +82,10 @@ func MinElement(first, last iterator.ConstIterator, cmps ...comparator.Comparato
 	if first.Equal(last) {
 		return last
 	}
-	smallest := first;
+	smallest := first
 	for iter := first.Clone(); !iter.Equal(last); iter.Next() {
 		if cmp(iter.Value(), smallest.Value()) < 0 {
-			smallest = iter.Clone();
+			smallest = iter.Clone()
 		}
 	}
 	return smallest

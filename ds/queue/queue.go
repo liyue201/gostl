@@ -89,7 +89,7 @@ func (q *Queue[T]) Push(value T) {
 }
 
 // Front returns the front value in the queue
-func (q *Queue[T]) Front() interface{} {
+func (q *Queue[T]) Front() any {
 	q.locker.RLock()
 	defer q.locker.RUnlock()
 
@@ -97,7 +97,7 @@ func (q *Queue[T]) Front() interface{} {
 }
 
 // Back returns the back value in the queue
-func (q *Queue[T]) Back() interface{} {
+func (q *Queue[T]) Back() any {
 	q.locker.RLock()
 	defer q.locker.RUnlock()
 
@@ -105,7 +105,7 @@ func (q *Queue[T]) Back() interface{} {
 }
 
 // Pop removes the the front element in the queue, and returns its value
-func (q *Queue[T]) Pop() interface{} {
+func (q *Queue[T]) Pop() any {
 	q.locker.Lock()
 	defer q.locker.Unlock()
 

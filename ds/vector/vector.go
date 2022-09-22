@@ -21,24 +21,24 @@ func WithCapacity(capacity int) Option {
 }
 
 // Vector is a linear data structure, the internal is a slice
-type Vector struct {
-	data []interface{}
+type Vector[T any] struct {
+	data []T
 }
 
 // New creates a new Vector
-func New(opts ...Option) *Vector {
+func New[T any](opts ...Option) *Vector[T] {
 	option := Options{}
 	for _, opt := range opts {
 		opt(&option)
 	}
-	return &Vector{
-		data: make([]interface{}, 0, option.capacity),
+	return &Vector[T]{
+		data: make([]T, 0, option.capacity),
 	}
 }
 
 // NewFromVector news a Vector from other Vector
-func NewFromVector(other *Vector) *Vector {
-	v := &Vector{data: make([]interface{}, other.Size(), other.Capacity())}
+func NewFromVector[T any](other *Vector[T]) *Vector[T] {
+	v := &Vector[T]{data: make([]T, other.Size(), other.Capacity())}
 	for i := range other.data {
 		v.data[i] = other.data[i]
 	}
@@ -46,17 +46,17 @@ func NewFromVector(other *Vector) *Vector {
 }
 
 // Size returns the size of the vector
-func (v *Vector) Size() int {
+func (v *Vector[T]) Size() int {
 	return len(v.data)
 }
 
 // Capacity returns the capacity of the vector
-func (v *Vector) Capacity() int {
+func (v *Vector[T]) Capacity() int {
 	return cap(v.data)
 }
 
 // Empty returns true if the vector is empty, otherwise returns false
-func (v *Vector) Empty() bool {
+func (v *Vector[T]) Empty() bool {
 	if len(v.data) == 0 {
 		return true
 	}
@@ -64,12 +64,12 @@ func (v *Vector) Empty() bool {
 }
 
 // PushBack pushes val to the back of the vector
-func (v *Vector) PushBack(val interface{}) {
+func (v *Vector[T]) PushBack(val T) {
 	v.data = append(v.data, val)
 }
 
 // SetAt sets the value val to the vector at position pos
-func (v *Vector) SetAt(pos int, val interface{}) {
+func (v *Vector[T]) SetAt(pos int, val T) {
 	if pos < 0 || pos >= v.Size() {
 		return
 	}
@@ -77,7 +77,7 @@ func (v *Vector) SetAt(pos int, val interface{}) {
 }
 
 // InsertAt inserts the value val to the vector at position pos
-func (v *Vector) InsertAt(pos int, val interface{}) {
+func (v *Vector[T]) InsertAt(pos int, val T) {
 	if pos < 0 || pos > v.Size() {
 		return
 	}
@@ -89,12 +89,12 @@ func (v *Vector) InsertAt(pos int, val interface{}) {
 }
 
 // EraseAt erases the value at position pos
-func (v *Vector) EraseAt(pos int) {
+func (v *Vector[T]) EraseAt(pos int) {
 	v.EraseIndexRange(pos, pos+1)
 }
 
 // EraseIndexRange erases values at range[first, last)
-func (v *Vector) EraseIndexRange(first, last int) {
+func (v *Vector[T]) EraseIndexRange(first, last int) {
 	if first > last {
 		return
 	}
@@ -109,27 +109,27 @@ func (v *Vector) EraseIndexRange(first, last int) {
 }
 
 // At returns the value at position pos, returns nil if pos is out off range .
-func (v *Vector) At(pos int) interface{} {
+func (v *Vector[T]) At(pos int) T {
 	if pos < 0 || pos >= v.Size() {
-		return nil
+		panic("ouf off range")
 	}
 	return v.data[pos]
 }
 
 //Front returns the first value in the vector, returns nil if the vector is empty.
-func (v *Vector) Front() interface{} {
+func (v *Vector[T]) Front() T {
 	return v.At(0)
 }
 
 //Back returns the last value in the vector, returns nil if the vector is empty.
-func (v *Vector) Back() interface{} {
+func (v *Vector[T]) Back() T {
 	return v.At(v.Size() - 1)
 }
 
 //PopBack returns the last value of the vector and erase it, returns nil if the vector is empty.
-func (v *Vector) PopBack() interface{} {
+func (v *Vector[T]) PopBack() T {
 	if v.Empty() {
-		return nil
+		panic("out off range")
 	}
 	val := v.Back()
 	v.data = v.data[:len(v.data)-1]
@@ -137,11 +137,11 @@ func (v *Vector) PopBack() interface{} {
 }
 
 //Reserve makes a new space for the vector with passed capacity
-func (v *Vector) Reserve(capacity int) {
+func (v *Vector[T]) Reserve(capacity int) {
 	if cap(v.data) >= capacity {
 		return
 	}
-	data := make([]interface{}, v.Size(), capacity)
+	data := make([]T, v.Size(), capacity)
 	for i := 0; i < len(v.data); i++ {
 		data[i] = v.data[i]
 	}
@@ -149,12 +149,12 @@ func (v *Vector) Reserve(capacity int) {
 }
 
 // ShrinkToFit shrinks the capacity of the vector to the fit size
-func (v *Vector) ShrinkToFit() {
+func (v *Vector[T]) ShrinkToFit() {
 	if len(v.data) == cap(v.data) {
 		return
 	}
 	len := v.Size()
-	data := make([]interface{}, len, len)
+	data := make([]T, len, len)
 	for i := 0; i < len; i++ {
 		data[i] = v.data[i]
 	}
@@ -162,64 +162,64 @@ func (v *Vector) ShrinkToFit() {
 }
 
 // Clear clears all data in the vector
-func (v *Vector) Clear() {
+func (v *Vector[T]) Clear() {
 	v.data = v.data[:0]
 }
 
 // Data returns internal data of the vector
-func (v *Vector) Data() []interface{} {
+func (v *Vector[T]) Data() []T {
 	return v.data
 }
 
 // Begin returns the first iterator of the vector
-func (v *Vector) Begin() *VectorIterator {
+func (v *Vector[T]) Begin() *VectorIterator[T] {
 	return v.First()
 }
 
 // End returns the end iterator of the vector
-func (v *Vector) End() *VectorIterator {
+func (v *Vector[T]) End() *VectorIterator[T] {
 	return v.IterAt(v.Size())
 }
 
 // First returns the first iterator of the vector
-func (v *Vector) First() *VectorIterator {
+func (v *Vector[T]) First() *VectorIterator[T] {
 	return v.IterAt(0)
 }
 
 // Last returns the last iterator of the vector
-func (v *Vector) Last() *VectorIterator {
+func (v *Vector[T]) Last() *VectorIterator[T] {
 	return v.IterAt(v.Size() - 1)
 }
 
 // IterAt  returns the iterator at position of the vector
-func (v *Vector) IterAt(pos int) *VectorIterator {
-	return &VectorIterator{vec: v, position: pos}
+func (v *Vector[T]) IterAt(pos int) *VectorIterator[T] {
+	return &VectorIterator[T]{vec: v, position: pos}
 }
 
 // Insert inserts a value val to the vector at the position of the iterator iter point to
-func (v *Vector) Insert(iter iterator.ConstIterator, val interface{}) *VectorIterator {
-	index := iter.(*VectorIterator).position
+func (v *Vector[T]) Insert(iter iterator.ConstIterator[T], val T) *VectorIterator[T] {
+	index := iter.(*VectorIterator[T]).position
 	v.InsertAt(index, val)
-	return &VectorIterator{vec: v, position: index}
+	return &VectorIterator[T]{vec: v, position: index}
 }
 
 // Erase erases the element of the iterator iter point to
-func (v *Vector) Erase(iter iterator.ConstIterator) *VectorIterator {
-	index := iter.(*VectorIterator).position
+func (v *Vector[T]) Erase(iter iterator.ConstIterator[T]) *VectorIterator[T] {
+	index := iter.(*VectorIterator[T]).position
 	v.EraseAt(index)
-	return &VectorIterator{vec: v, position: index}
+	return &VectorIterator[T]{vec: v, position: index}
 }
 
 // EraseRange erases all elements in the range[first, last)
-func (v *Vector) EraseRange(first, last iterator.ConstIterator) *VectorIterator {
-	from := first.(*VectorIterator).position
-	to := last.(*VectorIterator).position
+func (v *Vector[T]) EraseRange(first, last iterator.ConstIterator[T]) *VectorIterator[T] {
+	from := first.(*VectorIterator[T]).position
+	to := last.(*VectorIterator[T]).position
 	v.EraseIndexRange(from, to)
-	return &VectorIterator{vec: v, position: from}
+	return &VectorIterator[T]{vec: v, position: from}
 }
 
 // Resize resizes the size of the vector to the passed size
-func (v *Vector) Resize(size int) {
+func (v *Vector[T]) Resize(size int) {
 	if size >= v.Size() {
 		return
 	}
@@ -227,6 +227,6 @@ func (v *Vector) Resize(size int) {
 }
 
 // String returns a string representation of the vector
-func (v *Vector) String() string {
+func (v *Vector[T]) String() string {
 	return fmt.Sprintf("%v", v.data)
 }

@@ -70,7 +70,7 @@ func TestMultiMap_Traversal(t *testing.T) {
 
 	i := 1
 	count := 0
-	m.Traversal(func(key, value interface{}) bool {
+	m.Traversal(func(key, value any) bool {
 		assert.Equal(t, i, key)
 		assert.Equal(t, i+1000, value)
 		count++

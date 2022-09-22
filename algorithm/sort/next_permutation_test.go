@@ -11,10 +11,10 @@ func TestNextPermutation(t *testing.T) {
 	for i := 0; i < 3; i++ {
 		a = append(a, i+1)
 	}
-	sliceA := slice.IntSlice(a)
+	sliceA := slice.NewSliceWrapper(a)
 	t.Logf("a : %v", a)
 	for {
-		ok := NextPermutation(sliceA.Begin(), sliceA.End())
+		ok := NextPermutation[int](sliceA.Begin(), sliceA.End())
 		if !ok {
 			break
 		}
@@ -27,10 +27,10 @@ func TestPrePermutation(t *testing.T) {
 	for i := 0; i < 3; i++ {
 		a = append(a, 3-i)
 	}
-	sliceA := slice.IntSlice(a)
+	sliceA := slice.NewSliceWrapper(a)
 	t.Logf("a : %v", a)
 	for {
-		ok := NextPermutation(sliceA.Begin(), sliceA.End(), comparator.Reverse(comparator.BuiltinTypeComparator))
+		ok := NextPermutation[int](sliceA.Begin(), sliceA.End(), comparator.Reverse(comparator.BuiltinTypeComparator))
 		if !ok {
 			break
 		}

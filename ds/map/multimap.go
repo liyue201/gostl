@@ -30,7 +30,7 @@ func NewMultiMap(opts ...Option) *MultiMap {
 }
 
 //Insert inserts a key-value to the MultiMap
-func (mm *MultiMap) Insert(key, value interface{}) {
+func (mm *MultiMap) Insert(key, value any) {
 	mm.locker.Lock()
 	defer mm.locker.Unlock()
 
@@ -38,7 +38,7 @@ func (mm *MultiMap) Insert(key, value interface{}) {
 }
 
 //Get returns the first node's value by the passed key if the key is in the MultiMap, otherwise returns nil
-func (mm *MultiMap) Get(key interface{}) interface{} {
+func (mm *MultiMap) Get(key any) any {
 	mm.locker.RLock()
 	defer mm.locker.RUnlock()
 
@@ -50,7 +50,7 @@ func (mm *MultiMap) Get(key interface{}) interface{} {
 }
 
 //Erase erases the key in the MultiMap
-func (mm *MultiMap) Erase(key interface{}) {
+func (mm *MultiMap) Erase(key any) {
 	mm.locker.Lock()
 	defer mm.locker.Unlock()
 
@@ -64,7 +64,7 @@ func (mm *MultiMap) Erase(key interface{}) {
 }
 
 //Find finds the node by the passed key in the MultiMap and returns its iterator
-func (mm *MultiMap) Find(key interface{}) *MapIterator {
+func (mm *MultiMap) Find(key any) *MapIterator {
 	mm.locker.RLock()
 	defer mm.locker.RUnlock()
 
@@ -73,7 +73,7 @@ func (mm *MultiMap) Find(key interface{}) *MapIterator {
 }
 
 //LowerBound find the first node that its key is equal or greater than the passed key in the MultiMap, and returns its iterator
-func (mm *MultiMap) LowerBound(key interface{}) *MapIterator {
+func (mm *MultiMap) LowerBound(key any) *MapIterator {
 	mm.locker.RLock()
 	defer mm.locker.RUnlock()
 
@@ -82,7 +82,7 @@ func (mm *MultiMap) LowerBound(key interface{}) *MapIterator {
 }
 
 //UpperBound find the first node that its key is greater than the passed key in the MultiMap, and returns its iterator
-func (mm *MultiMap) UpperBound(key interface{}) *MapIterator {
+func (mm *MultiMap) UpperBound(key any) *MapIterator {
 	mm.locker.RLock()
 	defer mm.locker.RUnlock()
 
@@ -123,7 +123,7 @@ func (mm *MultiMap) Clear() {
 }
 
 // Contains returns true if the passed value is in the MultiMap. otherwise returns false.
-func (mm *MultiMap) Contains(value interface{}) bool {
+func (mm *MultiMap) Contains(value any) bool {
 	mm.locker.RLock()
 	defer mm.locker.RUnlock()
 
