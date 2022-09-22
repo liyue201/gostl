@@ -6,7 +6,7 @@ import (
 )
 
 func TestMultiSet(t *testing.T) {
-	mset := NewMultiSet(WithGoroutineSafe())
+	mset := NewMultiSet[int](WithGoroutineSafe())
 
 	mset.Insert(1)
 	mset.Insert(5)
