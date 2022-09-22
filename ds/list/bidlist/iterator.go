@@ -1,27 +1,29 @@
 package bidlist
 
-import "github.com/liyue201/gostl/utils/iterator"
+import (
+	"github.com/liyue201/gostl/utils/iterator"
+)
 
 //ListIterator is an implementation of BidIterator
-var _ iterator.BidIterator = (*ListIterator)(nil)
+var _ iterator.BidIterator[T] = (*ListIterator[T])(nil)
 
 // ListIterator is an implementation of list iterator
-type ListIterator struct {
-	node *Node
+type ListIterator[T any] struct {
+	node *Node[T]
 }
 
 // NewIterator creates a ListIterator
-func NewIterator(node *Node) *ListIterator {
-	return &ListIterator{node: node}
+func NewIterator[T any](node *Node[T]) *ListIterator[T] {
+	return &ListIterator[T]{node: node}
 }
 
 // IsValid returns true if the iterator is valid, otherwise returns false
-func (iter *ListIterator) IsValid() bool {
+func (iter *ListIterator[T]) IsValid() bool {
 	return iter.node != nil
 }
 
 // Next moves the pointer of iterator to the next node and returns itself
-func (iter *ListIterator) Next() iterator.ConstIterator {
+func (iter *ListIterator[T]) Next() iterator.ConstIterator[T] {
 	if iter.node != nil {
 		iter.node = iter.node.Next()
 	}
@@ -29,7 +31,7 @@ func (iter *ListIterator) Next() iterator.ConstIterator {
 }
 
 // Prev moves the pointer of iterator to the previous node and returns itself
-func (iter *ListIterator) Prev() iterator.ConstBidIterator {
+func (iter *ListIterator[T]) Prev() iterator.ConstBidIterator[T] {
 	if iter.node != nil {
 		iter.node = iter.node.Prev()
 	}
@@ -37,28 +39,28 @@ func (iter *ListIterator) Prev() iterator.ConstBidIterator {
 }
 
 // Value returns the node's value of the iterator point to
-func (iter *ListIterator) Value() interface{} {
+func (iter *ListIterator[T]) Value() T {
 	if iter.node == nil {
-		return nil
+		panic("invalid iterator")
 	}
 	return iter.node.Value
 }
 
 // SetValue sets the node's value of the iterator point to
-func (iter *ListIterator) SetValue(value interface{}) {
+func (iter *ListIterator[T]) SetValue(value T) {
 	if iter.node != nil {
 		iter.node.Value = value
 	}
 }
 
 // Clone clones the iterator to a new iterator
-func (iter *ListIterator) Clone() iterator.ConstIterator {
-	return NewIterator(iter.node)
+func (iter *ListIterator[T]) Clone() iterator.ConstIterator[T] {
+	return NewIterator[T](iter.node)
 }
 
 // Equal returns true if the iterator is equal to the passed iterator, otherwise returns false
-func (iter *ListIterator) Equal(other iterator.ConstIterator) bool {
-	otherIter, ok := other.(*ListIterator)
+func (iter *ListIterator[T]) Equal(other iterator.ConstIterator[T]) bool {
+	otherIter, ok := other.(*ListIterator[T])
 	if !ok {
 		return false
 	}

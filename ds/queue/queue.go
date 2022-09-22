@@ -9,64 +9,63 @@ import (
 )
 
 var (
-	defaultLocker    sync.FakeLocker
-	defaultContainer = deque.New()
+	defaultLocker sync.FakeLocker
 )
 
 // Options holds Queue's options
-type Options struct {
+type Options[T any] struct {
 	locker    sync.Locker
-	container container.Container
+	container container.Container[T]
 }
 
 // Option is a function type used to set Options
-type Option func(option *Options)
+type Option[T any] func(option *Options[T])
 
 // WithGoroutineSafe is used to set a Queue goroutine-safe
-func WithGoroutineSafe() Option {
-	return func(option *Options) {
+func WithGoroutineSafe[T any]() Option[T] {
+	return func(option *Options[T]) {
 		option.locker = &gosync.RWMutex{}
 	}
 }
 
 // WithContainer is used to set a Queue's underlying container
-func WithContainer(c container.Container) Option {
-	return func(option *Options) {
+func WithContainer[T any](c container.Container[T]) Option[T] {
+	return func(option *Options[T]) {
 		option.container = c
 	}
 }
 
 // WithListContainer is used to set List as a Queue's underlying container
-func WithListContainer() Option {
-	return func(option *Options) {
-		option.container = bidlist.New()
+func WithListContainer[T any]() Option[T] {
+	return func(option *Options[T]) {
+		option.container = bidlist.New[T]()
 	}
 }
 
 // Queue is a first-in-first-out data structure
-type Queue struct {
-	container container.Container
+type Queue[T any] struct {
+	container container.Container[T]
 	locker    sync.Locker
 }
 
 //New creates a new queue
-func New(opts ...Option) *Queue {
-	option := Options{
+func New[T any](opts ...Option[T]) *Queue[T] {
+	option := Options[T]{
 		locker:    defaultLocker,
-		container: defaultContainer,
+		container: deque.New[T](),
 	}
 	for _, opt := range opts {
 		opt(&option)
 	}
 
-	return &Queue{
+	return &Queue[T]{
 		container: option.container,
 		locker:    option.locker,
 	}
 }
 
 // Size returns the amount of elements in the queue
-func (q *Queue) Size() int {
+func (q *Queue[T]) Size() int {
 	q.locker.RLock()
 	defer q.locker.RUnlock()
 
@@ -74,7 +73,7 @@ func (q *Queue) Size() int {
 }
 
 // Empty returns true if the queue is empty, otherwise returns false
-func (q *Queue) Empty() bool {
+func (q *Queue[T]) Empty() bool {
 	q.locker.RLock()
 	defer q.locker.RUnlock()
 
@@ -82,7 +81,7 @@ func (q *Queue) Empty() bool {
 }
 
 // Push pushes a value to the end of the queue
-func (q *Queue) Push(value interface{}) {
+func (q *Queue[T]) Push(value T) {
 	q.locker.Lock()
 	defer q.locker.Unlock()
 
@@ -90,7 +89,7 @@ func (q *Queue) Push(value interface{}) {
 }
 
 // Front returns the front value in the queue
-func (q *Queue) Front() interface{} {
+func (q *Queue[T]) Front() interface{} {
 	q.locker.RLock()
 	defer q.locker.RUnlock()
 
@@ -98,7 +97,7 @@ func (q *Queue) Front() interface{} {
 }
 
 // Back returns the back value in the queue
-func (q *Queue) Back() interface{} {
+func (q *Queue[T]) Back() interface{} {
 	q.locker.RLock()
 	defer q.locker.RUnlock()
 
@@ -106,7 +105,7 @@ func (q *Queue) Back() interface{} {
 }
 
 // Pop removes the the front element in the queue, and returns its value
-func (q *Queue) Pop() interface{} {
+func (q *Queue[T]) Pop() interface{} {
 	q.locker.Lock()
 	defer q.locker.Unlock()
 
@@ -114,7 +113,7 @@ func (q *Queue) Pop() interface{} {
 }
 
 // Clear clears all elements in the queue
-func (q *Queue) Clear() {
+func (q *Queue[T]) Clear() {
 	q.locker.Lock()
 	defer q.locker.Unlock()
 
@@ -122,7 +121,7 @@ func (q *Queue) Clear() {
 }
 
 // String returns a string representation of the queue
-func (q *Queue) String() string {
+func (q *Queue[T]) String() string {
 	q.locker.RLock()
 	defer q.locker.RUnlock()
 

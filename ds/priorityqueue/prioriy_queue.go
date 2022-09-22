@@ -14,28 +14,28 @@ var (
 
 // ElementHolder holds elements of the PriorityQueue
 type ElementHolder struct {
-	elements []interface{}
+	elements []any
 	cmpFun   comparator.Comparator
 }
 
 // Push pushes an element to the ElementHolder
-func (h *ElementHolder) Push(element interface{}) {
+func (h *ElementHolder) Push(element any) {
 	h.elements = append(h.elements, element)
 }
 
 // Pop pops an element from the ElementHolder
-func (h *ElementHolder) Pop() interface{} {
+func (h *ElementHolder) Pop() any {
 	if len(h.elements) == 0 {
-		return nil
+		panic("queue is empty")
 	}
 	item := h.elements[h.Len()-1]
 	h.elements = h.elements[:h.Len()-1]
 	return item
 }
 
-func (h *ElementHolder) top() interface{} {
+func (h *ElementHolder) top() any {
 	if len(h.elements) == 0 {
-		return nil
+		panic("queue is empty")
 	}
 	return h.elements[0]
 }
@@ -97,7 +97,7 @@ func New(opts ...Option) *PriorityQueue {
 		opt(&option)
 	}
 	holder := &ElementHolder{
-		elements: make([]interface{}, 0, 0),
+		elements: make([]any, 0, 0),
 		cmpFun:   option.cmp,
 	}
 	return &PriorityQueue{
@@ -107,7 +107,7 @@ func New(opts ...Option) *PriorityQueue {
 }
 
 // Push pushes an element to the PriorityQueue
-func (q *PriorityQueue) Push(e interface{}) {
+func (q *PriorityQueue) Push(e any) {
 	q.locker.Lock()
 	defer q.locker.Unlock()
 
@@ -115,7 +115,7 @@ func (q *PriorityQueue) Push(e interface{}) {
 }
 
 // Pop pops an element from the PriorityQueue
-func (q *PriorityQueue) Pop() interface{} {
+func (q *PriorityQueue) Pop() any {
 	q.locker.Lock()
 	defer q.locker.Unlock()
 
@@ -123,7 +123,7 @@ func (q *PriorityQueue) Pop() interface{} {
 }
 
 // Top returns the top element in the PriorityQueue
-func (q *PriorityQueue) Top() interface{} {
+func (q *PriorityQueue) Top() any {
 	q.locker.RLock()
 	defer q.locker.RUnlock()
 

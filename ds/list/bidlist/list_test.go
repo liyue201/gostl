@@ -7,7 +7,7 @@ import (
 )
 
 func TestList(t *testing.T) {
-	list := New()
+	list := New[int]()
 	assert.True(t, list.Empty())
 	list.PushBack(1)
 
@@ -98,7 +98,7 @@ func TestList(t *testing.T) {
 }
 
 func TestPushBackList(t *testing.T) {
-	list := New()
+	list := New[int]()
 	list.PushBack(7)
 	list.PushBack(8)
 	list.PushBack(5)
@@ -106,7 +106,7 @@ func TestPushBackList(t *testing.T) {
 	t.Logf("list: %v", list)
 	assert.Equal(t, "[7 8 5 7 8 5]", list.String())
 
-	list2 := New()
+	list2 := New[int]()
 	list2.PushBack(1)
 	list2.PushBack(2)
 	list2.PushBack(3)
@@ -120,7 +120,7 @@ func TestPushBackList(t *testing.T) {
 }
 
 func TestListIterator(t *testing.T) {
-	list := New()
+	list := New[int]()
 	for i := 1; i <= 5; i++ {
 		list.PushBack(i)
 	}
