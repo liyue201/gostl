@@ -42,7 +42,7 @@ func WithGoroutineSafe() Option {
 }
 
 // Entry is a tree node interface
-type Entry[T any] interface {
+type Entry interface {
 	// Type returns the node type
 	Type() int
 
@@ -53,7 +53,7 @@ type Entry[T any] interface {
 // BitmapNode defines Hamt's bitmap node
 type BitmapNode[T any] struct {
 	bitmap   uint64
-	children []Entry[T]
+	children []Entry
 	pos      uint8 //position in parent array, in range [0, 64)
 }
 
@@ -96,7 +96,7 @@ func (h *BitmapNode[T]) insert(depth int, hash uint64, kv *KvPair[T]) {
 	bitPos := bitPos(pos)   //hash in current bitmap's position in bit
 	if bitPos&h.bitmap == 0 {
 		h.bitmap |= bitPos
-		newChildren := make([]Entry[T], len(h.children)+1)
+		newChildren := make([]Entry, len(h.children)+1)
 		kvNode := &KvNode[T]{
 			hash:   hash,
 			kvList: kv,
@@ -161,7 +161,7 @@ func (h *BitmapNode[T]) find(depth int, hash uint64, key Key) (T, error) {
 	return *new(T), ErrorNotFound
 }
 
-func (h *BitmapNode[T]) traversal(visitor visitor.KvVisitor) {
+func (h *BitmapNode[T]) traversal(visitor visitor.KvVisitor[Key, T]) {
 	for _, entry := range h.children {
 		if entry.Type() == BITMAP_NODE {
 			entry.(*BitmapNode[T]).traversal(visitor)
@@ -209,7 +209,7 @@ func (h *BitmapNode[T]) erase(depth int, hash uint64, key Key) bool {
 			if kvNode.kvList == nil {
 				h.children[index] = nil
 				h.bitmap &= ^bitPos
-				newChildren := make([]Entry[T], len(h.children)-1)
+				newChildren := make([]Entry, len(h.children)-1)
 				for _, entry := range h.children {
 					if entry != nil {
 						newIndex := h.Index(entry.BitPosNum(depth))
@@ -290,8 +290,8 @@ func (h *Hamt[T]) Keys() []Key {
 	defer h.locker.RUnlock()
 
 	keys := make([]Key, 0)
-	h.root.traversal(func(key, value any) bool {
-		keys = append(keys, key.(Key))
+	h.root.traversal(func(key Key, _ T) bool {
+		keys = append(keys, key)
 		return true
 	})
 	return keys
@@ -303,15 +303,15 @@ func (h *Hamt[T]) StringKeys() []string {
 	defer h.locker.RUnlock()
 
 	keys := make([]string, 0)
-	h.root.traversal(func(key, value any) bool {
-		keys = append(keys, string(key.(Key)))
+	h.root.traversal(func(key Key, value T) bool {
+		keys = append(keys, string(key))
 		return true
 	})
 	return keys
 }
 
 // Traversal traversals elements in Hamt, it will not stop until to the end or the visitor returns false
-func (h *Hamt[T]) Traversal(visitor visitor.KvVisitor) {
+func (h *Hamt[T]) Traversal(visitor visitor.KvVisitor[Key, T]) {
 	h.locker.RLock()
 	defer h.locker.RUnlock()
 

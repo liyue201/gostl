@@ -8,22 +8,22 @@ import (
 )
 
 func main() {
-	a := slice.IntSlice(make([]int, 0))
-
+	a := make([]int, 0)
 	for i := 1; i <= 3; i++ {
 		a = append(a, i)
 	}
+	wa := slice.NewSliceWrapper(a)
 	fmt.Println("NextPermutation")
 	for {
 		fmt.Printf("%v\n", a)
-		if !sort.NextPermutation(a.Begin(), a.End()) {
+		if !sort.NextPermutation[int](wa.Begin(), wa.End()) {
 			break
 		}
 	}
 	fmt.Println("PrePermutation")
 	for {
 		fmt.Printf("%v\n", a)
-		if !sort.NextPermutation(a.Begin(), a.End(), comparator.Reverse(comparator.BuiltinTypeComparator)) {
+		if !sort.NextPermutation[int](wa.Begin(), wa.End(), comparator.Reverse(comparator.BuiltinTypeComparator)) {
 			break
 		}
 	}

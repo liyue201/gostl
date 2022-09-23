@@ -6,13 +6,15 @@ import (
 )
 
 func main() {
-	list := skiplist.New(skiplist.WithMaxLevel(15))
+	list := skiplist.New[string, string](skiplist.WithMaxLevel(15))
 	list.Insert("aaa", "1111")
 	list.Insert("bbb", "2222")
-	fmt.Printf("aaa = %v\n", list.Get("aaa"))
-	fmt.Printf("aaa = %v\n\n", list.Get("bbb"))
+	v1, _ := list.Get("aaa")
+	v2, _ := list.Get("bbb")
+	fmt.Printf("aaa = %v\n", v1)
+	fmt.Printf("aaa = %v\n\n", v2)
 
-	list.Traversal(func(key, value any) bool {
+	list.Traversal(func(key, value string) bool {
 		fmt.Printf("key:%v value:%v\n", key, value)
 		return true
 	})

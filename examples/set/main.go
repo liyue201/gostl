@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	s := set.New(set.WithGoroutineSafe())
+	s := set.New[int](set.WithGoroutineSafe())
 	s.Insert(1)
 	s.Insert(5)
 	s.Insert(3)

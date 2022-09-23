@@ -9,7 +9,7 @@ import (
 
 func example1() {
 	fmt.Printf("example1:\n")
-	q := queue.New()
+	q := queue.New[int]()
 	for i := 0; i < 5; i++ {
 		q.Push(i)
 	}
@@ -21,7 +21,7 @@ func example1() {
 // using list as container
 func example2() {
 	fmt.Printf("example2:\n")
-	q := queue.New(queue.WithListContainer())
+	q := queue.New[int](queue.WithListContainer[int]())
 	for i := 0; i < 5; i++ {
 		q.Push(i)
 	}
@@ -34,7 +34,7 @@ func example2() {
 func example3() {
 	fmt.Printf("example3:\n")
 
-	s := queue.New(queue.WithGoroutineSafe())
+	s := queue.New(queue.WithGoroutineSafe[int]())
 	sw := sync.WaitGroup{}
 	sw.Add(2)
 	go func() {

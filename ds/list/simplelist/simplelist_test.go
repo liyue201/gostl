@@ -31,8 +31,8 @@ func TestList(t *testing.T) {
 	assert.Equal(t, "[1 3 4 2]", list.String())
 
 	ret := make([]int, 0)
-	list.Traversal(func(value any) bool {
-		ret = append(ret, value.(int))
+	list.Traversal(func(value int) bool {
+		ret = append(ret, value)
 		return true
 	})
 	assert.Equal(t, "[1 3 4 2]", fmt.Sprintf("%v", ret))

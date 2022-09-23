@@ -7,7 +7,7 @@ import (
 )
 
 func simpleList() {
-	l := simplelist.New()
+	l := simplelist.New[int]()
 	l.PushBack(1)
 	l.PushFront(2)
 	l.PushFront(3)
@@ -19,7 +19,7 @@ func simpleList() {
 }
 
 func bidList() {
-	l := bidlist.New()
+	l := bidlist.New[int]()
 	l.PushBack(1)
 	l.PushFront(2)
 	l.PushFront(3)

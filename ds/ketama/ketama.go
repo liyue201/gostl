@@ -41,7 +41,7 @@ func WithReplicas(replicas int) Option {
 type Ketama struct {
 	locker   sync.Locker
 	replicas int
-	m        *treemap.Map
+	m        *treemap.Map[uint64, string]
 }
 
 // New creates a new ketama
@@ -56,7 +56,7 @@ func New(opts ...Option) *Ketama {
 	k := &Ketama{
 		replicas: option.replicas,
 		locker:   option.locker,
-		m:        treemap.New(),
+		m:        treemap.New[uint64, string](),
 	}
 	return k
 }
@@ -116,7 +116,7 @@ func (k *Ketama) Get(key string) (string, bool) {
 
 	iter := k.m.LowerBound(hash)
 	if iter.IsValid() {
-		return iter.Value().(string), true
+		return iter.Value(), true
 	}
-	return k.m.First().Value().(string), true
+	return k.m.First().Value(), true
 }

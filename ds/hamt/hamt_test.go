@@ -62,9 +62,9 @@ func TestTraversal(t *testing.T) {
 	assert.Equal(t, "222", strKeys[1])
 	assert.Equal(t, "333", strKeys[2])
 
-	h.Traversal(func(key, value any) bool {
-		val := m[string(key.(Key))]
-		assert.Equal(t, val, value.(string))
+	h.Traversal(func(key Key, value string) bool {
+		val := m[string(key)]
+		assert.Equal(t, val, value)
 		return true
 	})
 }

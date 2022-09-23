@@ -80,8 +80,8 @@ func TestList(t *testing.T) {
 	assert.Equal(t, "[5 2 1 7 8]", list.String())
 
 	ret := make([]int, 0)
-	list.Traversal(func(value any) bool {
-		ret = append(ret, value.(int))
+	list.Traversal(func(value int) bool {
+		ret = append(ret, value)
 		if value == 1 {
 			return false
 		}
@@ -90,8 +90,8 @@ func TestList(t *testing.T) {
 	assert.Equal(t, "[5 2 1]", fmt.Sprintf("%v", ret))
 
 	ret = make([]int, 0)
-	list.Traversal(func(value any) bool {
-		ret = append(ret, value.(int))
+	list.Traversal(func(value int) bool {
+		ret = append(ret, value)
 		return true
 	})
 	assert.Equal(t, "[5 2 1 7 8]", fmt.Sprintf("%v", ret))

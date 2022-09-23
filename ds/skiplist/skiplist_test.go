@@ -17,7 +17,7 @@ func TestInsert(t *testing.T) {
 		m[key] = i
 	}
 	for key, v := range m {
-		ret := list.Get(key)
+		ret, _ := list.Get(key)
 		assert.Equal(t, v, ret)
 	}
 	assert.Equal(t, len(m), list.Len())
@@ -44,7 +44,7 @@ func TestRemove(t *testing.T) {
 	}
 
 	for key, v := range m {
-		ret := list.Get(key)
+		ret, _ := list.Get(key)
 		assert.Equal(t, v, ret)
 	}
 	assert.Equal(t, len(m), list.Len())

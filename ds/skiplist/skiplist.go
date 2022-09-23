@@ -1,6 +1,7 @@
 package skiplist
 
 import (
+	"errors"
 	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/utils/sync"
 	"github.com/liyue201/gostl/utils/visitor"
@@ -14,6 +15,7 @@ var (
 	defaultMaxLevel      = 10
 	defaultLocker        sync.FakeLocker
 )
+var ErrorNotFound = errors.New("not found")
 
 // Options holds Skiplist's options
 type Options struct {
@@ -120,8 +122,8 @@ func (sl *Skiplist[K, V]) Insert(key K, value V) {
 	sl.len++
 }
 
-// Get returns the value associated with the passed key if the key is in the skiplist, otherwise returns nil
-func (sl *Skiplist[K, V]) Get(key any) any {
+// Get returns the value associated with the passed key if the key is in the skiplist, otherwise returns error
+func (sl *Skiplist[K, V]) Get(key K) (V, error) {
 	sl.locker.RLock()
 	defer sl.locker.RUnlock()
 
@@ -131,7 +133,7 @@ func (sl *Skiplist[K, V]) Get(key any) any {
 		for ; cur != nil; cur = cur.next[i] {
 			cmpRet := sl.keyCmp(cur.key, key)
 			if cmpRet == 0 {
-				return cur.value
+				return cur.value, nil
 			}
 			if cmpRet > 0 {
 				break
@@ -139,7 +141,7 @@ func (sl *Skiplist[K, V]) Get(key any) any {
 			pre = &cur.Node
 		}
 	}
-	return nil
+	return *new(V), ErrorNotFound
 }
 
 // Remove removes the key-value pair associated with the passed key and returns true if the key is in the skiplist, otherwise returns false
