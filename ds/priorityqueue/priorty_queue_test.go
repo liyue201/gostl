@@ -6,7 +6,7 @@ import (
 )
 
 func TestMinPriorityQueue(t *testing.T) {
-	pq := New()
+	pq := New[int]()
 	pq.Push(4)
 	pq.Push(8)
 	pq.Push(1)
@@ -18,7 +18,7 @@ func TestMinPriorityQueue(t *testing.T) {
 }
 
 func TestMaxPriorityQueue(t *testing.T) {
-	pq := New(WithComparator(Reverse(BuiltinTypeComparator)), WithGoroutineSafe())
+	pq := New[int](WithComparator(Reverse(BuiltinTypeComparator)), WithGoroutineSafe())
 	pq.Push(4)
 	pq.Push(8)
 	pq.Push(1)
@@ -30,7 +30,7 @@ func TestMaxPriorityQueue(t *testing.T) {
 }
 
 func TestStringPriorityQueue(t *testing.T) {
-	pq := New(WithComparator(Reverse(BuiltinTypeComparator)))
+	pq := New[string](WithComparator(Reverse(BuiltinTypeComparator)))
 	pq.Push("fdsf")
 	pq.Push("aavdsav")
 	pq.Push("hrh42y5")
