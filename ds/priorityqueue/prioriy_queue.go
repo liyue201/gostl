@@ -8,14 +8,13 @@ import (
 )
 
 var (
-	defaultComparator = comparator.BuiltinTypeComparator
-	defaultLocker     sync.FakeLocker
+	defaultLocker sync.FakeLocker
 )
 
 // ElementHolder holds elements of the PriorityQueue
 type ElementHolder[T any] struct {
 	elements []T
-	cmpFun   comparator.Comparator
+	cmpFun   comparator.Comparator[T]
 }
 
 // Push pushes an element to the ElementHolder
@@ -60,19 +59,11 @@ func (h *ElementHolder[T]) Swap(i, j int) {
 
 // Options holds PriorityQueue's options
 type Options struct {
-	cmp    comparator.Comparator
 	locker sync.Locker
 }
 
 // Option is a function type used to set Options
 type Option func(option *Options)
-
-// WithComparator is used to set the PriorityQueue's comparator
-func WithComparator(cmp comparator.Comparator) Option {
-	return func(option *Options) {
-		option.cmp = cmp
-	}
-}
 
 // WithGoroutineSafe is used to set the PriorityQueue goroutine-safe
 func WithGoroutineSafe() Option {
@@ -88,9 +79,8 @@ type PriorityQueue[T any] struct {
 }
 
 // New creates a PriorityQueue
-func New[T any](opts ...Option) *PriorityQueue[T] {
+func New[T any](cmp comparator.Comparator[T], opts ...Option) *PriorityQueue[T] {
 	option := Options{
-		cmp:    defaultComparator,
 		locker: defaultLocker,
 	}
 	for _, opt := range opts {
@@ -98,7 +88,7 @@ func New[T any](opts ...Option) *PriorityQueue[T] {
 	}
 	holder := &ElementHolder[T]{
 		elements: make([]T, 0, 0),
-		cmpFun:   option.cmp,
+		cmpFun:   cmp,
 	}
 	return &PriorityQueue[T]{
 		holder: holder,

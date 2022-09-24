@@ -3,10 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/liyue201/gostl/ds/skiplist"
+	"github.com/liyue201/gostl/utils/comparator"
 )
 
 func main() {
-	list := skiplist.New[string, string](skiplist.WithMaxLevel(15))
+	list := skiplist.New[string, string](comparator.StringComparator, skiplist.WithMaxLevel(15))
 	list.Insert("aaa", "1111")
 	list.Insert("bbb", "2222")
 	v1, _ := list.Get("aaa")

@@ -1,12 +1,13 @@
 package treemap
 
 import (
+	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestMap(t *testing.T) {
-	m := New[int, int]()
+	m := New[int, int](comparator.IntComparator)
 
 	assert.Equal(t, 0, m.Size())
 	assert.False(t, m.Contains(5))
@@ -30,7 +31,7 @@ func TestMap(t *testing.T) {
 }
 
 func TestMapIterator(t *testing.T) {
-	m := New[int, int](WithGoroutineSafe())
+	m := New[int, int](comparator.IntComparator, WithGoroutineSafe())
 
 	for i := 1; i <= 10; i++ {
 		m.Insert(i, i)
@@ -65,7 +66,7 @@ func TestMapIterator(t *testing.T) {
 }
 
 func TestMapIteratorSetValue(t *testing.T) {
-	m := New[int, string](WithGoroutineSafe())
+	m := New[int, string](comparator.IntComparator, WithGoroutineSafe())
 	m.Insert(1, "aaa")
 	m.Insert(2, "bbb")
 	m.Insert(3, "hhh")
@@ -82,7 +83,7 @@ func TestMapIteratorSetValue(t *testing.T) {
 }
 
 func TestMap_Traversal(t *testing.T) {
-	m := New[int, int]()
+	m := New[int, int](comparator.IntComparator)
 
 	for i := 1; i <= 5; i++ {
 		m.Insert(i, i+1000)

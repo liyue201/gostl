@@ -11,22 +11,19 @@ import (
 // MultiSet uses RbTress for internal data structure, and keys can bee repeated.
 type MultiSet[T any] struct {
 	tree   *rbtree.RbTree[T, bool]
-	keyCmp comparator.Comparator
 	locker sync.Locker
 }
 
 // NewMultiSet creates a new MultiSet
-func NewMultiSet[T any](opts ...Option) *MultiSet[T] {
+func NewMultiSet[T any](cmp comparator.Comparator[T], opts ...Option) *MultiSet[T] {
 	option := Options{
-		keyCmp: defaultKeyComparator,
 		locker: defaultLocker,
 	}
 	for _, opt := range opts {
 		opt(&option)
 	}
 	return &MultiSet[T]{
-		tree:   rbtree.New[T, bool](rbtree.WithKeyComparator(option.keyCmp)),
-		keyCmp: option.keyCmp,
+		tree:   rbtree.New[T, bool](cmp),
 		locker: option.locker,
 	}
 }

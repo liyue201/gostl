@@ -1,12 +1,13 @@
 package set
 
 import (
+	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestMultiSet(t *testing.T) {
-	mset := NewMultiSet[int](WithGoroutineSafe())
+	mset := NewMultiSet[int](comparator.IntComparator, WithGoroutineSafe())
 
 	mset.Insert(1)
 	mset.Insert(5)

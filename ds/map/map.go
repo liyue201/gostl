@@ -11,27 +11,18 @@ import (
 )
 
 var (
-	defaultKeyComparator = comparator.BuiltinTypeComparator
-	defaultLocker        sync.FakeLocker
+	defaultLocker sync.FakeLocker
 )
 
 var ErrorNotFound = errors.New("not found")
 
 // Options holds Map's options
 type Options struct {
-	keyCmp comparator.Comparator
 	locker sync.Locker
 }
 
 // Option is a function type used to set Options
 type Option func(option *Options)
-
-// WithKeyComparator is used to set the key comparator of map
-func WithKeyComparator(cmp comparator.Comparator) Option {
-	return func(option *Options) {
-		option.keyCmp = cmp
-	}
-}
 
 // WithGoroutineSafe is used to set a map goroutine-safe
 // Note that iterators are not goroutine safe, and it is useless to turn on the setting option here.
@@ -49,15 +40,14 @@ type Map[K, V any] struct {
 }
 
 // New creates a new map
-func New[K, V any](opts ...Option) *Map[K, V] {
+func New[K, V any](cmp comparator.Comparator[K], opts ...Option) *Map[K, V] {
 	option := Options{
-		keyCmp: defaultKeyComparator,
 		locker: defaultLocker,
 	}
 	for _, opt := range opts {
 		opt(&option)
 	}
-	return &Map[K, V]{tree: rbtree.New[K, V](rbtree.WithKeyComparator(option.keyCmp)),
+	return &Map[K, V]{tree: rbtree.New[K, V](cmp),
 		locker: option.locker,
 	}
 }

@@ -14,7 +14,7 @@ func TestNextPermutation(t *testing.T) {
 	sliceA := slice.NewSliceWrapper(a)
 	t.Logf("a : %v", a)
 	for {
-		ok := NextPermutation[int](sliceA.Begin(), sliceA.End())
+		ok := NextPermutation[int](sliceA.Begin(), sliceA.End(), comparator.IntComparator)
 		if !ok {
 			break
 		}
@@ -30,7 +30,7 @@ func TestPrePermutation(t *testing.T) {
 	sliceA := slice.NewSliceWrapper(a)
 	t.Logf("a : %v", a)
 	for {
-		ok := NextPermutation[int](sliceA.Begin(), sliceA.End(), comparator.Reverse(comparator.BuiltinTypeComparator))
+		ok := NextPermutation[int](sliceA.Begin(), sliceA.End(), comparator.Reverse(comparator.IntComparator))
 		if !ok {
 			break
 		}

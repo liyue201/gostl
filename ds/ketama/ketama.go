@@ -3,6 +3,7 @@ package ketama
 import (
 	"github.com/liyue201/gostl/algorithm/hash"
 	"github.com/liyue201/gostl/ds/map"
+	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/utils/sync"
 	gosync "sync"
 )
@@ -56,7 +57,7 @@ func New(opts ...Option) *Ketama {
 	k := &Ketama{
 		replicas: option.replicas,
 		locker:   option.locker,
-		m:        treemap.New[uint64, string](),
+		m:        treemap.New[uint64, string](comparator.Uint64Comparator),
 	}
 	return k
 }

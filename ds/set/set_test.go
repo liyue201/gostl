@@ -7,7 +7,7 @@ import (
 )
 
 func TestSet(t *testing.T) {
-	s := New[int]()
+	s := New[int](comparator.IntComparator)
 	for i := 10; i >= 1; i-- {
 		assert.False(t, s.Contains(i))
 		s.Insert(i)
@@ -41,8 +41,8 @@ func TestSet(t *testing.T) {
 }
 
 func TestSet_Cal(t *testing.T) {
-	s1 := New[int]()
-	s2 := New[int]()
+	s1 := New[int](comparator.IntComparator)
+	s2 := New[int](comparator.IntComparator)
 	for i := 1; i <= 5; i++ {
 		s1.Insert(i)     // [1 2 3 4 5]
 		s2.Insert(i + 3) // [4 5 6 7 8]
@@ -55,7 +55,7 @@ func TestSet_Cal(t *testing.T) {
 }
 
 func TestSet_Erase(t *testing.T) {
-	s := New[int]()
+	s := New[int](comparator.IntComparator)
 	for i := 0; i < 1000; i++ {
 		s.Insert(i)
 	}
@@ -66,7 +66,7 @@ func TestSet_Erase(t *testing.T) {
 }
 
 func TestSetIterator(t *testing.T) {
-	s := New[int](WithGoroutineSafe(), WithKeyComparator(comparator.IntComparator))
+	s := New[int](comparator.IntComparator, WithGoroutineSafe())
 	for i := 0; i < 10; i++ {
 		s.Insert(i)
 	}

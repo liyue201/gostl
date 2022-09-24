@@ -10,21 +10,18 @@ import (
 // MultiMap uses RbTress for internal data structure, and keys can bee repeated.
 type MultiMap[K, V any] struct {
 	tree   *rbtree.RbTree[K, V]
-	keyCmp comparator.Comparator
 	locker sync.Locker
 }
 
 //NewMultiMap creates a new MultiMap
-func NewMultiMap[K, V any](opts ...Option) *MultiMap[K, V] {
+func NewMultiMap[K, V any](cmp comparator.Comparator[K], opts ...Option) *MultiMap[K, V] {
 	option := Options{
-		keyCmp: defaultKeyComparator,
 		locker: defaultLocker,
 	}
 	for _, opt := range opts {
 		opt(&option)
 	}
-	return &MultiMap[K, V]{tree: rbtree.New[K, V](rbtree.WithKeyComparator(option.keyCmp)),
-		keyCmp: option.keyCmp,
+	return &MultiMap[K, V]{tree: rbtree.New[K, V](cmp),
 		locker: option.locker,
 	}
 }

@@ -6,16 +6,12 @@ import (
 )
 
 //Sort sorts the container by using quick sort
-func Sort[T any](first, last iterator.RandomAccessIterator[T], cmp ...comparator.Comparator) {
+func Sort[T any](first, last iterator.RandomAccessIterator[T], cmp comparator.Comparator[T]) {
 	n := last.Position() - first.Position()
-	if len(cmp) == 0 {
-		quickSort(first, first.IteratorAt(first.Position()+n-1), comparator.BuiltinTypeComparator)
-	} else {
-		quickSort(first, first.IteratorAt(first.Position()+n-1), cmp[0])
-	}
+	quickSort(first, first.IteratorAt(first.Position()+n-1), cmp)
 }
 
-func quickSort[T any](first, last iterator.RandomAccessIterator[T], cmp comparator.Comparator) {
+func quickSort[T any](first, last iterator.RandomAccessIterator[T], cmp comparator.Comparator[T]) {
 	if first.Position() >= last.Position() {
 		return
 	}
@@ -60,7 +56,7 @@ func quickSort[T any](first, last iterator.RandomAccessIterator[T], cmp comparat
 	quickSort(first.IteratorAt(m).Next().(iterator.RandomAccessIterator[T]), last, cmp)
 }
 
-func doPivot[T any](first, mid, last iterator.RandomAccessIterator[T], cmp comparator.Comparator) {
+func doPivot[T any](first, mid, last iterator.RandomAccessIterator[T], cmp comparator.Comparator[T]) {
 	if cmp(first.Value(), mid.Value()) > 0 {
 		swapValue(first, mid)
 	}

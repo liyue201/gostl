@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	q := priorityqueue.New[int](priorityqueue.WithComparator(comparator.Reverse(comparator.IntComparator)),
+	q := priorityqueue.New[int](comparator.Reverse(comparator.IntComparator),
 		priorityqueue.WithGoroutineSafe())
 	q.Push(4)
 	q.Push(13)

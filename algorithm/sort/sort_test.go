@@ -12,7 +12,7 @@ func TestSort(t *testing.T) {
 	// test size = 0
 	rand.Seed(time.Now().UnixNano())
 	v := vector.New[int]()
-	Sort[int](v.Begin(), v.End(), comparator.BuiltinTypeComparator)
+	Sort[int](v.Begin(), v.End(), comparator.IntComparator)
 	t.Logf("v: %v", v.String())
 
 	// test size = 1
@@ -20,7 +20,7 @@ func TestSort(t *testing.T) {
 	for i := 0; i < 1; i++ {
 		v.PushBack(rand.Int() % 10)
 	}
-	Sort[int](v.Begin(), v.End(), comparator.BuiltinTypeComparator)
+	Sort[int](v.Begin(), v.End(), comparator.IntComparator)
 
 	t.Logf("v: %v", v.String())
 	for i := 0; i < v.Size()-1; i++ {
@@ -34,7 +34,7 @@ func TestSort(t *testing.T) {
 	for i := 0; i < 2; i++ {
 		v.PushBack(rand.Int() % 10)
 	}
-	Sort[int](v.Begin(), v.End(), comparator.BuiltinTypeComparator)
+	Sort[int](v.Begin(), v.End(), comparator.IntComparator)
 
 	t.Logf("v: %v", v.String())
 	for i := 0; i < v.Size()-1; i++ {
@@ -48,7 +48,7 @@ func TestSort(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		v.PushBack(rand.Int() % 10)
 	}
-	Sort[int](v.Begin(), v.End(), comparator.BuiltinTypeComparator)
+	Sort[int](v.Begin(), v.End(), comparator.IntComparator)
 
 	t.Logf("v: %v", v.String())
 	for i := 0; i < v.Size()-1; i++ {
@@ -64,7 +64,7 @@ func TestSort2(t *testing.T) {
 	for i := 0; i < 31; i++ {
 		v.PushBack(rand.Int() % 10)
 	}
-	Sort[int](v.Begin(), v.End(), comparator.BuiltinTypeComparator)
+	Sort[int](v.Begin(), v.End(), comparator.IntComparator)
 
 	t.Logf("v: %v", v.String())
 	for i := 0; i < v.Size()-1; i++ {
@@ -78,7 +78,7 @@ func TestSort2(t *testing.T) {
 	for i := 0; i < 50; i++ {
 		v.PushBack(rand.Int() % 100)
 	}
-	Sort[int](v.Begin(), v.End(), comparator.BuiltinTypeComparator)
+	Sort[int](v.Begin(), v.End(), comparator.IntComparator)
 
 	t.Logf("v: %v", v.String())
 	for i := 0; i < v.Size()-1; i++ {

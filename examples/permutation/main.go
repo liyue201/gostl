@@ -16,14 +16,14 @@ func main() {
 	fmt.Println("NextPermutation")
 	for {
 		fmt.Printf("%v\n", a)
-		if !sort.NextPermutation[int](wa.Begin(), wa.End()) {
+		if !sort.NextPermutation[int](wa.Begin(), wa.End(), comparator.IntComparator) {
 			break
 		}
 	}
 	fmt.Println("PrePermutation")
 	for {
 		fmt.Printf("%v\n", a)
-		if !sort.NextPermutation[int](wa.Begin(), wa.End(), comparator.Reverse(comparator.BuiltinTypeComparator)) {
+		if !sort.NextPermutation[int](wa.Begin(), wa.End(), comparator.Reverse(comparator.IntComparator)) {
 			break
 		}
 	}

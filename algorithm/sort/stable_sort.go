@@ -6,16 +6,13 @@ import (
 )
 
 //Stable sorts the container by using merge sort
-func Stable[T any](first, last iterator.RandomAccessIterator[T], cmp ...comparator.Comparator) {
+func Stable[T any](first, last iterator.RandomAccessIterator[T], cmp comparator.Comparator[T]) {
 	tempSlice := make([]T, last.Position()-first.Position(), last.Position()-first.Position())
-	if len(cmp) == 0 {
-		mergeSort(first, last, comparator.BuiltinTypeComparator, tempSlice)
-	} else {
-		mergeSort(first, last, cmp[0], tempSlice)
-	}
+	mergeSort(first, last, cmp, tempSlice)
+
 }
 
-func mergeSort[T any](first, last iterator.RandomAccessIterator[T], cmp comparator.Comparator, tempSlice []T) {
+func mergeSort[T any](first, last iterator.RandomAccessIterator[T], cmp comparator.Comparator[T], tempSlice []T) {
 	if first.Position()+1 == last.Position() {
 		return
 	}
@@ -25,7 +22,7 @@ func mergeSort[T any](first, last iterator.RandomAccessIterator[T], cmp comparat
 	merge(first, mid, last, cmp, tempSlice)
 }
 
-func merge[T any](first, mid, end iterator.RandomAccessIterator[T], cmp comparator.Comparator, tempSlice []T) {
+func merge[T any](first, mid, end iterator.RandomAccessIterator[T], cmp comparator.Comparator[T], tempSlice []T) {
 	firstIter := (first.Clone()).(iterator.RandomAccessIterator[T])
 	secondIter := (mid.Clone()).(iterator.RandomAccessIterator[T])
 	pos := 0

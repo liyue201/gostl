@@ -6,12 +6,8 @@ import (
 )
 
 // Count returns the number of elements that their value is equal to value in range [first, last)
-func Count[T any](first, last iterator.ConstIterator[T], value any, cmps ...comparator.Comparator) int {
+func Count[T any](first, last iterator.ConstIterator[T], value T, cmp comparator.Comparator[T]) int {
 	var count int
-	cmp := comparator.BuiltinTypeComparator
-	if len(cmps) > 0 {
-		cmp = cmps[0]
-	}
 	for iter := first.Clone(); !iter.Equal(last); iter.Next() {
 		if cmp(iter.Value(), value) == 0 {
 			count++
@@ -32,11 +28,7 @@ func CountIf[T any](first, last iterator.ConstIterator[T], f func(iterator.Const
 }
 
 // Find finds the first element that its value is equal to value in range [first, last), and returns its iterator, or last if not found
-func Find[T any](first, last iterator.ConstIterator[T], value any, cmps ...comparator.Comparator) iterator.ConstIterator[T] {
-	cmp := comparator.BuiltinTypeComparator
-	if len(cmps) > 0 {
-		cmp = cmps[0]
-	}
+func Find[T any](first, last iterator.ConstIterator[T], value T, cmp comparator.Comparator[T]) iterator.ConstIterator[T] {
 	for iter := first.Clone(); !iter.Equal(last); iter.Next() {
 		if cmp(iter.Value(), value) == 0 {
 			return iter
@@ -56,11 +48,7 @@ func FindIf[T any](first, last iterator.ConstIterator[T], f func(iterator.ConstI
 }
 
 // MaxElement returns an Iterator to the largest element in the range [first, last). If several elements in the range are equivalent to the largest element, returns the iterator to the first such element. Returns last if the range is empty.
-func MaxElement[T any](first, last iterator.ConstIterator[T], cmps ...comparator.Comparator) iterator.ConstIterator[T] {
-	cmp := comparator.BuiltinTypeComparator
-	if len(cmps) > 0 {
-		cmp = cmps[0]
-	}
+func MaxElement[T any](first, last iterator.ConstIterator[T], cmp comparator.Comparator[T]) iterator.ConstIterator[T] {
 	if first.Equal(last) {
 		return last
 	}
@@ -74,11 +62,7 @@ func MaxElement[T any](first, last iterator.ConstIterator[T], cmps ...comparator
 }
 
 // MinElement returns an Iterator to the smallest element value in the range [first, last). If several elements in the range are equivalent to the smallest element value, returns the iterator to the first such element. Returns last if the range is empty.
-func MinElement[T any](first, last iterator.ConstIterator[T], cmps ...comparator.Comparator) iterator.ConstIterator[T] {
-	cmp := comparator.BuiltinTypeComparator
-	if len(cmps) > 0 {
-		cmp = cmps[0]
-	}
+func MinElement[T any](first, last iterator.ConstIterator[T], cmp comparator.Comparator[T]) iterator.ConstIterator[T] {
 	if first.Equal(last) {
 		return last
 	}

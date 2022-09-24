@@ -6,14 +6,11 @@ import (
 )
 
 //BinarySearch returns true if exist an element witch value is val in the range [first, last), or false if not exist
-func BinarySearch[T any](first, last iterator.RandomAccessIterator[T], val any, cmp ...comparator.Comparator) bool {
-	if len(cmp) == 0 {
-		return binarySearch(first, last, val, comparator.BuiltinTypeComparator)
-	}
-	return binarySearch(first, last, val, cmp[0])
+func BinarySearch[T any](first, last iterator.RandomAccessIterator[T], val T, cmp comparator.Comparator[T]) bool {
+	return binarySearch(first, last, val, cmp)
 }
 
-func binarySearch[T any](first, last iterator.RandomAccessIterator[T], val any, cmp comparator.Comparator) bool {
+func binarySearch[T any](first, last iterator.RandomAccessIterator[T], val T, cmp comparator.Comparator[T]) bool {
 	if !first.IsValid() || first.Position() >= last.Position() {
 		return false
 	}
@@ -36,14 +33,11 @@ func binarySearch[T any](first, last iterator.RandomAccessIterator[T], val any, 
 }
 
 //LowerBound returns the iterator pointing to the first element greater than or equal to value passed in the range [first, last), or iterator last if not exist.
-func LowerBound[T any](first, last iterator.RandomAccessIterator[T], val T, cmp ...comparator.Comparator) iterator.RandomAccessIterator[T] {
-	if len(cmp) == 0 {
-		return lowerBound(first, last, val, comparator.BuiltinTypeComparator)
-	}
-	return lowerBound(first, last, val, cmp[0])
+func LowerBound[T any](first, last iterator.RandomAccessIterator[T], val T, cmp comparator.Comparator[T]) iterator.RandomAccessIterator[T] {
+	return lowerBound(first, last, val, cmp)
 }
 
-func lowerBound[T any](first, last iterator.RandomAccessIterator[T], val any, cmp comparator.Comparator) iterator.RandomAccessIterator[T] {
+func lowerBound[T any](first, last iterator.RandomAccessIterator[T], val T, cmp comparator.Comparator[T]) iterator.RandomAccessIterator[T] {
 	if !first.IsValid() || first.Position() >= last.Position() {
 		return last.Clone().(iterator.RandomAccessIterator[T])
 	}
@@ -68,14 +62,11 @@ func lowerBound[T any](first, last iterator.RandomAccessIterator[T], val any, cm
 }
 
 //UpperBound returns the iterator pointing to the first element greater than val in the range [first, last), or iterator last if not exist.
-func UpperBound[T any](first, last iterator.RandomAccessIterator[T], val any, cmp ...comparator.Comparator) iterator.RandomAccessIterator[T] {
-	if len(cmp) == 0 {
-		return upperBound(first, last, val, comparator.BuiltinTypeComparator)
-	}
-	return upperBound(first, last, val, cmp[0])
+func UpperBound[T any](first, last iterator.RandomAccessIterator[T], val T, cmp comparator.Comparator[T]) iterator.RandomAccessIterator[T] {
+	return upperBound(first, last, val, cmp)
 }
 
-func upperBound[T any](first, last iterator.RandomAccessIterator[T], val any, cmp comparator.Comparator) iterator.RandomAccessIterator[T] {
+func upperBound[T any](first, last iterator.RandomAccessIterator[T], val T, cmp comparator.Comparator[T]) iterator.RandomAccessIterator[T] {
 	if !first.IsValid() || first.Position() >= last.Position() {
 		return last.Clone().(iterator.RandomAccessIterator[T])
 	}

@@ -128,12 +128,12 @@ func TestSort(t *testing.T) {
 	for i := 10; i >= 0; i-- {
 		v.PushBack(i)
 	}
-	sort.Sort[int](v.Begin(), v.End(), comparator.BuiltinTypeComparator)
+	sort.Sort[int](v.Begin(), v.End(), comparator.IntComparator)
 	for i := 0; i < v.Size(); i++ {
 		assert.Equal(t, i, v.At(i))
 	}
 
-	sort.Sort[int](v.Begin(), v.End(), comparator.Reverse(comparator.BuiltinTypeComparator))
+	sort.Sort[int](v.Begin(), v.End(), comparator.Reverse(comparator.IntComparator))
 	for i := 0; i < v.Size(); i++ {
 		assert.Equal(t, v.Size()-i-1, v.At(i))
 	}

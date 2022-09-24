@@ -21,9 +21,7 @@ func TestSliceWrapper(t *testing.T) {
 
 	assert.Equal(t, 3, sw.Len())
 
-	sort.Sort[*User](sw.Begin(), sw.End(), func(a, b any) int {
-		ua := a.(*User)
-		ub := b.(*User)
+	sort.Sort[*User](sw.Begin(), sw.End(), func(ua, ub *User) int {
 		if ua.age < ub.age {
 			return -1
 		}

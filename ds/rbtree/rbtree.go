@@ -7,26 +7,7 @@ import (
 	"github.com/liyue201/gostl/utils/visitor"
 )
 
-var (
-	defaultKeyComparator = comparator.BuiltinTypeComparator
-)
-
 var ErrorNotFound = errors.New("not found")
-
-// Options holds RbTree's options
-type Options struct {
-	keyCmp comparator.Comparator
-}
-
-// Option is a function type used to set Options
-type Option func(option *Options)
-
-//WithKeyComparator is used to set RbTree's key comparator
-func WithKeyComparator(cmp comparator.Comparator) Option {
-	return func(option *Options) {
-		option.keyCmp = cmp
-	}
-}
 
 // RbTree is a kind of self-balancing binary search tree in computer science.
 // Each node of the binary tree has an extra bit, and that bit is often interpreted
@@ -35,18 +16,12 @@ func WithKeyComparator(cmp comparator.Comparator) Option {
 type RbTree[K, V any] struct {
 	root   *Node[K, V]
 	size   int
-	keyCmp comparator.Comparator
+	keyCmp comparator.Comparator[K]
 }
 
 //New creates a new RbTree
-func New[K, V any](opts ...Option) *RbTree[K, V] {
-	option := Options{
-		keyCmp: defaultKeyComparator,
-	}
-	for _, opt := range opts {
-		opt(&option)
-	}
-	return &RbTree[K, V]{keyCmp: option.keyCmp}
+func New[K, V any](cmp comparator.Comparator[K]) *RbTree[K, V] {
+	return &RbTree[K, V]{keyCmp: cmp}
 }
 
 // Clear clears the RbTree
@@ -346,7 +321,7 @@ func (t *RbTree[K, V]) rightRotate(x *Node[K, V]) {
 }
 
 // findNode finds the node that its key is equal to the passed key, and returns it.
-func (t *RbTree[K, V]) findNode(key any) *Node[K, V] {
+func (t *RbTree[K, V]) findNode(key K) *Node[K, V] {
 	x := t.root
 	for x != nil {
 		if t.keyCmp(key, x.key) < 0 {

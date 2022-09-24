@@ -15,25 +15,16 @@ const (
 )
 
 var (
-	defaultKeyComparator = comparator.BuiltinTypeComparator
-	defaultLocker        sync.FakeLocker
+	defaultLocker sync.FakeLocker
 )
 
 // Options holds the Set's options
 type Options struct {
-	keyCmp comparator.Comparator
 	locker sync.Locker
 }
 
 // Option is a function  type used to set Options
 type Option func(option *Options)
-
-// WithKeyComparator is used to set the key comparator for a set
-func WithKeyComparator(cmp comparator.Comparator) Option {
-	return func(option *Options) {
-		option.keyCmp = cmp
-	}
-}
 
 // WithGoroutineSafe is used to set the set goroutine-safe
 // Note that iterators are not goroutine safe, and it is useless to turn on the setting option here.
@@ -47,23 +38,22 @@ func WithGoroutineSafe() Option {
 // Set uses RbTress for internal data structure, and every key can must bee unique.
 type Set[T any] struct {
 	tree   *rbtree.RbTree[T, bool]
-	keyCmp comparator.Comparator
 	locker sync.Locker
+	keyCmp comparator.Comparator[T]
 }
 
 // New creates a new set
-func New[T any](opts ...Option) *Set[T] {
+func New[T any](cmp comparator.Comparator[T], opts ...Option) *Set[T] {
 	option := Options{
-		keyCmp: defaultKeyComparator,
 		locker: defaultLocker,
 	}
 	for _, opt := range opts {
 		opt(&option)
 	}
 	return &Set[T]{
-		tree:   rbtree.New[T, bool](rbtree.WithKeyComparator(option.keyCmp)),
-		keyCmp: option.keyCmp,
+		tree:   rbtree.New[T, bool](cmp),
 		locker: option.locker,
+		keyCmp: cmp,
 	}
 }
 
@@ -197,7 +187,7 @@ func (s *Set[T]) Intersect(other *Set[T]) *Set[T] {
 	s.locker.RLock()
 	defer s.locker.RUnlock()
 
-	set := New[T](WithKeyComparator(s.keyCmp))
+	set := New[T](s.keyCmp)
 	sIter := s.tree.IterFirst()
 	otherIter := other.tree.IterFirst()
 	for sIter.IsValid() && otherIter.IsValid() {
@@ -221,7 +211,7 @@ func (s *Set[T]) Union(other *Set[T]) *Set[T] {
 	s.locker.RLock()
 	defer s.locker.RUnlock()
 
-	set := New[T](WithKeyComparator(s.keyCmp))
+	set := New[T](s.keyCmp)
 	sIter := s.tree.IterFirst()
 	otherIter := other.tree.IterFirst()
 	for sIter.IsValid() && otherIter.IsValid() {
@@ -253,7 +243,7 @@ func (s *Set[T]) Diff(other *Set[T]) *Set[T] {
 	s.locker.RLock()
 	defer s.locker.RUnlock()
 
-	set := New[T](WithKeyComparator(s.keyCmp))
+	set := New[T](s.keyCmp)
 	sIter := s.tree.IterFirst()
 	otherIter := other.tree.IterFirst()
 	for sIter.IsValid() && otherIter.IsValid() {

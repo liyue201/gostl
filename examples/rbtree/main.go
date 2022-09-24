@@ -3,10 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/liyue201/gostl/ds/rbtree"
+	"github.com/liyue201/gostl/utils/comparator"
 )
 
 func main() {
-	tree := rbtree.New[int, string]()
+	tree := rbtree.New[int, string](comparator.IntComparator)
 	tree.Insert(1, "aaa")
 	tree.Insert(5, "bbb")
 	tree.Insert(3, "ccc")

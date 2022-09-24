@@ -17,7 +17,7 @@ func main() {
 	wa := slice.NewSliceWrapper(a)
 
 	// sort in ascending
-	sort.Sort[int](wa.Begin(), wa.End())
+	sort.Sort[int](wa.Begin(), wa.End(), comparator.IntComparator)
 	fmt.Printf("%v\n", a)
 
 	// sort in descending

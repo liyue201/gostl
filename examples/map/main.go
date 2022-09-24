@@ -3,10 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/liyue201/gostl/ds/map"
+	"github.com/liyue201/gostl/utils/comparator"
 )
 
 func main() {
-	m := treemap.New[string, string](treemap.WithGoroutineSafe())
+	m := treemap.New[string, string](comparator.StringComparator, treemap.WithGoroutineSafe())
 
 	m.Insert("a", "aaa")
 	m.Insert("b", "bbb")

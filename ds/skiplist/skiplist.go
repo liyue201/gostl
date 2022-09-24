@@ -11,28 +11,19 @@ import (
 )
 
 var (
-	defaultKeyComparator = comparator.BuiltinTypeComparator
-	defaultMaxLevel      = 10
-	defaultLocker        sync.FakeLocker
+	defaultMaxLevel = 10
+	defaultLocker   sync.FakeLocker
 )
 var ErrorNotFound = errors.New("not found")
 
 // Options holds Skiplist's options
 type Options struct {
-	keyCmp   comparator.Comparator
 	maxLevel int
 	locker   sync.Locker
 }
 
 // Option is a function used to set Options
 type Option func(option *Options)
-
-// WithKeyComparator sets Key comparator option
-func WithKeyComparator(cmp comparator.Comparator) Option {
-	return func(option *Options) {
-		option.keyCmp = cmp
-	}
-}
 
 // WithGoroutineSafe sets Skiplist goroutine-safety,
 func WithGoroutineSafe() Option {
@@ -65,16 +56,15 @@ type Skiplist[K, V any] struct {
 	locker         sync.Locker
 	head           Node[K, V]
 	maxLevel       int
-	keyCmp         comparator.Comparator
+	keyCmp         comparator.Comparator[K]
 	len            int
 	prevNodesCache []*Node[K, V]
 	rander         *rand.Rand
 }
 
 // New news a Skiplist
-func New[K, V any](opts ...Option) *Skiplist[K, V] {
+func New[K, V any](cmp comparator.Comparator[K], opts ...Option) *Skiplist[K, V] {
 	option := Options{
-		keyCmp:   defaultKeyComparator,
 		maxLevel: defaultMaxLevel,
 		locker:   defaultLocker,
 	}
@@ -84,7 +74,7 @@ func New[K, V any](opts ...Option) *Skiplist[K, V] {
 	l := &Skiplist[K, V]{
 		locker:   option.locker,
 		maxLevel: option.maxLevel,
-		keyCmp:   option.keyCmp,
+		keyCmp:   cmp,
 		rander:   rand.New(rand.NewSource(time.Now().Unix())),
 	}
 	l.head.next = make([]*Element[K, V], l.maxLevel)

@@ -3,10 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/liyue201/gostl/ds/set"
+	"github.com/liyue201/gostl/utils/comparator"
 )
 
 func main() {
-	s := set.New[int](set.WithGoroutineSafe())
+	s := set.New[int](comparator.IntComparator, set.WithGoroutineSafe())
 	s.Insert(1)
 	s.Insert(5)
 	s.Insert(3)

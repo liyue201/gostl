@@ -9,7 +9,7 @@ import (
 )
 
 func TestRbTeeFind(t *testing.T) {
-	tree := New[int, int]()
+	tree := New[int, int](comparator.IntComparator)
 	for i := 0; i < 10; i++ {
 		tree.Insert(i, i+10000)
 	}
@@ -59,7 +59,7 @@ func TestRbTeeFind(t *testing.T) {
 }
 
 func TestRbTeeDelete(t *testing.T) {
-	tree := New[int, int]()
+	tree := New[int, int](comparator.IntComparator)
 	m := make(map[int]int)
 	for i := 0; i < 1000; i++ {
 		tree.Insert(i, i)
@@ -78,7 +78,7 @@ func TestRbTeeDelete(t *testing.T) {
 }
 
 func TestTraversal(t *testing.T) {
-	tree := New[int, int]()
+	tree := New[int, int](comparator.IntComparator)
 	for i := 0; i < 10; i++ {
 		tree.Insert(i, i+100)
 	}
@@ -92,7 +92,7 @@ func TestTraversal(t *testing.T) {
 }
 
 func TestInsertDelete(t *testing.T) {
-	tree := New[int, int]()
+	tree := New[int, int](comparator.IntComparator)
 	m := make(map[int]int)
 	rand.Seed(time.Now().Unix())
 	for i := 0; i < 10000; i++ {
@@ -119,7 +119,7 @@ func TestInsertDelete(t *testing.T) {
 }
 
 func TestIterator(t *testing.T) {
-	tree := New[int, int](WithKeyComparator(comparator.IntComparator))
+	tree := New[int, int](comparator.IntComparator)
 	for i := 0; i < 10; i++ {
 		tree.Insert(i, i+100)
 	}
@@ -151,7 +151,7 @@ func TestIterator(t *testing.T) {
 }
 
 func TestNode(t *testing.T) {
-	tree := New[int, int]()
+	tree := New[int, int](comparator.IntComparator)
 	for i := 0; i < 10; i++ {
 		tree.Insert(i, i+100)
 	}
