@@ -5,7 +5,7 @@ import (
 )
 
 func TestQueue(t *testing.T) {
-	q := New(WithGoroutineSafe())
+	q := New[int]()
 	for i := 0; i < 10; i++ {
 		q.Push(i)
 		if q.Back() != i {
@@ -30,7 +30,7 @@ func TestQueue(t *testing.T) {
 }
 
 func TestQueueWithListContainer(t *testing.T) {
-	q := New(WithListContainer())
+	q := New(WithListContainer[int]())
 	for i := 0; i < 10; i++ {
 		q.Push(i)
 		if q.Back() != i {

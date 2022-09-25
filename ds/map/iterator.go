@@ -6,12 +6,12 @@ import (
 )
 
 // MapIterator is a map iterator
-type MapIterator struct {
-	node *rbtree.Node
+type MapIterator[K, V any] struct {
+	node *rbtree.Node[K, V]
 }
 
 // IsValid returns true if the iterator is valid, otherwise returns false
-func (iter *MapIterator) IsValid() bool {
+func (iter *MapIterator[K, V]) IsValid() bool {
 	if iter.node != nil {
 		return true
 	}
@@ -19,7 +19,7 @@ func (iter *MapIterator) IsValid() bool {
 }
 
 // Next moves the pointer of the iterator to the next node, and returns itself
-func (iter *MapIterator) Next() iterator.ConstIterator {
+func (iter *MapIterator[K, V]) Next() iterator.ConstIterator[V] {
 	if iter.IsValid() {
 		iter.node = iter.node.Next()
 	}
@@ -27,7 +27,7 @@ func (iter *MapIterator) Next() iterator.ConstIterator {
 }
 
 // Prev moves the pointer of the iterator to the previous node, and returns itseft
-func (iter *MapIterator) Prev() iterator.ConstBidIterator {
+func (iter *MapIterator[K, V]) Prev() iterator.ConstBidIterator[V] {
 	if iter.IsValid() {
 		iter.node = iter.node.Prev()
 	}
@@ -35,28 +35,28 @@ func (iter *MapIterator) Prev() iterator.ConstBidIterator {
 }
 
 // Key returns the node's key of the iterator point to
-func (iter *MapIterator) Key() interface{} {
+func (iter *MapIterator[K, V]) Key() K {
 	return iter.node.Key()
 }
 
 // Value returns the node's value of the iterator point to
-func (iter *MapIterator) Value() interface{} {
+func (iter *MapIterator[K, V]) Value() V {
 	return iter.node.Value()
 }
 
 // SetValue sets the node's value of the iterator point to
-func (iter *MapIterator) SetValue(val interface{}) {
+func (iter *MapIterator[K, V]) SetValue(val V) {
 	iter.node.SetValue(val)
 }
 
 // Clone clones the iterator to a new MapIterator
-func (iter *MapIterator) Clone() iterator.ConstIterator {
-	return &MapIterator{iter.node}
+func (iter *MapIterator[K, V]) Clone() iterator.ConstIterator[V] {
+	return &MapIterator[K, V]{iter.node}
 }
 
 // Equal returns true if the iterator is equal to the passed iterator, otherwise returns false
-func (iter *MapIterator) Equal(other iterator.ConstIterator) bool {
-	otherIter, ok := other.(*MapIterator)
+func (iter *MapIterator[K, V]) Equal(other iterator.ConstIterator[V]) bool {
+	otherIter, ok := other.(*MapIterator[K, V])
 	if !ok {
 		return false
 	}

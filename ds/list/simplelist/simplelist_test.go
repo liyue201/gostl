@@ -7,7 +7,7 @@ import (
 )
 
 func TestList(t *testing.T) {
-	list := New()
+	list := New[int]()
 	assert.Equal(t, 0, list.Len())
 	list.PushBack(1)
 	assert.Equal(t, 1, list.Len())
@@ -31,15 +31,15 @@ func TestList(t *testing.T) {
 	assert.Equal(t, "[1 3 4 2]", list.String())
 
 	ret := make([]int, 0)
-	list.Traversal(func(value interface{}) bool {
-		ret = append(ret, value.(int))
+	list.Traversal(func(value int) bool {
+		ret = append(ret, value)
 		return true
 	})
 	assert.Equal(t, "[1 3 4 2]", fmt.Sprintf("%v", ret))
 }
 
 func TestList_InsertAfter(t *testing.T) {
-	list := New()
+	list := New[int]()
 	for i := 1; i <= 5; i++ {
 		list.PushBack(i)
 	}
@@ -54,7 +54,7 @@ func TestList_InsertAfter(t *testing.T) {
 }
 
 func TestList_Remove(t *testing.T) {
-	list := New()
+	list := New[int]()
 	for i := 1; i <= 5; i++ {
 		list.PushBack(i)
 	}
@@ -69,7 +69,7 @@ func TestList_Remove(t *testing.T) {
 }
 
 func TestListIterator(t *testing.T) {
-	list := New()
+	list := New[int]()
 	for i := 1; i <= 5; i++ {
 		list.PushBack(i)
 	}

@@ -6,13 +6,13 @@ import (
 )
 
 // Node is a list node
-type Node struct {
-	next  *Node
-	Value interface{}
+type Node[T any] struct {
+	next  *Node[T]
+	Value T
 }
 
 // Next returns the next list node or nil.
-func (n *Node) Next() *Node {
+func (n *Node[T]) Next() *Node[T] {
 	return n.next
 }
 
@@ -20,36 +20,36 @@ func (n *Node) Next() *Node {
 //
 //   head -> node1 --> node2 --> node3 <- tail
 //
-type List struct {
-	head *Node // point to the front Node
-	tail *Node // point to the back Node
-	len  int   // current list length
+type List[T any] struct {
+	head *Node[T] // point to the front Node
+	tail *Node[T] // point to the back Node
+	len  int      // current list length
 }
 
 // New creates a list
-func New() *List {
-	list := &List{}
+func New[T any]() *List[T] {
+	list := &List[T]{}
 	return list
 }
 
 // Len returns the amount of list nodes.
-func (l *List) Len() int {
+func (l *List[T]) Len() int {
 	return l.len
 }
 
 // FrontNode returns the front node of the list or nil if the list is empty
-func (l *List) FrontNode() *Node {
+func (l *List[T]) FrontNode() *Node[T] {
 	return l.head
 }
 
 // BackNode returns the last node of the list or nil if the list is empty
-func (l *List) BackNode() *Node {
+func (l *List[T]) BackNode() *Node[T] {
 	return l.tail
 }
 
 // PushFront inserts a new node n with value v at the front of the list.
-func (l *List) PushFront(v interface{}) {
-	n := &Node{Value: v}
+func (l *List[T]) PushFront(v T) {
+	n := &Node[T]{Value: v}
 	if l.len == 0 {
 		l.head = n
 		l.tail = n
@@ -61,8 +61,8 @@ func (l *List) PushFront(v interface{}) {
 }
 
 // PushBack inserts a new node n with value v at the back of the list.
-func (l *List) PushBack(v interface{}) {
-	n := &Node{Value: v}
+func (l *List[T]) PushBack(v T) {
+	n := &Node[T]{Value: v}
 	if l.len == 0 {
 		l.head = n
 		l.tail = n
@@ -76,11 +76,11 @@ func (l *List) PushBack(v interface{}) {
 // InsertAfter inserts a new node n with value v immediately after mark and returns n.
 // If mark is not a node of the list, the list is not modified.
 // The mark must not be nil.
-func (l *List) InsertAfter(v interface{}, mark *Node) *Node {
-	return l.insertAfter(&Node{Value: v}, mark)
+func (l *List[T]) InsertAfter(v T, mark *Node[T]) *Node[T] {
+	return l.insertAfter(&Node[T]{Value: v}, mark)
 }
 
-func (l *List) insertAfter(n, at *Node) *Node {
+func (l *List[T]) insertAfter(n, at *Node[T]) *Node[T] {
 	n.next = at.next
 	at.next = n
 	if n.next == nil {
@@ -92,9 +92,9 @@ func (l *List) insertAfter(n, at *Node) *Node {
 
 // Remove removes node n from the list.
 // The node must not be nil.
-func (l *List) Remove(pre, n *Node) interface{} {
+func (l *List[T]) Remove(pre, n *Node[T]) T {
 	if n == nil {
-		return nil
+		return *new(T)
 	}
 	if pre == nil {
 		l.head = n.next
@@ -113,7 +113,7 @@ func (l *List) Remove(pre, n *Node) interface{} {
 
 // MoveToFront moves node n to the front of the list.
 // The n must not be nil.
-func (l *List) MoveToFront(pre, n *Node) {
+func (l *List[T]) MoveToFront(pre, n *Node[T]) {
 	if pre == nil || pre.next != n || n == nil || l.len <= 1 {
 		return
 	}
@@ -127,7 +127,7 @@ func (l *List) MoveToFront(pre, n *Node) {
 
 // MoveToBack moves node n to the back of the list.
 // The n must not be nil.
-func (l *List) MoveToBack(pre, n *Node) {
+func (l *List[T]) MoveToBack(pre, n *Node[T]) {
 	if n == nil || n.next == nil || l.len <= 1 {
 		return
 	}
@@ -142,7 +142,7 @@ func (l *List) MoveToBack(pre, n *Node) {
 }
 
 // String returns a string representation of the list
-func (l *List) String() string {
+func (l *List[T]) String() string {
 	str := "["
 	for n := l.FrontNode(); n != nil; n = n.Next() {
 		if str != "[" {
@@ -155,7 +155,7 @@ func (l *List) String() string {
 }
 
 // Traversal traversals elements in the list, it will not stop until to the end of the list or the visitor returns false
-func (l *List) Traversal(visitor visitor.Visitor) {
+func (l *List[T]) Traversal(visitor visitor.Visitor[T]) {
 	for node := l.head; node != nil; node = node.Next() {
 		if !visitor(node.Value) {
 			break

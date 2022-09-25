@@ -21,9 +21,7 @@ func TestSliceWrapper(t *testing.T) {
 
 	assert.Equal(t, 3, sw.Len())
 
-	sort.Sort(sw.Begin(), sw.End(), func(a, b interface{}) int {
-		ua := a.(*User)
-		ub := b.(*User)
+	sort.Sort[*User](sw.Begin(), sw.End(), func(ua, ub *User) int {
 		if ua.age < ub.age {
 			return -1
 		}
@@ -48,4 +46,30 @@ func TestSliceWrapper(t *testing.T) {
 			}
 		}
 	}
+}
+
+func TestIntSlice(t *testing.T) {
+	a := make([]int, 0, 10)
+
+	for i := 0; i < 10; i++ {
+		a = append(a, i)
+	}
+	sliceA := NewSliceWrapper(a)
+
+	assert.Equal(t, 10, sliceA.Len())
+	assert.EqualValues(t, 5, sliceA.At(5))
+
+	i := 0
+	for iter := sliceA.Begin(); !iter.Equal(sliceA.End()); iter.Next() {
+		assert.EqualValues(t, i, iter.Value())
+		i++
+	}
+
+	i = 9
+	for iter := sliceA.Last(); iter.IsValid(); iter.Prev() {
+		assert.EqualValues(t, i, iter.Value())
+		i--
+	}
+	sliceA.Set(8, 100)
+	assert.EqualValues(t, 100, sliceA.At(8))
 }

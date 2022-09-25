@@ -1,6 +1,7 @@
 package treemap
 
 import (
+	"errors"
 	"github.com/liyue201/gostl/ds/rbtree"
 	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/utils/iterator"
@@ -10,25 +11,18 @@ import (
 )
 
 var (
-	defaultKeyComparator = comparator.BuiltinTypeComparator
-	defaultLocker        sync.FakeLocker
+	defaultLocker sync.FakeLocker
 )
+
+var ErrorNotFound = errors.New("not found")
 
 // Options holds Map's options
 type Options struct {
-	keyCmp comparator.Comparator
 	locker sync.Locker
 }
 
 // Option is a function type used to set Options
 type Option func(option *Options)
-
-// WithKeyComparator is used to set the key comparator of map
-func WithKeyComparator(cmp comparator.Comparator) Option {
-	return func(option *Options) {
-		option.keyCmp = cmp
-	}
-}
 
 // WithGoroutineSafe is used to set a map goroutine-safe
 // Note that iterators are not goroutine safe, and it is useless to turn on the setting option here.
@@ -40,27 +34,26 @@ func WithGoroutineSafe() Option {
 }
 
 // Map uses RbTress for internal data structure, and every key can must bee unique.
-type Map struct {
-	tree   *rbtree.RbTree
+type Map[K, V any] struct {
+	tree   *rbtree.RbTree[K, V]
 	locker sync.Locker
 }
 
 // New creates a new map
-func New(opts ...Option) *Map {
+func New[K, V any](cmp comparator.Comparator[K], opts ...Option) *Map[K, V] {
 	option := Options{
-		keyCmp: defaultKeyComparator,
 		locker: defaultLocker,
 	}
 	for _, opt := range opts {
 		opt(&option)
 	}
-	return &Map{tree: rbtree.New(rbtree.WithKeyComparator(option.keyCmp)),
+	return &Map[K, V]{tree: rbtree.New[K, V](cmp),
 		locker: option.locker,
 	}
 }
 
 //Insert inserts a key-value to the map
-func (m *Map) Insert(key, value interface{}) {
+func (m *Map[K, V]) Insert(key K, value V) {
 	m.locker.Lock()
 	defer m.locker.Unlock()
 
@@ -73,19 +66,19 @@ func (m *Map) Insert(key, value interface{}) {
 }
 
 //Get returns the value of the passed key if the key is in the map, otherwise returns nil
-func (m *Map) Get(key interface{}) interface{} {
+func (m *Map[K, V]) Get(key K) (V, error) {
 	m.locker.RLock()
 	defer m.locker.RUnlock()
 
 	node := m.tree.FindNode(key)
 	if node != nil {
-		return node.Value()
+		return node.Value(), nil
 	}
-	return nil
+	return *new(V), ErrorNotFound
 }
 
 //Erase erases the node by the passed key from the map if the key in the Map
-func (m *Map) Erase(key interface{}) {
+func (m *Map[K, V]) Erase(key K) {
 	m.locker.Lock()
 	defer m.locker.Unlock()
 
@@ -96,69 +89,69 @@ func (m *Map) Erase(key interface{}) {
 }
 
 //EraseIter erases the node that iterator iter point to from the map
-func (m *Map) EraseIter(iter iterator.ConstKvIterator) {
+func (m *Map[K, V]) EraseIter(iter iterator.ConstKvIterator[K, V]) {
 	m.locker.Lock()
 	defer m.locker.Unlock()
 
-	mpIter, ok := iter.(*MapIterator)
+	mpIter, ok := iter.(*MapIterator[K, V])
 	if ok {
 		m.tree.Delete(mpIter.node)
 	}
 }
 
 //Find finds a node by the passed key and returns its iterator
-func (m *Map) Find(key interface{}) *MapIterator {
+func (m *Map[K, V]) Find(key K) *MapIterator[K, V] {
 	m.locker.RLock()
 	defer m.locker.RUnlock()
 
 	node := m.tree.FindNode(key)
-	return &MapIterator{node: node}
+	return &MapIterator[K, V]{node: node}
 }
 
 //LowerBound finds a node that its key is equal or greater than the passed key and returns its iterator
-func (m *Map) LowerBound(key interface{}) *MapIterator {
+func (m *Map[K, V]) LowerBound(key K) *MapIterator[K, V] {
 	m.locker.RLock()
 	defer m.locker.RUnlock()
 
 	node := m.tree.FindLowerBoundNode(key)
-	return &MapIterator{node: node}
+	return &MapIterator[K, V]{node: node}
 }
 
 //UpperBound finds a node that its key is greater than the passed key and returns its iterator
-func (m *Map) UpperBound(key interface{}) *MapIterator {
+func (m *Map[K, V]) UpperBound(key K) *MapIterator[K, V] {
 	m.locker.RLock()
 	defer m.locker.RUnlock()
 
 	node := m.tree.FindUpperBoundNode(key)
-	return &MapIterator{node: node}
+	return &MapIterator[K, V]{node: node}
 }
 
 //Begin returns the first node's iterator
-func (m *Map) Begin() *MapIterator {
+func (m *Map[K, V]) Begin() *MapIterator[K, V] {
 	m.locker.RLock()
 	defer m.locker.RUnlock()
 
-	return &MapIterator{node: m.tree.First()}
+	return &MapIterator[K, V]{node: m.tree.First()}
 }
 
 //First returns the first node's iterator
-func (m *Map) First() *MapIterator {
+func (m *Map[K, V]) First() *MapIterator[K, V] {
 	m.locker.RLock()
 	defer m.locker.RUnlock()
 
-	return &MapIterator{node: m.tree.First()}
+	return &MapIterator[K, V]{node: m.tree.First()}
 }
 
 //Last returns the last node's iterator
-func (m *Map) Last() *MapIterator {
+func (m *Map[K, V]) Last() *MapIterator[K, V] {
 	m.locker.RLock()
 	defer m.locker.RUnlock()
 
-	return &MapIterator{node: m.tree.Last()}
+	return &MapIterator[K, V]{node: m.tree.Last()}
 }
 
 //Clear clears the map
-func (m *Map) Clear() {
+func (m *Map[K, V]) Clear() {
 	m.locker.Lock()
 	defer m.locker.Unlock()
 
@@ -166,18 +159,18 @@ func (m *Map) Clear() {
 }
 
 // Contains returns true if the key is in the map. otherwise returns false.
-func (m *Map) Contains(key interface{}) bool {
+func (m *Map[K, V]) Contains(key K) bool {
 	m.locker.RLock()
 	defer m.locker.RUnlock()
 
-	if m.tree.Find(key) != nil {
+	if _, err := m.tree.Find(key); err == nil {
 		return true
 	}
 	return false
 }
 
 // Size returns the amount of elements in the map
-func (m *Map) Size() int {
+func (m *Map[K, V]) Size() int {
 	m.locker.RLock()
 	defer m.locker.RUnlock()
 
@@ -185,7 +178,7 @@ func (m *Map) Size() int {
 }
 
 // Traversal traversals elements in the map, it will not stop until to the end or the visitor returns false
-func (m *Map) Traversal(visitor visitor.KvVisitor) {
+func (m *Map[K, V]) Traversal(visitor visitor.KvVisitor[K, V]) {
 	m.locker.RLock()
 	defer m.locker.RUnlock()
 

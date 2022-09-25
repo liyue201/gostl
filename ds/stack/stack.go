@@ -9,64 +9,63 @@ import (
 )
 
 var (
-	defaultLocker    sync.FakeLocker
-	defaultContainer = deque.New()
+	defaultLocker sync.FakeLocker
 )
 
 // Options holds the Stack's options
-type Options struct {
+type Options[T any] struct {
 	locker    sync.Locker
-	container container.Container
+	container container.Container[T]
 }
 
 // Option is a function type used to set Options
-type Option func(option *Options)
+type Option[T any] func(option *Options[T])
 
 // WithGoroutineSafe is used to set a stack goroutine-safe
-func WithGoroutineSafe() Option {
-	return func(option *Options) {
+func WithGoroutineSafe[T any]() Option[T] {
+	return func(option *Options[T]) {
 		option.locker = &gosync.RWMutex{}
 	}
 }
 
 // WithContainer is used to set a stack's underlying container
-func WithContainer(c container.Container) Option {
-	return func(option *Options) {
+func WithContainer[T any](c container.Container[T]) Option[T] {
+	return func(option *Options[T]) {
 		option.container = c
 	}
 }
 
 // WithListContainer is used to set List for a stack's underlying container
-func WithListContainer() Option {
-	return func(option *Options) {
-		option.container = bidlist.New()
+func WithListContainer[T any]() Option[T] {
+	return func(option *Options[T]) {
+		option.container = bidlist.New[T]()
 	}
 }
 
 //Stack is a last-in-first-out data structure
-type Stack struct {
-	container container.Container
+type Stack[T any] struct {
+	container container.Container[T]
 	locker    sync.Locker
 }
 
 // New creates a new stack
-func New(opts ...Option) *Stack {
-	option := Options{
+func New[T any](opts ...Option[T]) *Stack[T] {
+	option := Options[T]{
 		locker:    defaultLocker,
-		container: defaultContainer,
+		container: deque.New[T](),
 	}
 	for _, opt := range opts {
 		opt(&option)
 	}
 
-	return &Stack{
+	return &Stack[T]{
 		container: option.container,
 		locker:    option.locker,
 	}
 }
 
 // Size returns the amount of elements in the stack
-func (s *Stack) Size() int {
+func (s *Stack[T]) Size() int {
 	s.locker.RLock()
 	defer s.locker.RUnlock()
 
@@ -74,7 +73,7 @@ func (s *Stack) Size() int {
 }
 
 // Empty returns true if the stack is empty, otherwise returns false
-func (s *Stack) Empty() bool {
+func (s *Stack[T]) Empty() bool {
 	s.locker.RLock()
 	defer s.locker.RUnlock()
 
@@ -82,7 +81,7 @@ func (s *Stack) Empty() bool {
 }
 
 // Push pushes a value to the stack
-func (s *Stack) Push(value interface{}) {
+func (s *Stack[T]) Push(value T) {
 	s.locker.Lock()
 	defer s.locker.Unlock()
 
@@ -90,15 +89,15 @@ func (s *Stack) Push(value interface{}) {
 }
 
 // Top returns the top value in the stack
-func (s *Stack) Top() interface{} {
+func (s *Stack[T]) Top() T {
 	s.locker.RLock()
 	defer s.locker.RUnlock()
 
 	return s.container.Back()
 }
 
-// Pop removes the the top value in the stack and returns it
-func (s *Stack) Pop() interface{} {
+// Pop removes the top value in the stack and returns it
+func (s *Stack[T]) Pop() T {
 	s.locker.Lock()
 	defer s.locker.Unlock()
 
@@ -106,7 +105,7 @@ func (s *Stack) Pop() interface{} {
 }
 
 // Clear clears all elements in the stack
-func (s *Stack) Clear() {
+func (s *Stack[T]) Clear() {
 	s.locker.Lock()
 	defer s.locker.Unlock()
 
@@ -114,7 +113,7 @@ func (s *Stack) Clear() {
 }
 
 // String returns a string representation of the stack
-func (s *Stack) String() string {
+func (s *Stack[T]) String() string {
 	s.locker.RLock()
 	defer s.locker.RUnlock()
 

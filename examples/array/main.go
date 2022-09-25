@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	a := array.New(5)
+	a := array.New[int](5)
 	for i := 0; i < a.Size(); i++ {
 		a.Set(i, i+1)
 	}

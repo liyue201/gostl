@@ -10,7 +10,7 @@ import (
 func example1() {
 	fmt.Printf("example1:\n")
 
-	s := stack.New()
+	s := stack.New[int]()
 	s.Push(1)
 	s.Push(2)
 	s.Push(3)
@@ -23,7 +23,7 @@ func example1() {
 func example2() {
 	fmt.Printf("example2:\n")
 
-	s := stack.New(stack.WithListContainer())
+	s := stack.New(stack.WithListContainer[int]())
 	s.Push(1)
 	s.Push(2)
 	s.Push(3)
@@ -36,7 +36,7 @@ func example2() {
 func example3() {
 	fmt.Printf("example3:\n")
 
-	s := stack.New(stack.WithGoroutineSafe())
+	s := stack.New(stack.WithGoroutineSafe[int]())
 	sw := sync.WaitGroup{}
 	sw.Add(2)
 	go func() {

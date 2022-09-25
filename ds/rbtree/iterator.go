@@ -5,17 +5,17 @@ import (
 )
 
 // RbTreeIterator is an iterator implementation of RbTree
-type RbTreeIterator struct {
-	node *Node
+type RbTreeIterator[K, V any] struct {
+	node *Node[K, V]
 }
 
 // NewIterator creates a RbTreeIterator from the passed node
-func NewIterator(node *Node) *RbTreeIterator {
-	return &RbTreeIterator{node: node}
+func NewIterator[K, V any](node *Node[K, V]) *RbTreeIterator[K, V] {
+	return &RbTreeIterator[K, V]{node: node}
 }
 
 // IsValid returns true if the iterator is valid, otherwise returns false
-func (iter *RbTreeIterator) IsValid() bool {
+func (iter *RbTreeIterator[K, V]) IsValid() bool {
 	if iter.node != nil {
 		return true
 	}
@@ -23,7 +23,7 @@ func (iter *RbTreeIterator) IsValid() bool {
 }
 
 // Next moves the pointer of the iterator to the next node, and returns itself
-func (iter *RbTreeIterator) Next() iterator.ConstIterator {
+func (iter *RbTreeIterator[K, V]) Next() iterator.ConstIterator[V] {
 	if iter.IsValid() {
 		iter.node = iter.node.Next()
 	}
@@ -31,7 +31,7 @@ func (iter *RbTreeIterator) Next() iterator.ConstIterator {
 }
 
 // Prev moves the pointer of the iterator to the previous node, and returns itself
-func (iter *RbTreeIterator) Prev() iterator.ConstBidIterator {
+func (iter *RbTreeIterator[K, V]) Prev() iterator.ConstBidIterator[V] {
 	if iter.IsValid() {
 		iter.node = iter.node.Prev()
 	}
@@ -39,29 +39,29 @@ func (iter *RbTreeIterator) Prev() iterator.ConstBidIterator {
 }
 
 // Key returns the node's key of the iterator point to
-func (iter *RbTreeIterator) Key() interface{} {
+func (iter *RbTreeIterator[K, V]) Key() K {
 	return iter.node.Key()
 }
 
 // Value returns the node's value of the iterator point to
-func (iter *RbTreeIterator) Value() interface{} {
+func (iter *RbTreeIterator[K, V]) Value() V {
 	return iter.node.Value()
 }
 
 //SetValue sets the node's value of the iterator point to
-func (iter *RbTreeIterator) SetValue(val interface{}) error {
+func (iter *RbTreeIterator[K, V]) SetValue(val V) error {
 	iter.node.SetValue(val)
 	return nil
 }
 
 // Clone clones the iterator into a new RbTreeIterator
-func (iter *RbTreeIterator) Clone() iterator.ConstIterator {
-	return NewIterator(iter.node)
+func (iter *RbTreeIterator[K, V]) Clone() iterator.ConstIterator[V] {
+	return NewIterator[K, V](iter.node)
 }
 
 // Equal returns true if the iterator is equal to the passed iterator
-func (iter *RbTreeIterator) Equal(other iterator.ConstIterator) bool {
-	otherIter, ok := other.(*RbTreeIterator)
+func (iter *RbTreeIterator[K, V]) Equal(other iterator.ConstIterator[V]) bool {
+	otherIter, ok := other.(*RbTreeIterator[K, V])
 	if !ok {
 		return false
 	}

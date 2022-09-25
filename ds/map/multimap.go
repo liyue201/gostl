@@ -8,29 +8,26 @@ import (
 )
 
 // MultiMap uses RbTress for internal data structure, and keys can bee repeated.
-type MultiMap struct {
-	tree   *rbtree.RbTree
-	keyCmp comparator.Comparator
+type MultiMap[K, V any] struct {
+	tree   *rbtree.RbTree[K, V]
 	locker sync.Locker
 }
 
 //NewMultiMap creates a new MultiMap
-func NewMultiMap(opts ...Option) *MultiMap {
+func NewMultiMap[K, V any](cmp comparator.Comparator[K], opts ...Option) *MultiMap[K, V] {
 	option := Options{
-		keyCmp: defaultKeyComparator,
 		locker: defaultLocker,
 	}
 	for _, opt := range opts {
 		opt(&option)
 	}
-	return &MultiMap{tree: rbtree.New(rbtree.WithKeyComparator(option.keyCmp)),
-		keyCmp: option.keyCmp,
+	return &MultiMap[K, V]{tree: rbtree.New[K, V](cmp),
 		locker: option.locker,
 	}
 }
 
 //Insert inserts a key-value to the MultiMap
-func (mm *MultiMap) Insert(key, value interface{}) {
+func (mm *MultiMap[K, V]) Insert(key K, value V) {
 	mm.locker.Lock()
 	defer mm.locker.Unlock()
 
@@ -38,19 +35,19 @@ func (mm *MultiMap) Insert(key, value interface{}) {
 }
 
 //Get returns the first node's value by the passed key if the key is in the MultiMap, otherwise returns nil
-func (mm *MultiMap) Get(key interface{}) interface{} {
+func (mm *MultiMap[K, V]) Get(key K) (V, error) {
 	mm.locker.RLock()
 	defer mm.locker.RUnlock()
 
 	node := mm.tree.FindNode(key)
 	if node != nil {
-		return node.Value()
+		return node.Value(), nil
 	}
-	return nil
+	return *new(V), ErrorNotFound
 }
 
 //Erase erases the key in the MultiMap
-func (mm *MultiMap) Erase(key interface{}) {
+func (mm *MultiMap[K, V]) Erase(key K) {
 	mm.locker.Lock()
 	defer mm.locker.Unlock()
 
@@ -64,58 +61,58 @@ func (mm *MultiMap) Erase(key interface{}) {
 }
 
 //Find finds the node by the passed key in the MultiMap and returns its iterator
-func (mm *MultiMap) Find(key interface{}) *MapIterator {
+func (mm *MultiMap[K, V]) Find(key K) *MapIterator[K, V] {
 	mm.locker.RLock()
 	defer mm.locker.RUnlock()
 
 	node := mm.tree.FindNode(key)
-	return &MapIterator{node: node}
+	return &MapIterator[K, V]{node: node}
 }
 
 //LowerBound find the first node that its key is equal or greater than the passed key in the MultiMap, and returns its iterator
-func (mm *MultiMap) LowerBound(key interface{}) *MapIterator {
+func (mm *MultiMap[K, V]) LowerBound(key K) *MapIterator[K, V] {
 	mm.locker.RLock()
 	defer mm.locker.RUnlock()
 
 	node := mm.tree.FindLowerBoundNode(key)
-	return &MapIterator{node: node}
+	return &MapIterator[K, V]{node: node}
 }
 
 //UpperBound find the first node that its key is greater than the passed key in the MultiMap, and returns its iterator
-func (mm *MultiMap) UpperBound(key interface{}) *MapIterator {
+func (mm *MultiMap[K, V]) UpperBound(key K) *MapIterator[K, V] {
 	mm.locker.RLock()
 	defer mm.locker.RUnlock()
 
 	node := mm.tree.FindUpperBoundNode(key)
-	return &MapIterator{node: node}
+	return &MapIterator[K, V]{node: node}
 }
 
 //Begin returns the first node's iterator
-func (mm *MultiMap) Begin() *MapIterator {
+func (mm *MultiMap[K, V]) Begin() *MapIterator[K, V] {
 	mm.locker.RLock()
 	defer mm.locker.RUnlock()
 
-	return &MapIterator{node: mm.tree.First()}
+	return &MapIterator[K, V]{node: mm.tree.First()}
 }
 
 //First returns the first node's iterator
-func (mm *MultiMap) First() *MapIterator {
+func (mm *MultiMap[K, V]) First() *MapIterator[K, V] {
 	mm.locker.RLock()
 	defer mm.locker.RUnlock()
 
-	return &MapIterator{node: mm.tree.First()}
+	return &MapIterator[K, V]{node: mm.tree.First()}
 }
 
 //Last returns the last node's iterator
-func (mm *MultiMap) Last() *MapIterator {
+func (mm *MultiMap[K, V]) Last() *MapIterator[K, V] {
 	mm.locker.RLock()
 	defer mm.locker.RUnlock()
 
-	return &MapIterator{node: mm.tree.Last()}
+	return &MapIterator[K, V]{node: mm.tree.Last()}
 }
 
 //Clear clears the MultiMap
-func (mm *MultiMap) Clear() {
+func (mm *MultiMap[K, V]) Clear() {
 	mm.locker.Lock()
 	defer mm.locker.Unlock()
 
@@ -123,18 +120,18 @@ func (mm *MultiMap) Clear() {
 }
 
 // Contains returns true if the passed value is in the MultiMap. otherwise returns false.
-func (mm *MultiMap) Contains(value interface{}) bool {
+func (mm *MultiMap[K, V]) Contains(key K) bool {
 	mm.locker.RLock()
 	defer mm.locker.RUnlock()
 
-	if mm.tree.Find(value) != nil {
+	if _, err := mm.tree.Find(key); err == nil {
 		return true
 	}
 	return false
 }
 
 // Size returns the amount of elements in the MultiMap
-func (mm *MultiMap) Size() int {
+func (mm *MultiMap[K, V]) Size() int {
 	mm.locker.RLock()
 	defer mm.locker.RUnlock()
 
@@ -142,7 +139,7 @@ func (mm *MultiMap) Size() int {
 }
 
 // Traversal traversals elements in the MultiMap, it will not stop until to the end of the MultiMap or the visitor returns false
-func (mm *MultiMap) Traversal(visitor visitor.KvVisitor) {
+func (mm *MultiMap[K, V]) Traversal(visitor visitor.KvVisitor[K, V]) {
 	mm.locker.RLock()
 	defer mm.locker.RUnlock()
 

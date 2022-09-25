@@ -1,6 +1,7 @@
 package skiplist
 
 import (
+	"errors"
 	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/utils/sync"
 	"github.com/liyue201/gostl/utils/visitor"
@@ -10,27 +11,19 @@ import (
 )
 
 var (
-	defaultKeyComparator = comparator.BuiltinTypeComparator
-	defaultMaxLevel      = 10
-	defaultLocker        sync.FakeLocker
+	defaultMaxLevel = 10
+	defaultLocker   sync.FakeLocker
 )
+var ErrorNotFound = errors.New("not found")
 
 // Options holds Skiplist's options
 type Options struct {
-	keyCmp   comparator.Comparator
 	maxLevel int
 	locker   sync.Locker
 }
 
 // Option is a function used to set Options
 type Option func(option *Options)
-
-// WithKeyComparator sets Key comparator option
-func WithKeyComparator(cmp comparator.Comparator) Option {
-	return func(option *Options) {
-		option.keyCmp = cmp
-	}
-}
 
 // WithGoroutineSafe sets Skiplist goroutine-safety,
 func WithGoroutineSafe() Option {
@@ -47,51 +40,50 @@ func WithMaxLevel(maxLevel int) Option {
 }
 
 // Node is a list node
-type Node struct {
-	next []*Element
+type Node[K, V any] struct {
+	next []*Element[K, V]
 }
 
 // Element is a kind of node with key-value data
-type Element struct {
-	Node
-	key   interface{}
-	value interface{}
+type Element[K, V any] struct {
+	Node[K, V]
+	key   K
+	value V
 }
 
 // Skiplist is a kind of data structure which can search quickly by exchanging space for time
-type Skiplist struct {
+type Skiplist[K, V any] struct {
 	locker         sync.Locker
-	head           Node
+	head           Node[K, V]
 	maxLevel       int
-	keyCmp         comparator.Comparator
+	keyCmp         comparator.Comparator[K]
 	len            int
-	prevNodesCache []*Node
+	prevNodesCache []*Node[K, V]
 	rander         *rand.Rand
 }
 
 // New news a Skiplist
-func New(opts ...Option) *Skiplist {
+func New[K, V any](cmp comparator.Comparator[K], opts ...Option) *Skiplist[K, V] {
 	option := Options{
-		keyCmp:   defaultKeyComparator,
 		maxLevel: defaultMaxLevel,
 		locker:   defaultLocker,
 	}
 	for _, opt := range opts {
 		opt(&option)
 	}
-	l := &Skiplist{
+	l := &Skiplist[K, V]{
 		locker:   option.locker,
 		maxLevel: option.maxLevel,
-		keyCmp:   option.keyCmp,
+		keyCmp:   cmp,
 		rander:   rand.New(rand.NewSource(time.Now().Unix())),
 	}
-	l.head.next = make([]*Element, l.maxLevel)
-	l.prevNodesCache = make([]*Node, l.maxLevel)
+	l.head.next = make([]*Element[K, V], l.maxLevel)
+	l.prevNodesCache = make([]*Node[K, V], l.maxLevel)
 	return l
 }
 
 // Insert inserts a key-value pair into the skiplist
-func (sl *Skiplist) Insert(key, value interface{}) {
+func (sl *Skiplist[K, V]) Insert(key K, value V) {
 	sl.locker.Lock()
 	defer sl.locker.Unlock()
 	prevs := sl.findPrevNodes(key)
@@ -104,11 +96,11 @@ func (sl *Skiplist) Insert(key, value interface{}) {
 
 	level := sl.randomLevel()
 
-	e := &Element{
+	e := &Element[K, V]{
 		key:   key,
 		value: value,
-		Node: Node{
-			next: make([]*Element, level),
+		Node: Node[K, V]{
+			next: make([]*Element[K, V], level),
 		},
 	}
 
@@ -120,8 +112,8 @@ func (sl *Skiplist) Insert(key, value interface{}) {
 	sl.len++
 }
 
-// Get returns the value associated with the passed key if the key is in the skiplist, otherwise returns nil
-func (sl *Skiplist) Get(key interface{}) interface{} {
+// Get returns the value associated with the passed key if the key is in the skiplist, otherwise returns error
+func (sl *Skiplist[K, V]) Get(key K) (V, error) {
 	sl.locker.RLock()
 	defer sl.locker.RUnlock()
 
@@ -131,7 +123,7 @@ func (sl *Skiplist) Get(key interface{}) interface{} {
 		for ; cur != nil; cur = cur.next[i] {
 			cmpRet := sl.keyCmp(cur.key, key)
 			if cmpRet == 0 {
-				return cur.value
+				return cur.value, nil
 			}
 			if cmpRet > 0 {
 				break
@@ -139,11 +131,11 @@ func (sl *Skiplist) Get(key interface{}) interface{} {
 			pre = &cur.Node
 		}
 	}
-	return nil
+	return *new(V), ErrorNotFound
 }
 
 // Remove removes the key-value pair associated with the passed key and returns true if the key is in the skiplist, otherwise returns false
-func (sl *Skiplist) Remove(key interface{}) bool {
+func (sl *Skiplist[K, V]) Remove(key K) bool {
 	sl.locker.Lock()
 	defer sl.locker.Unlock()
 
@@ -164,13 +156,13 @@ func (sl *Skiplist) Remove(key interface{}) bool {
 }
 
 // Len returns the amount of key-value pair in the skiplist
-func (sl *Skiplist) Len() int {
+func (sl *Skiplist[K, V]) Len() int {
 	sl.locker.RLock()
 	defer sl.locker.RUnlock()
 	return sl.len
 }
 
-func (sl *Skiplist) randomLevel() int {
+func (sl *Skiplist[K, V]) randomLevel() int {
 	total := uint64(1)<<uint64(sl.maxLevel) - 1 // 2^n-1
 	k := sl.rander.Uint64() % total
 	levelN := uint64(1) << (uint64(sl.maxLevel) - 1)
@@ -183,7 +175,7 @@ func (sl *Skiplist) randomLevel() int {
 	return level
 }
 
-func (sl *Skiplist) findPrevNodes(key interface{}) []*Node {
+func (sl *Skiplist[K, V]) findPrevNodes(key K) []*Node[K, V] {
 	prevs := sl.prevNodesCache
 	prev := &sl.head
 	for i := sl.maxLevel - 1; i >= 0; i-- {
@@ -201,7 +193,7 @@ func (sl *Skiplist) findPrevNodes(key interface{}) []*Node {
 }
 
 // Traversal traversals elements in the skiplist, it will stop until to the end or the visitor returns false
-func (sl *Skiplist) Traversal(visitor visitor.KvVisitor) {
+func (sl *Skiplist[K, V]) Traversal(visitor visitor.KvVisitor[K, V]) {
 	sl.locker.RLock()
 	defer sl.locker.RUnlock()
 
@@ -213,9 +205,9 @@ func (sl *Skiplist) Traversal(visitor visitor.KvVisitor) {
 }
 
 // Keys returns all keys in the skiplist
-func (sl *Skiplist) Keys() []interface{} {
-	var keys []interface{}
-	sl.Traversal(func(key, value interface{}) bool {
+func (sl *Skiplist[K, V]) Keys() []K {
+	var keys []K
+	sl.Traversal(func(key K, value V) bool {
 		keys = append(keys, key)
 		return true
 	})

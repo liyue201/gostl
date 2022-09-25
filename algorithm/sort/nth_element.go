@@ -6,19 +6,15 @@ import (
 )
 
 // NthElement Rearranges the elements in the range [first,last), in such a way that the element at the nth position is the element that would be in that position in a sorted sequence
-func NthElement(first, last iterator.RandomAccessIterator, n int, cmps ...comparator.Comparator) {
+func NthElement[T any](first, last iterator.RandomAccessIterator[T], n int, cmp comparator.Comparator[T]) {
 	if first.Position() < 0 || last.Position()-first.Position() < n {
 		return
-	}
-	cmp := comparator.BuiltinTypeComparator
-	if len(cmps) > 0 {
-		cmp = cmps[0]
 	}
 	len := last.Position() - first.Position()
 	nthElement(first, last.IteratorAt(first.Position()+len-1), n, cmp)
 }
 
-func nthElement(first, last iterator.RandomAccessIterator, n int, cmp comparator.Comparator) {
+func nthElement[T any](first, last iterator.RandomAccessIterator[T], n int, cmp comparator.Comparator[T]) {
 	if first.Position()+1 >= last.Position() {
 		return
 	}
@@ -62,6 +58,6 @@ func nthElement(first, last iterator.RandomAccessIterator, n int, cmp comparator
 	if n <= m-first.Position() {
 		nthElement(first, first.IteratorAt(m), n, cmp)
 	} else {
-		nthElement(first.IteratorAt(m).Next().(iterator.RandomAccessIterator), last, n-(m-first.Position()+1), cmp)
+		nthElement(first.IteratorAt(m).Next().(iterator.RandomAccessIterator[T]), last, n-(m-first.Position()+1), cmp)
 	}
 }

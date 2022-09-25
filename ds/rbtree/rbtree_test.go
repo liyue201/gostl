@@ -9,7 +9,7 @@ import (
 )
 
 func TestRbTeeFind(t *testing.T) {
-	tree := New()
+	tree := New[int, int](comparator.IntComparator)
 	for i := 0; i < 10; i++ {
 		tree.Insert(i, i+10000)
 	}
@@ -17,14 +17,14 @@ func TestRbTeeFind(t *testing.T) {
 	assert.Equal(t, 10, tree.Size())
 
 	for i := 0; i < 10; i++ {
-		val := tree.Find(i)
+		val, _ := tree.Find(i)
 		assert.Equal(t, i+10000, val)
 	}
 	for i := 0; i < 10; i++ {
 		iter := tree.FindLowerBoundNode(i)
 		assert.Equal(t, i+10000, iter.Value())
 
-		iter2 := tree.FindUpperBoundNode(i-1)
+		iter2 := tree.FindUpperBoundNode(i - 1)
 		assert.Equal(t, i+10000, iter2.Value())
 	}
 	for i := 0; i < 10; i++ {
@@ -45,7 +45,7 @@ func TestRbTeeFind(t *testing.T) {
 	}
 
 	for i := 0; i < 10; i++ {
-		iter := tree.FindUpperBoundNode(i-1)
+		iter := tree.FindUpperBoundNode(i - 1)
 		count := 0
 		for n := iter; n != nil; n = n.Next() {
 			if n.key != i {
@@ -59,7 +59,7 @@ func TestRbTeeFind(t *testing.T) {
 }
 
 func TestRbTeeDelete(t *testing.T) {
-	tree := New()
+	tree := New[int, int](comparator.IntComparator)
 	m := make(map[int]int)
 	for i := 0; i < 1000; i++ {
 		tree.Insert(i, i)
@@ -78,21 +78,21 @@ func TestRbTeeDelete(t *testing.T) {
 }
 
 func TestTraversal(t *testing.T) {
-	tree := New()
+	tree := New[int, int](comparator.IntComparator)
 	for i := 0; i < 10; i++ {
 		tree.Insert(i, i+100)
 	}
 	i := 0
-	tree.Traversal(func(key, value interface{}) bool {
-		assert.Equal(t, i, key.(int))
-		assert.Equal(t, i+100, value.(int))
+	tree.Traversal(func(key, value int) bool {
+		assert.Equal(t, i, key)
+		assert.Equal(t, i+100, value)
 		i++
 		return true
 	})
 }
 
 func TestInsertDelete(t *testing.T) {
-	tree := New()
+	tree := New[int, int](comparator.IntComparator)
 	m := make(map[int]int)
 	rand.Seed(time.Now().Unix())
 	for i := 0; i < 10000; i++ {
@@ -119,13 +119,13 @@ func TestInsertDelete(t *testing.T) {
 }
 
 func TestIterator(t *testing.T) {
-	tree := New(WithKeyComparator(comparator.IntComparator))
+	tree := New[int, int](comparator.IntComparator)
 	for i := 0; i < 10; i++ {
 		tree.Insert(i, i+100)
 	}
 
 	i := 0
-	for iter := tree.IterFirst().Clone().(*RbTreeIterator); iter.IsValid(); iter.Next() {
+	for iter := tree.IterFirst().Clone().(*RbTreeIterator[int, int]); iter.IsValid(); iter.Next() {
 		assert.Equal(t, i, iter.Key())
 		assert.Equal(t, i+100, iter.Value())
 		i++
@@ -151,7 +151,7 @@ func TestIterator(t *testing.T) {
 }
 
 func TestNode(t *testing.T) {
-	tree := New()
+	tree := New[int, int](comparator.IntComparator)
 	for i := 0; i < 10; i++ {
 		tree.Insert(i, i+100)
 	}

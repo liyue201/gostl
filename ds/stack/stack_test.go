@@ -5,7 +5,7 @@ import (
 )
 
 func TestStack(t *testing.T) {
-	s := New(WithGoroutineSafe())
+	s := New(WithGoroutineSafe[int]())
 	for i := 0; i < 10; i++ {
 		s.Push(i)
 		if s.Top() != i {
@@ -27,7 +27,7 @@ func TestStack(t *testing.T) {
 }
 
 func TestStackWithListContainer(t *testing.T) {
-	s := New(WithListContainer())
+	s := New(WithListContainer[int]())
 	for i := 0; i < 10; i++ {
 		s.Push(i)
 		if s.Top() != i {

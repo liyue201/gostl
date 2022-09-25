@@ -8,7 +8,7 @@ import (
 )
 
 func TestInsert(t *testing.T) {
-	list := New(WithMaxLevel(5))
+	list := New[int, int](comparator.IntComparator, WithMaxLevel(5))
 
 	m := make(map[int]int)
 	for i := 0; i < 100; i++ {
@@ -17,14 +17,14 @@ func TestInsert(t *testing.T) {
 		m[key] = i
 	}
 	for key, v := range m {
-		ret := list.Get(key)
+		ret, _ := list.Get(key)
 		assert.Equal(t, v, ret)
 	}
 	assert.Equal(t, len(m), list.Len())
 }
 
 func TestRemove(t *testing.T) {
-	list := New(WithGoroutineSafe(), WithKeyComparator(comparator.IntComparator))
+	list := New[int, int](comparator.IntComparator, WithGoroutineSafe())
 
 	m := make(map[int]int)
 	for i := 0; i < 1000; i++ {
@@ -44,14 +44,14 @@ func TestRemove(t *testing.T) {
 	}
 
 	for key, v := range m {
-		ret := list.Get(key)
+		ret, _ := list.Get(key)
 		assert.Equal(t, v, ret)
 	}
 	assert.Equal(t, len(m), list.Len())
 }
 
 func TestSkiplist_Traversal(t *testing.T) {
-	list := New()
+	list := New[int, int](comparator.IntComparator)
 	for i := 0; i < 10; i++ {
 		list.Insert(i, i*10)
 	}
@@ -60,9 +60,9 @@ func TestSkiplist_Traversal(t *testing.T) {
 		assert.Equal(t, i, keys[i])
 	}
 	i := 0
-	list.Traversal(func(key, value interface{}) bool {
-		assert.Equal(t, i, key.(int))
-		assert.Equal(t, i*10, value.(int))
+	list.Traversal(func(key, value int) bool {
+		assert.Equal(t, i, key)
+		assert.Equal(t, i*10, value)
 		i++
 		return true
 	})

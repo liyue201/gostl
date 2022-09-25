@@ -6,19 +6,16 @@ import (
 )
 
 //BinarySearch returns true if exist an element witch value is val in the range [first, last), or false if not exist
-func BinarySearch(first, last iterator.RandomAccessIterator, val interface{}, cmp ...comparator.Comparator) bool {
-	if len(cmp) == 0 {
-		return binarySearch(first, last, val, comparator.BuiltinTypeComparator)
-	}
-	return binarySearch(first, last, val, cmp[0])
+func BinarySearch[T any](first, last iterator.RandomAccessIterator[T], val T, cmp comparator.Comparator[T]) bool {
+	return binarySearch(first, last, val, cmp)
 }
 
-func binarySearch(first, last iterator.RandomAccessIterator, val interface{}, cmp comparator.Comparator) bool {
+func binarySearch[T any](first, last iterator.RandomAccessIterator[T], val T, cmp comparator.Comparator[T]) bool {
 	if !first.IsValid() || first.Position() >= last.Position() {
 		return false
 	}
-	left := first.Clone().(iterator.RandomAccessIterator)
-	right := last.Clone().(iterator.RandomAccessIterator).Prev().(iterator.RandomAccessIterator)
+	left := first.Clone().(iterator.RandomAccessIterator[T])
+	right := last.Clone().(iterator.RandomAccessIterator[T]).Prev().(iterator.RandomAccessIterator[T])
 
 	for left.Position() <= right.Position() {
 		midPos := (left.Position() + right.Position()) >> 1
@@ -27,31 +24,28 @@ func binarySearch(first, last iterator.RandomAccessIterator, val interface{}, cm
 		if cmpRet == 0 {
 			return true
 		} else if cmpRet < 0 {
-			right = midIter.Prev().(iterator.RandomAccessIterator)
+			right = midIter.Prev().(iterator.RandomAccessIterator[T])
 		} else {
-			left = midIter.Next().(iterator.RandomAccessIterator)
+			left = midIter.Next().(iterator.RandomAccessIterator[T])
 		}
 	}
 	return false
 }
 
 //LowerBound returns the iterator pointing to the first element greater than or equal to value passed in the range [first, last), or iterator last if not exist.
-func LowerBound(first, last iterator.RandomAccessIterator, val interface{}, cmp ...comparator.Comparator) iterator.RandomAccessIterator {
-	if len(cmp) == 0 {
-		return lowerBound(first, last, val, comparator.BuiltinTypeComparator)
-	}
-	return lowerBound(first, last, val, cmp[0])
+func LowerBound[T any](first, last iterator.RandomAccessIterator[T], val T, cmp comparator.Comparator[T]) iterator.RandomAccessIterator[T] {
+	return lowerBound(first, last, val, cmp)
 }
 
-func lowerBound(first, last iterator.RandomAccessIterator, val interface{}, cmp comparator.Comparator) iterator.RandomAccessIterator {
+func lowerBound[T any](first, last iterator.RandomAccessIterator[T], val T, cmp comparator.Comparator[T]) iterator.RandomAccessIterator[T] {
 	if !first.IsValid() || first.Position() >= last.Position() {
-		return last.Clone().(iterator.RandomAccessIterator)
+		return last.Clone().(iterator.RandomAccessIterator[T])
 	}
 
-	left := first.Clone().(iterator.RandomAccessIterator)
-	right := last.Clone().(iterator.RandomAccessIterator).Prev().(iterator.RandomAccessIterator)
+	left := first.Clone().(iterator.RandomAccessIterator[T])
+	right := last.Clone().(iterator.RandomAccessIterator[T]).Prev().(iterator.RandomAccessIterator[T])
 	if cmp(val, right.Value()) > 0 {
-		return last.Clone().(iterator.RandomAccessIterator)
+		return last.Clone().(iterator.RandomAccessIterator[T])
 	}
 	var pos int
 	for left.Position() <= right.Position() {
@@ -59,31 +53,28 @@ func lowerBound(first, last iterator.RandomAccessIterator, val interface{}, cmp 
 		midIter := left.IteratorAt(midPos)
 		if cmp(val, midIter.Value()) <= 0 {
 			pos = midIter.Position()
-			right = midIter.Prev().(iterator.RandomAccessIterator)
+			right = midIter.Prev().(iterator.RandomAccessIterator[T])
 		} else {
-			left = midIter.Next().(iterator.RandomAccessIterator)
+			left = midIter.Next().(iterator.RandomAccessIterator[T])
 		}
 	}
 	return first.IteratorAt(pos)
 }
 
 //UpperBound returns the iterator pointing to the first element greater than val in the range [first, last), or iterator last if not exist.
-func UpperBound(first, last iterator.RandomAccessIterator, val interface{}, cmp ...comparator.Comparator) iterator.RandomAccessIterator {
-	if len(cmp) == 0 {
-		return upperBound(first, last, val, comparator.BuiltinTypeComparator)
-	}
-	return upperBound(first, last, val, cmp[0])
+func UpperBound[T any](first, last iterator.RandomAccessIterator[T], val T, cmp comparator.Comparator[T]) iterator.RandomAccessIterator[T] {
+	return upperBound(first, last, val, cmp)
 }
 
-func upperBound(first, last iterator.RandomAccessIterator, val interface{}, cmp comparator.Comparator) iterator.RandomAccessIterator {
+func upperBound[T any](first, last iterator.RandomAccessIterator[T], val T, cmp comparator.Comparator[T]) iterator.RandomAccessIterator[T] {
 	if !first.IsValid() || first.Position() >= last.Position() {
-		return last.Clone().(iterator.RandomAccessIterator)
+		return last.Clone().(iterator.RandomAccessIterator[T])
 	}
 
-	left := first.Clone().(iterator.RandomAccessIterator)
-	right := last.Clone().(iterator.RandomAccessIterator).Prev().(iterator.RandomAccessIterator)
+	left := first.Clone().(iterator.RandomAccessIterator[T])
+	right := last.Clone().(iterator.RandomAccessIterator[T]).Prev().(iterator.RandomAccessIterator[T])
 	if cmp(val, right.Value()) >= 0 {
-		return last.Clone().(iterator.RandomAccessIterator)
+		return last.Clone().(iterator.RandomAccessIterator[T])
 	}
 	var pos int
 	for left.Position() <= right.Position() {
@@ -91,9 +82,9 @@ func upperBound(first, last iterator.RandomAccessIterator, val interface{}, cmp 
 		midIter := left.IteratorAt(midPos)
 		if cmp(val, midIter.Value()) < 0 {
 			pos = midIter.Position()
-			right = midIter.Prev().(iterator.RandomAccessIterator)
+			right = midIter.Prev().(iterator.RandomAccessIterator[T])
 		} else {
-			left = midIter.Next().(iterator.RandomAccessIterator)
+			left = midIter.Next().(iterator.RandomAccessIterator[T])
 		}
 	}
 	return first.IteratorAt(pos)

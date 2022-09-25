@@ -7,15 +7,15 @@ import (
 )
 
 func main() {
-	a := deque.New()
+	a := deque.New[int]()
 	for i := 0; i < 9; i++ {
 		a.PushBack(i)
 	}
 	fmt.Printf("%v\n", a)
 
-	algorithm.Swap(a.First(), a.Last())
+	algorithm.Swap[int](a.First(), a.Last())
 	fmt.Printf("%v\n", a)
 
-	algorithm.Reverse(a.Begin(), a.End())
+	algorithm.Reverse[int](a.Begin(), a.End())
 	fmt.Printf("%v\n", a)
 }

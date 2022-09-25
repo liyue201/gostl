@@ -1,24 +1,29 @@
 package bidlist
 
 import (
+	"errors"
 	"fmt"
 	"github.com/liyue201/gostl/ds/container"
 	"github.com/liyue201/gostl/utils/visitor"
 )
 
 // List is an implementation of Container
-var _ container.Container = (*List)(nil)
+type T any
+
+var ErrorOutOffRange = errors.New("out of range")
+
+var _ container.Container[T] = (*List[T])(nil)
 
 // Node is a list node
-type Node struct {
-	prev  *Node
-	next  *Node
-	Value interface{}
-	list  *List
+type Node[T any] struct {
+	prev  *Node[T]
+	next  *Node[T]
+	Value T
+	list  *List[T]
 }
 
 // Next returns the next list node or nil.
-func (n *Node) Next() *Node {
+func (n *Node[T]) Next() *Node[T] {
 	if n.list == nil {
 		return nil
 	}
@@ -29,7 +34,7 @@ func (n *Node) Next() *Node {
 }
 
 // Prev returns the previous list node or nil.
-func (n *Node) Prev() *Node {
+func (n *Node[T]) Prev() *Node[T] {
 	if n.list == nil {
 		return nil
 	}
@@ -45,39 +50,39 @@ func (n *Node) Prev() *Node {
 //            |                   |
 //           node6 -- node5 --  node4
 //
-type List struct {
-	head *Node // point to the front Node
-	len  int   // current list length
+type List[T any] struct {
+	head *Node[T] // point to the front Node
+	len  int      // current list length
 }
 
 // New creates a list
-func New() *List {
-	list := &List{}
+func New[T any]() *List[T] {
+	list := &List[T]{}
 	return list
 }
 
 // Len returns the amount of list nodes.
-func (l *List) Len() int {
+func (l *List[T]) Len() int {
 	return l.len
 }
 
 // Size returns the amount of list nodes.
-func (l *List) Size() int {
+func (l *List[T]) Size() int {
 	return l.len
 }
 
 // Empty returns true if the list is empty
-func (l *List) Empty() bool {
+func (l *List[T]) Empty() bool {
 	return l.len == 0
 }
 
 // FrontNode returns the front node of the list or nil if the list is empty
-func (l *List) FrontNode() *Node {
+func (l *List[T]) FrontNode() *Node[T] {
 	return l.head
 }
 
 // BackNode returns the last node of the list or nil if the list is empty
-func (l *List) BackNode() *Node {
+func (l *List[T]) BackNode() *Node[T] {
 	if l.head == nil {
 		return nil
 	}
@@ -85,29 +90,29 @@ func (l *List) BackNode() *Node {
 }
 
 // Front returns the value of the front node
-func (l *List) Front() interface{} {
+func (l *List[T]) Front() T {
 	if l.len == 0 {
-		return nil
+		panic(ErrorOutOffRange)
 	}
 	return l.head.Value
 }
 
 // Back returns the value of the last node
-func (l *List) Back() interface{} {
+func (l *List[T]) Back() T {
 	if l.len == 0 {
-		return nil
+		panic(ErrorOutOffRange)
 	}
 	return l.head.prev.Value
 }
 
 // PushBack inserts a new node n with value v at the back of the list
-func (l *List) PushBack(v interface{}) {
+func (l *List[T]) PushBack(v T) {
 	l.pushBack(v)
 }
 
 // PushBack inserts a new node n with value v at the back of the list and returns n.
-func (l *List) pushBack(v interface{}) *Node {
-	n := &Node{Value: v, list: l}
+func (l *List[T]) pushBack(v T) *Node[T] {
+	n := &Node[T]{Value: v, list: l}
 	if l.len == 0 {
 		n.prev = n
 		n.next = n
@@ -119,7 +124,7 @@ func (l *List) pushBack(v interface{}) *Node {
 }
 
 // PushFront inserts a new node n with value v at the front of the list.
-func (l *List) PushFront(v interface{}) {
+func (l *List[T]) PushFront(v T) {
 	n := l.pushBack(v)
 	l.head = n
 }
@@ -127,28 +132,28 @@ func (l *List) PushFront(v interface{}) {
 // InsertAfter inserts a new node n with value v immediately after mark and returns n.
 // If mark is not a node of l list, the list is not modified.
 // The mark must not be nil.
-func (l *List) InsertAfter(v interface{}, mark *Node) *Node {
+func (l *List[T]) InsertAfter(v T, mark *Node[T]) *Node[T] {
 	if mark.list != l {
 		return nil
 	}
-	return l.insertAfter(&Node{Value: v, list: l}, mark)
+	return l.insertAfter(&Node[T]{Value: v, list: l}, mark)
 }
 
 // InsertBefore inserts a new node n with value v immediately before mark and returns n.
 // If mark is not a node of l list, the list is not modified.
 // The mark must not be nil.
-func (l *List) InsertBefore(v interface{}, mark *Node) *Node {
+func (l *List[T]) InsertBefore(v T, mark *Node[T]) *Node[T] {
 	if mark.list != l {
 		return nil
 	}
-	n := l.insertAfter(&Node{Value: v, list: l}, mark.prev)
+	n := l.insertAfter(&Node[T]{Value: v, list: l}, mark.prev)
 	if l.head == mark {
 		l.head = n
 	}
 	return n
 }
 
-func (l *List) insertAfter(n, at *Node) *Node {
+func (l *List[T]) insertAfter(n, at *Node[T]) *Node[T] {
 	n.next = at.next
 	n.prev = at
 	at.next.prev = n
@@ -160,14 +165,14 @@ func (l *List) insertAfter(n, at *Node) *Node {
 // Remove removes n from l list if n is a node of l list.
 // It returns the n value n.Value.
 // The node must not be nil.
-func (l *List) Remove(n *Node) interface{} {
+func (l *List[T]) Remove(n *Node[T]) T {
 	if n.list == l {
 		l.remove(n)
 	}
 	return n.Value
 }
 
-func (l *List) remove(n *Node) *Node {
+func (l *List[T]) remove(n *Node[T]) *Node[T] {
 	if n == l.head {
 		l.head = l.head.next
 	}
@@ -184,33 +189,33 @@ func (l *List) remove(n *Node) *Node {
 }
 
 // Clear removes all nodes
-func (l *List) Clear() {
+func (l *List[T]) Clear() {
 	l.head = nil
 	l.len = 0
 }
 
 // PopBack removes the last node in the list and returns its value
-func (l *List) PopBack() interface{} {
+func (l *List[T]) PopBack() T {
 	n := l.BackNode()
 	if n != nil {
 		return l.Remove(n)
 	}
-	return nil
+	panic(ErrorOutOffRange)
 }
 
 // PopFront removes the first node in the list and returns its value
-func (l *List) PopFront() interface{} {
+func (l *List[T]) PopFront() T {
 	n := l.FrontNode()
 	if n != nil {
 		return l.Remove(n)
 	}
-	return nil
+	panic(ErrorOutOffRange)
 }
 
 // MoveToFront moves node n to the front of the list.
 // If n is not a node of the list, the list is not modified.
 // The n must not be nil.
-func (l *List) MoveToFront(n *Node) {
+func (l *List[T]) MoveToFront(n *Node[T]) {
 	if n.list != l {
 		return
 	}
@@ -223,7 +228,7 @@ func (l *List) MoveToFront(n *Node) {
 // MoveToBack moves node  n to the back of the list.
 // If e is not a node of the list, the list is not modified.
 // The node must not be nil.
-func (l *List) MoveToBack(n *Node) {
+func (l *List[T]) MoveToBack(n *Node[T]) {
 	if n.list != l {
 		return
 	}
@@ -238,14 +243,14 @@ func (l *List) MoveToBack(n *Node) {
 // MoveAfter moves node n to its new position after mark.
 // If n or mark is not a node of the list, or n == mark, the list is not modified.
 // The node and mark must not be nil.
-func (l *List) MoveAfter(n, mark *Node) {
+func (l *List[T]) MoveAfter(n, mark *Node[T]) {
 	if n.list != l || n == mark || mark.list != l {
 		return
 	}
 	l.moveToAfter(n, mark)
 }
 
-func (l *List) moveToAfter(n, at *Node) {
+func (l *List[T]) moveToAfter(n, at *Node[T]) {
 	if n == at.next || n == at {
 		return
 	}
@@ -262,22 +267,22 @@ func (l *List) moveToAfter(n, at *Node) {
 
 // PushBackList inserts a copy of an other list at the back of the list.
 // The list and other may be the same. They must not be nil.
-func (l *List) PushBackList(other *List) {
+func (l *List[T]) PushBackList(other *List[T]) {
 	for i, n := other.Len(), other.FrontNode(); i > 0; i, n = i-1, n.Next() {
 		l.InsertAfter(n.Value, l.head.prev)
 	}
 }
 
-// PushFrontList inserts a copy of an other list at the front of the list.
+// PushFrontList inserts a copy of another list at the front of the list.
 // The list and other may be the same. They must not be nil.
-func (l *List) PushFrontList(other *List) {
+func (l *List[T]) PushFrontList(other *List[T]) {
 	for i, e := other.Len(), other.BackNode(); i > 0; i, e = i-1, e.Prev() {
 		l.InsertBefore(e.Value, l.head)
 	}
 }
 
 // String returns a string representation of the list
-func (l *List) String() string {
+func (l *List[T]) String() string {
 	str := "["
 	for n := l.FrontNode(); n != nil; n = n.Next() {
 		if str != "[" {
@@ -290,7 +295,7 @@ func (l *List) String() string {
 }
 
 // Traversal traversals elements in the list, it will not stop until to the end of the list or the visitor returns false
-func (l *List) Traversal(visitor visitor.Visitor) {
+func (l *List[T]) Traversal(visitor visitor.Visitor[T]) {
 	for node := l.FrontNode(); node != nil; node = node.Next() {
 		if !visitor(node.Value) {
 			break
