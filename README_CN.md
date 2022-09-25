@@ -46,34 +46,37 @@ GoSTL是一个go语言数据结构和算法库，类似C++的STL，但功能更�
 ## 例子
 
 ### <a name="slice">切片（slice）</a>
-这个库中的切片是对go原生切片的重定义。  
-下面是一个如何将go原生的切片转成IntSlice，然后对其排序的例子。
+这个库中的切片是对go原生切片的定义包装。  
+
 
  ```go
 package main
 
 import (
-	"fmt"
-	"github.com/liyue201/gostl/algorithm/sort"
-	"github.com/liyue201/gostl/ds/slice"
-	"github.com/liyue201/gostl/utils/comparator"
+  "fmt"
+  "github.com/liyue201/gostl/algorithm/sort"
+  "github.com/liyue201/gostl/ds/slice"
+  "github.com/liyue201/gostl/utils/comparator"
 )
 
 func main() {
-	a := slice.IntSlice(make([]int, 0))
-	a = append(a, 2)
-	a = append(a, 1)
-	a = append(a, 3)
-	fmt.Printf("%v\n", a)
-	
-	// sort in ascending
-	sort.Sort(a.Begin(), a.End())
-	fmt.Printf("%v\n", a)
-	
-	// sort in descending
-	sort.Sort(a.Begin(), a.End(), comparator.Reverse(comparator.BuiltinTypeComparator))
-	fmt.Printf("%v\n", a)
+  a := make([]int, 0)
+  a = append(a, 2)
+  a = append(a, 1)
+  a = append(a, 3)
+  fmt.Printf("%v\n", a)
+
+  wa := slice.NewSliceWrapper(a)
+
+  // sort in ascending
+  sort.Sort[int](wa.Begin(), wa.End(), comparator.IntComparator)
+  fmt.Printf("%v\n", a)
+
+  // sort in descending
+  sort.Sort[int](wa.Begin(), wa.End(), comparator.Reverse(comparator.IntComparator))
+  fmt.Printf("%v\n", a)
 }
+
  ```
  
 ### <a name="array">数组（array）</a>
@@ -83,23 +86,23 @@ func main() {
 package main
 
 import (
-	"fmt"
-	"github.com/liyue201/gostl/ds/array"
+  "fmt"
+  "github.com/liyue201/gostl/ds/array"
 )
 
 func main() {
-	a := array.New(5)
-	for i := 0; i < a.Size(); i++ {
-		a.Set(i, i + 1)
-	}
-	for i := 0; i < a.Size(); i++ {
-		fmt.Printf("%v ", a.At(i))
-	}
+  a := array.New[int](5)
+  for i := 0; i < a.Size(); i++ {
+    a.Set(i, i+1)
+  }
+  for i := 0; i < a.Size(); i++ {
+    fmt.Printf("%v ", a.At(i))
+  }
 
-	fmt.Printf("\n")
-	for iter := a.Begin(); iter.IsValid(); iter.Next() {
-		fmt.Printf("%v ", iter.Value())
-	}
+  fmt.Printf("\n")
+  for iter := a.Begin(); iter.IsValid(); iter.Next() {
+    fmt.Printf("%v ", iter.Value())
+  }
 }
 
 ```
@@ -111,28 +114,29 @@ func main() {
 package main
 
 import (
-	"fmt"
-	"github.com/liyue201/gostl/algorithm/sort"
-	"github.com/liyue201/gostl/ds/vector"
-	"github.com/liyue201/gostl/utils/comparator"
+  "fmt"
+  "github.com/liyue201/gostl/algorithm/sort"
+  "github.com/liyue201/gostl/ds/vector"
+  "github.com/liyue201/gostl/utils/comparator"
 )
 
 func main() {
-	v := vector.New()
-	v.PushBack(1)
-	v.PushBack(2)
-	v.PushBack(3)
-	for i := 0; i < v.Size(); i++ {
-		fmt.Printf("%v ", v.At(i))
-	}
-	fmt.Printf("\n")
+  v := vector.New[int]()
+  v.PushBack(1)
+  v.PushBack(2)
+  v.PushBack(3)
+  for i := 0; i < v.Size(); i++ {
+    fmt.Printf("%v ", v.At(i))
+  }
+  fmt.Printf("\n")
 
-	// sort in descending
-	sort.Sort(v.Begin(), v.End(), comparator.Reverse(comparator.BuiltinTypeComparator))
-	for iter := v.Begin(); iter.IsValid(); iter.Next() {
-		fmt.Printf("%v ", iter.Value())
-	}
+  // sort in descending
+  sort.Sort[int](v.Begin(), v.End(), comparator.Reverse(comparator.IntComparator))
+  for iter := v.Begin(); iter.IsValid(); iter.Next() {
+    fmt.Printf("%v ", iter.Value())
+  }
 }
+
 ```
 
 
@@ -145,21 +149,21 @@ func main() {
 package main
 
 import (
-	"fmt"
-	"github.com/liyue201/gostl/ds/list/simplelist"
+  "fmt"
+  "github.com/liyue201/gostl/ds/list/simplelist"
 )
 
 func main() {
-	l := simplelist.New()
-	l.PushBack(1)
-	l.PushFront(2)
-	l.PushFront(3)
-	l.PushBack(4)
-	for n := l.FrontNode(); n != nil; n = n.Next() {
-		fmt.Printf("%v ", n.Value)
-	}
+  l := simplelist.New[int]()
+  l.PushBack(1)
+  l.PushFront(2)
+  l.PushFront(3)
+  l.PushBack(4)
+  for n := l.FrontNode(); n != nil; n = n.Next() {
+    fmt.Printf("%v ", n.Value)
+  }
+  fmt.Printf("\n===============\n")
 }
-
 ```
   
 - 双向链表  
@@ -169,24 +173,23 @@ func main() {
 package main
 
 import (
-	"fmt"
-	list "github.com/liyue201/gostl/ds/list/bidlist"
+  "fmt"
+  "github.com/liyue201/gostl/ds/list/bidlist"
 )
-
 func main() {
-	l := list.New()
-	l.PushBack(1)
-	l.PushFront(2)
-	l.PushFront(3)
-	l.PushBack(4)
-	for n := l.FrontNode(); n != nil; n = n.Next() {
-		fmt.Printf("%v ", n.Value)
-	}
-	fmt.Printf("\n", )
+  l := bidlist.New[int]()
+  l.PushBack(1)
+  l.PushFront(2)
+  l.PushFront(3)
+  l.PushBack(4)
+  for n := l.FrontNode(); n != nil; n = n.Next() {
+    fmt.Printf("%v ", n.Value)
+  }
+  fmt.Printf("\n")
 
-	for n := l.BackNode(); n != nil; n = n.Prev() {
-		fmt.Printf("%v ", n.Value)
-	}
+  for n := l.BackNode(); n != nil; n = n.Prev() {
+    fmt.Printf("%v ", n.Value)
+  }
 }
 ```
 
@@ -197,24 +200,30 @@ func main() {
 package main
 
 import (
-	"fmt"
-	"github.com/liyue201/gostl/algorithm/sort"
-	"github.com/liyue201/gostl/ds/deque"
+  "fmt"
+  "github.com/liyue201/gostl/algorithm/sort"
+  "github.com/liyue201/gostl/ds/deque"
+  "github.com/liyue201/gostl/utils/comparator"
+  "math/rand"
 )
 
 func main() {
-	q := deque.New()
-	q.PushBack(2)
-	q.PushFront(1)
-	q.PushBack(3)
-	q.PushFront(4)
-	fmt.Printf("%v\n", q)
+  q := deque.New[int]()
+  for i := 0; i < 100; i++ {
+    r := rand.Int() % 100
+    q.PushBack(r)
+    q.PushFront(r)
+  }
+  fmt.Printf("%v\n", q)
 
-	sort.Sort(q.Begin(), q.End())
-	fmt.Printf("%v\n", q)
-	fmt.Printf("%v\n", q.PopBack())
-	fmt.Printf("%v\n", q.PopFront())
-	fmt.Printf("%v\n", q)
+  sort.Sort[int](q.Begin(), q.End(), comparator.IntComparator)
+  fmt.Printf("%v\n", q)
+
+  for !q.Empty() {
+    r := rand.Int() % q.Size()
+    q.EraseAt(r)
+  }
+  fmt.Printf("%v\n", q)
 }
 
 ```
@@ -226,96 +235,46 @@ func main() {
 package main
 
 import (
-	"fmt"
-	"github.com/liyue201/gostl/ds/queue"
-	"sync"
-	"time"
+  "fmt"
+  "github.com/liyue201/gostl/ds/queue"
 )
 
-func example1()  {
-	fmt.Printf("example1:\n")
-	q := queue.New()
-	for i := 0; i < 5; i++ {
-		q.Push(i)
-	}
-	for !q.Empty() {
-		fmt.Printf("%v\n", q.Pop())
-	}
-}
-
-//  基于链表
-func example2()  {
-	fmt.Printf("example2:\n")
-	q := queue.New(queue.WithListContainer())
-	for i := 0; i < 5; i++ {
-		q.Push(i)
-	}
-	for !q.Empty() {
-		fmt.Printf("%v\n", q.Pop())
-	}
-}
-
-// 线程安全
-func example3() {
-	fmt.Printf("example3:\n")
-
-	s := queue.New(queue.WithGoroutineSafe())
-	sw := sync.WaitGroup{}
-	sw.Add(2)
-	go func() {
-		defer sw.Done()
-		for i := 0; i < 10; i++ {
-			s.Push(i)
-			time.Sleep(time.Microsecond * 100)
-		}
-	}()
-
-	go func() {
-		defer sw.Done()
-		for i := 0; i < 10; {
-			if !s.Empty() {
-				val := s.Pop()
-				fmt.Printf("%v\n", val)
-				i++
-			} else {
-				time.Sleep(time.Microsecond * 100)
-			}
-		}
-	}()
-	sw.Wait()
-}
-
 func main() {
-	example1()
-	example2()
-	example3()
+  q := queue.New[int]()
+  for i := 0; i < 5; i++ {
+    q.Push(i)
+  }
+  for !q.Empty() {
+    fmt.Printf("%v\n", q.Pop())
+  }
 }
 ```
 
 ### <a name="priority_queue">优先队列（priority_queue）</a>
-优先队列基于go标准库的`container/heap`包实现，支持线程安全。
+优先级队列是一种类似于队列的抽象数据类型，每个元素都有一些与之关联的优先级值。 优先级队列中元素的优先级决定了移除元素的顺序。 
 
 ```go
 package main
 
 import (
-	"fmt"
-	"github.com/liyue201/gostl/ds/priorityqueue"
-	"github.com/liyue201/gostl/utils/comparator"
+  "fmt"
+  "github.com/liyue201/gostl/ds/priorityqueue"
+  "github.com/liyue201/gostl/utils/comparator"
 )
 
 func main() {
-	q := priorityqueue.New(priorityqueue.WithComparator(comparator.Reverse(comparator.BuiltinTypeComparator)),
-		priorityqueue.WithGoroutineSafe())
-	q.Push(5)
-	q.Push(13)
-	q.Push(7)
-	q.Push(9)
-	q.Push(0)
-	q.Push(88)
-	for !q.Empty() {
-		fmt.Printf("%v\n", q.Pop())
-	}
+  q := priorityqueue.New[int](comparator.Reverse(comparator.IntComparator),
+    priorityqueue.WithGoroutineSafe())
+  q.Push(4)
+  q.Push(13)
+  q.Push(7)
+  q.Push(9)
+  q.Push(0)
+  q.Push(88)
+
+  for !q.Empty() {
+    fmt.Printf("%v\n", q.Pop())
+  }
 }
 ```
 
@@ -326,71 +285,18 @@ func main() {
 package main
 
 import (
-	"fmt"
-	"github.com/liyue201/gostl/ds/stack"
-	"sync"
-	"time"
+  "fmt"
+  "github.com/liyue201/gostl/ds/stack"
 )
 
-func example1() {
-	fmt.Printf("example1:\n")
-
-	s := stack.New()
-	s.Push(1)
-	s.Push(2)
-	s.Push(3)
-	for !s.Empty() {
-		fmt.Printf("%v\n", s.Pop())
-	}
-}
-
-// based on list
-func example2() {
-	fmt.Printf("example2:\n")
-
-	s := stack.New(stack.WithListContainer())
-	s.Push(1)
-	s.Push(2)
-	s.Push(3)
-	for !s.Empty() {
-		fmt.Printf("%v\n", s.Pop())
-	}
-}
-
-// goroutine-save
-func example3() {
-	fmt.Printf("example3:\n")
-
-	s := stack.New(stack.WithGoroutineSafe())
-	sw := sync.WaitGroup{}
-	sw.Add(2)
-	go func() {
-		defer sw.Done()
-		for i := 0; i < 10; i++ {
-			s.Push(i)
-			time.Sleep(time.Microsecond * 100)
-		}
-	}()
-
-	go func() {
-		defer sw.Done()
-		for i := 0; i < 10; {
-			if !s.Empty() {
-				val := s.Pop()
-				fmt.Printf("%v\n", val)
-				i++
-			} else {
-				time.Sleep(time.Microsecond * 100)
-			}
-		}
-	}()
-	sw.Wait()
-}
-
 func main() {
-	example1()
-	example2()
-	example3()
+  s := stack.New[int]()
+  s.Push(1)
+  s.Push(2)
+  s.Push(3)
+  for !s.Empty() {
+    fmt.Printf("%v\n", s.Pop())
+  }
 }
 ```
 
@@ -401,23 +307,26 @@ func main() {
 package main
 
 import (
-	"fmt"
-	"github.com/liyue201/gostl/ds/rbtree"
+  "fmt"
+  "github.com/liyue201/gostl/ds/rbtree"
+  "github.com/liyue201/gostl/utils/comparator"
 )
 
-func main()  {
-	tree := rbtree.New()
-	tree.Insert(1, "aaa")
-	tree.Insert(5, "bbb")
-	tree.Insert(3, "ccc")
-	fmt.Printf("find %v returns %v\n",5, tree.Find(5))
+func main() {
+  tree := rbtree.New[int, string](comparator.IntComparator)
+  tree.Insert(1, "aaa")
+  tree.Insert(5, "bbb")
+  tree.Insert(3, "ccc")
+  v, _ := tree.Find(5)
+  fmt.Printf("find %v returns %v\n", 5, v)
 
-	tree.Traversal(func(key, value interface{}) bool {
-		fmt.Printf("%v : %v\n", key, value)
-		return true
-	})
-	tree.Delete(tree.FindNode(3))
+  tree.Traversal(func(key int, value string) bool {
+    fmt.Printf("%v : %v\n", key, value)
+    return true
+  })
+  tree.Delete(tree.FindNode(3))
 }
+
 
 ```
 
@@ -428,21 +337,25 @@ func main()  {
 package main
 
 import (
-	"fmt"
-	"github.com/liyue201/gostl/ds/map"
+  "fmt"
+  "github.com/liyue201/gostl/ds/map"
+  "github.com/liyue201/gostl/utils/comparator"
 )
 
 func main() {
-	m := treemap.New(treemap.WithGoroutineSafe())
+  m := treemap.New[string, string](comparator.StringComparator, treemap.WithGoroutineSafe())
 
-	m.Insert("a", "aaa")
-	m.Insert("b", "bbb")
+  m.Insert("a", "aaa")
+  m.Insert("b", "bbb")
 
-	fmt.Printf("a = %v\n", m.Get("a"))
-	fmt.Printf("b = %v\n", m.Get("b"))
-	
-	m.Erase("b")
+  a, _ := m.Get("a")
+  b, _ := m.Get("b")
+  fmt.Printf("a = %v\n", a)
+  fmt.Printf("b = %v\n", b)
+
+  m.Erase("b")
 }
+
 ```
 
 ### <a name="set">集合（set）</a>
@@ -452,27 +365,29 @@ func main() {
 package main
 
 import (
-	"fmt"
-	"github.com/liyue201/gostl/ds/set"
+  "fmt"
+  "github.com/liyue201/gostl/ds/set"
+  "github.com/liyue201/gostl/utils/comparator"
 )
 
-func main()  {
-	s := set.New(set.WithGoroutineSafe())
-	s.Insert(1)
-	s.Insert(5)
-	s.Insert(3)
-	s.Insert(4)
-	s.Insert(2)
+func main() {
+  s := set.New[int](comparator.IntComparator, set.WithGoroutineSafe())
+  s.Insert(1)
+  s.Insert(5)
+  s.Insert(3)
+  s.Insert(4)
+  s.Insert(2)
 
-	s.Erase(4)
+  s.Erase(4)
 
-	for iter := s.Begin(); iter.IsValid(); iter.Next() {
-		fmt.Printf("%v\n", iter.Value())
-	}
+  for iter := s.Begin(); iter.IsValid(); iter.Next() {
+    fmt.Printf("%v\n", iter.Value())
+  }
 
-	fmt.Printf("%v\n", s.Contains(3))
-	fmt.Printf("%v\n", s.Contains(10))
+  fmt.Printf("%v\n", s.Contains(3))
+  fmt.Printf("%v\n", s.Contains(10))
 }
+
 ```
 
 ### <a name="bitmap">位映射（bitmap）</a>
@@ -482,20 +397,21 @@ func main()  {
 package main
 
 import (
-	"fmt"
-	"github.com/liyue201/gostl/ds/bitmap"
+  "fmt"
+  "github.com/liyue201/gostl/ds/bitmap"
 )
 
 func main() {
-	bm := bitmap.New(1000)
-	bm.Set(6)
-	bm.Set(10)
+  bm := bitmap.New(1000)
+  bm.Set(6)
+  bm.Set(10)
 
-	fmt.Printf("%v\n", bm.IsSet(5))
-	fmt.Printf("%v\n", bm.IsSet(6))
-	bm.Unset(6)
-	fmt.Printf("%v\n", bm.IsSet(6))
+  fmt.Printf("%v\n", bm.IsSet(5))
+  fmt.Printf("%v\n", bm.IsSet(6))
+  bm.Unset(6)
+  fmt.Printf("%v\n", bm.IsSet(6))
 }
+
 ```
 
 ### <a name="bloom_filter">布隆过滤器（bloom_filter）</a>
@@ -505,18 +421,19 @@ func main() {
 package main
 
 import (
-	"fmt"
-	"github.com/liyue201/gostl/ds/bloomfilter"
+  "fmt"
+  "github.com/liyue201/gostl/ds/bloomfilter"
 )
 
 func main() {
-	filter := bloom.New(100, 4, bloom.WithGoroutineSafe())
-	filter.Add("hhhh")
-	filter.Add("gggg")
+  filter := bloom.New(100, 4, bloom.WithGoroutineSafe())
+  filter.Add("hhhh")
+  filter.Add("gggg")
 
-	fmt.Printf("%v\n", filter.Contains("aaaa"))
-	fmt.Printf("%v\n", filter.Contains("gggg"))
+  fmt.Printf("%v\n", filter.Contains("aaaa"))
+  fmt.Printf("%v\n", filter.Contains("gggg"))
 }
+
 ```
 
 ### <a name="hamt">哈希数组映射字典树（hash_array_mapped_trie）</a>
@@ -526,22 +443,24 @@ func main() {
 package main
 
 import (
-	"fmt"
-	"github.com/liyue201/gostl/ds/hamt"
+  "fmt"
+  "github.com/liyue201/gostl/ds/hamt"
 )
 
 func main() {
-	h := hamt.New()
-	// h := hamt.New(hamt.WithGoroutineSafe())
-	key := []byte("aaaaa")
-	val := "bbbbbbbbbbbbb"
+  h := hamt.New[string](hamt.WithGoroutineSafe())
+  key := []byte("aaaaa")
+  val := "bbbbbbbbbbbbb"
 
-	h.Insert(key, val)
-	fmt.Printf("%v = %v\n", string(key), h.Get(key))
+  h.Insert(key, val)
+  v, _ := h.Get(key)
+  fmt.Printf("%v = %v\n", string(key), v)
 
-	h.Erase(key)
-	fmt.Printf("%v = %v\n", string(key), h.Get(key))
+  h.Erase(key)
+  v, _ = h.Get(key)
+  fmt.Printf("%v = %v\n", string(key), v)
 }
+
 ```
 
 ### <a name="ketama">一致性哈希（ketama）</a>
@@ -551,19 +470,23 @@ func main() {
 package main
 
 import (
-	"github.com/liyue201/gostl/ds/ketama"
-	"fmt"
+  "fmt"
+  "github.com/liyue201/gostl/ds/ketama"
 )
 
 func main() {
-	k := ketama.New()
-	k.Add("1.2.3.3")
-	k.Add("2.4.5.6")
-	k.Add("5.5.5.1")
-	node, _ := k.Get("aaa")
+  k := ketama.New()
+  k.Add("1.2.3.3")
+  k.Add("2.4.5.6")
+  k.Add("5.5.5.1")
+
+  for i := 0; i < 10; i++ {
+    node, _ := k.Get(fmt.Sprintf("%d", i))
     fmt.Printf("%v\n", node)
-	k.Remove("2.4.5.6")
+  }
+  k.Remove("2.4.5.6")
 }
+
 
 ```
 ### <a name="skliplist">跳表（skliplist）</a>
@@ -573,24 +496,28 @@ func main() {
 package main
 
 import (
-	"fmt"
-	"github.com/liyue201/gostl/ds/skiplist"
+  "fmt"
+  "github.com/liyue201/gostl/ds/skiplist"
+  "github.com/liyue201/gostl/utils/comparator"
 )
 
-func main()  {
-	list := skiplist.New(skiplist.WithMaxLevel(15))
-	list.Insert("aaa", "1111")
-	list.Insert("bbb", "2222")
-	fmt.Printf("aaa = %v\n", list.Get("aaa"))
-	fmt.Printf("aaa = %v\n\n", list.Get("bbb"))
+func main() {
+  list := skiplist.New[string, string](comparator.StringComparator, skiplist.WithMaxLevel(15))
+  list.Insert("aaa", "1111")
+  list.Insert("bbb", "2222")
+  v1, _ := list.Get("aaa")
+  v2, _ := list.Get("bbb")
+  fmt.Printf("aaa = %v\n", v1)
+  fmt.Printf("bbb = %v\n", v2)
 
-	list.Traversal(func(key, value interface{}) bool {
-		fmt.Printf("key:%v value:%v\n", key, value)
-		return true
-	})
+  list.Traversal(func(key, value string) bool {
+    fmt.Printf("key:%v value:%v\n", key, value)
+    return true
+  })
 
-	list.Remove("aaa")
+  list.Remove("aaa")
 }
+
 ```
 
 ### <a name="sort">排序、稳定排序、二分查找</a>
@@ -604,44 +531,46 @@ func main()  {
 package main
 
 import (
-	"github.com/liyue201/gostl/algorithm/sort"
-	"github.com/liyue201/gostl/utils/comparator"
-	"github.com/liyue201/gostl/ds/slice"
-	"fmt"
+  "fmt"
+  "github.com/liyue201/gostl/algorithm/sort"
+  "github.com/liyue201/gostl/ds/slice"
+  "github.com/liyue201/gostl/utils/comparator"
 )
 
-func main()  {
-	a := make([]string, 0)
-	a = append(a, "bbbb")
-	a = append(a, "ccc")
-	a = append(a, "aaaa")
-	a = append(a, "bbbb")
-	a = append(a, "bb")
+func main() {
+  a := make([]string, 0)
+  a = append(a, "bbbb")
+  a = append(a, "ccc")
+  a = append(a, "aaaa")
+  a = append(a, "bbbb")
+  a = append(a, "bb")
 
-	sliceA := slice.StringSlice(a)
+  sliceA := slice.NewSliceWrapper(a)
 
-	////Sort in ascending order
-	sort.Sort(sliceA.Begin(), sliceA.End())
-	//sort.Stable(sliceA.Begin(), sliceA.End())
-	fmt.Printf("%v\n", a)
+  ////Sort in ascending order
+  sort.Sort[string](sliceA.Begin(), sliceA.End(), comparator.OrderedTypeCmp[string])
 
-	if sort.BinarySearch(sliceA.Begin(), sliceA.End(), "bbbb") {
-		fmt.Printf("BinarySearch: found bbbb\n")
-	}
+  sort.Stable[string](sliceA.Begin(), sliceA.End(), comparator.StringComparator)
+  fmt.Printf("%v\n", a)
 
-	iter := sort.LowerBound(sliceA.Begin(), sliceA.End(), "bbbb")
-	if iter.IsValid() {
-		fmt.Printf("LowerBound bbbb: %v\n", iter.Value())
-	}
-	iter = sort.UpperBound(sliceA.Begin(), sliceA.End(), "bbbb")
-	if iter.IsValid() {
-		fmt.Printf("UpperBound bbbb: %v\n", iter.Value())
-	}
-	//Sort in descending order
-	sort.Sort(sliceA.Begin(), sliceA.End(), comparator.Reverse(comparator.BuiltinTypeComparator))
-	//sort.Stable(sliceA.Begin(), sliceA.End(), comparator.Reverse(comparator.BuiltinTypeComparator))
-	fmt.Printf("%v\n", a)
+  if sort.BinarySearch[string](sliceA.Begin(), sliceA.End(), "bbbb", comparator.StringComparator) {
+    fmt.Printf("BinarySearch: found bbbb\n")
+  }
+
+  iter := sort.LowerBound[string](sliceA.Begin(), sliceA.End(), "bbbb", comparator.StringComparator)
+  if iter.IsValid() {
+    fmt.Printf("LowerBound bbbb: %v\n", iter.Value())
+  }
+  iter = sort.UpperBound[string](sliceA.Begin(), sliceA.End(), "bbbb", comparator.StringComparator)
+  if iter.IsValid() {
+    fmt.Printf("UpperBound bbbb: %v\n", iter.Value())
+  }
+  //Sort in descending order
+  sort.Sort[string](sliceA.Begin(), sliceA.End(), comparator.Reverse(comparator.StringComparator))
+  //sort.Stable[string](sliceA.Begin(), sliceA.End(), comparator.Reverse(comparator.StringComparator))
+  fmt.Printf("%v\n", a)
 }
+
 ```
 
 ### <a name="next_permutation">下个排列组合（next_permutation）</a>
@@ -651,33 +580,34 @@ func main()  {
 package main
 
 import (
-	"github.com/liyue201/gostl/algorithm/sort"
-	"github.com/liyue201/gostl/ds/slice"
-	"github.com/liyue201/gostl/utils/comparator"
-	"fmt"
+  "fmt"
+  "github.com/liyue201/gostl/algorithm/sort"
+  "github.com/liyue201/gostl/ds/slice"
+  "github.com/liyue201/gostl/utils/comparator"
 )
 
-func main()  {
-	a := slice.IntSlice(make([]int, 0))
-
-	for i := 1; i <= 3; i++ {
-		a = append(a, i)
-	}
-	fmt.Println("NextPermutation")
-	for {
-		fmt.Printf("%v\n", a)
-		if !sort.NextPermutation(a.Begin(), a.End()) {
-			break
-		}
-	}
-	fmt.Println("PrePermutation")
-	for {
-		fmt.Printf("%v\n", a)
-		if !sort.NextPermutation(a.Begin(), a.End(), comparator.Reverse(comparator.BuiltinTypeComparator)) {
-			break
-		}
-	}
+func main() {
+  a := make([]int, 0)
+  for i := 1; i <= 3; i++ {
+    a = append(a, i)
+  }
+  wa := slice.NewSliceWrapper(a)
+  fmt.Println("NextPermutation")
+  for {
+    fmt.Printf("%v\n", a)
+    if !sort.NextPermutation[int](wa.Begin(), wa.End(), comparator.IntComparator) {
+      break
+    }
+  }
+  fmt.Println("PrePermutation")
+  for {
+    fmt.Printf("%v\n", a)
+    if !sort.NextPermutation[int](wa.Begin(), wa.End(), comparator.Reverse(comparator.IntComparator)) {
+      break
+    }
+  }
 }
+
 ```
 
 ### <a name="nth_element">第n个元素（nth_element）</a>
@@ -687,26 +617,27 @@ func main()  {
 package main
 
 import (
-	"fmt"
-	"github.com/liyue201/gostl/algorithm/sort"
-	"github.com/liyue201/gostl/ds/deque"
+  "fmt"
+  "github.com/liyue201/gostl/algorithm/sort"
+  "github.com/liyue201/gostl/ds/deque"
+  "github.com/liyue201/gostl/utils/comparator"
 )
 
 func main() {
-	a := deque.New()
-	a.PushBack(9)
-	a.PushBack(8)
-	a.PushBack(7)
-	a.PushBack(6)
-	a.PushBack(5)
-	a.PushBack(4)
-	a.PushBack(3)
-	a.PushBack(2)
-	a.PushBack(1)
-	fmt.Printf("%v\n", a)
-	sort.NthElement(a.Begin(), a.End(), 3)
-	fmt.Printf("%v\n", a.At(3))
-	fmt.Printf("%v\n", a)
+  a := deque.New[int]()
+  a.PushBack(9)
+  a.PushBack(8)
+  a.PushBack(7)
+  a.PushBack(6)
+  a.PushBack(5)
+  a.PushBack(4)
+  a.PushBack(3)
+  a.PushBack(2)
+  a.PushBack(1)
+  fmt.Printf("%v\n", a)
+  sort.NthElement[int](a.Begin(), a.End(), 3, comparator.IntComparator)
+  fmt.Printf("%v\n", a.At(3))
+  fmt.Printf("%v\n", a)
 }
 ```
 
@@ -718,23 +649,23 @@ func main() {
 package main
 
 import (
-	"fmt"
-	"github.com/liyue201/gostl/algorithm"
-	"github.com/liyue201/gostl/ds/deque"
+  "fmt"
+  "github.com/liyue201/gostl/algorithm"
+  "github.com/liyue201/gostl/ds/deque"
 )
 
 func main() {
-	a := deque.New()
-	for i := 0; i < 9; i++ {
-		a.PushBack(i)
-	}
-	fmt.Printf("%v\n", a)
+  a := deque.New[int]()
+  for i := 0; i < 9; i++ {
+    a.PushBack(i)
+  }
+  fmt.Printf("%v\n", a)
 
-	algorithm.Swap(a.First(), a.Last())
-	fmt.Printf("%v\n", a)
+  algorithm.Swap[int](a.First(), a.Last())
+  fmt.Printf("%v\n", a)
 
-	algorithm.Reverse(a.Begin(), a.End())
-	fmt.Printf("%v\n", a)
+  algorithm.Reverse[int](a.Begin(), a.End())
+  fmt.Printf("%v\n", a)
 }
 
 ```
@@ -752,19 +683,20 @@ import (
   "fmt"
   "github.com/liyue201/gostl/algorithm"
   "github.com/liyue201/gostl/ds/deque"
+  "github.com/liyue201/gostl/utils/comparator"
   "github.com/liyue201/gostl/utils/iterator"
 )
 
-func isEven(iter iterator.ConstIterator) bool {
-  return iter.Value().(int)%2 == 0
+func isEven(iter iterator.ConstIterator[int]) bool {
+  return iter.Value()%2 == 0
 }
 
-func greaterThan5(iter iterator.ConstIterator) bool {
-  return iter.Value().(int) > 5
+func greaterThan5(iter iterator.ConstIterator[int]) bool {
+  return iter.Value() > 5
 }
 
 func main() {
-  a := deque.New()
+  a := deque.New[int]()
   for i := 0; i < 10; i++ {
     a.PushBack(i)
   }
@@ -773,24 +705,25 @@ func main() {
   }
   fmt.Printf("%v\n", a)
 
-  fmt.Printf("Count 2: %v\n", algorithm.Count(a.Begin(), a.End(), 2))
-  fmt.Printf("Count 2: %v\n", algorithm.CountIf(a.Begin(), a.End(), isEven))
+  fmt.Printf("Count 2: %v\n", algorithm.Count[int](a.Begin(), a.End(), 2, comparator.IntComparator))
 
-  iter := algorithm.Find(a.Begin(), a.End(), 2)
+  fmt.Printf("Count 2: %v\n", algorithm.CountIf[int](a.Begin(), a.End(), isEven))
+
+  iter := algorithm.Find[int](a.Begin(), a.End(), 2, comparator.IntComparator)
   if !iter.Equal(a.End()) {
     fmt.Printf("Fund %v\n", iter.Value())
   }
-  iter = algorithm.FindIf(a.Begin(), a.End(), greaterThan5)
+  iter = algorithm.FindIf[int](a.Begin(), a.End(), greaterThan5)
   if !iter.Equal(a.End()) {
     fmt.Printf("FindIf greaterThan5 : %v\n", iter.Value())
   }
-  iter = algorithm.MaxElement(a.Begin(), a.End())
+  iter = algorithm.MaxElement[int](a.Begin(), a.End(), comparator.IntComparator)
   if !iter.Equal(a.End()) {
-    fmt.Printf("Largest value : %v\n", iter.Value())
+    fmt.Printf("largest value : %v\n", iter.Value())
   }
-  iter = algorithm.MinElement(a.Begin(), a.End())
+  iter = algorithm.MinElement[int](a.Begin(), a.End(), comparator.IntComparator)
   if !iter.Equal(a.End()) {
-    fmt.Printf("Smallest value : %v\n", iter.Value())
+    fmt.Printf("largest value : %v\n", iter.Value())
   }
 }
 

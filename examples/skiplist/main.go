@@ -13,7 +13,7 @@ func main() {
 	v1, _ := list.Get("aaa")
 	v2, _ := list.Get("bbb")
 	fmt.Printf("aaa = %v\n", v1)
-	fmt.Printf("aaa = %v\n\n", v2)
+	fmt.Printf("bbb = %v\n", v2)
 
 	list.Traversal(func(key, value string) bool {
 		fmt.Printf("key:%v value:%v\n", key, value)
