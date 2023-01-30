@@ -48,7 +48,7 @@ func (iter *RbTreeIterator[K, V]) Value() V {
 	return iter.node.Value()
 }
 
-//SetValue sets the node's value of the iterator point to
+// SetValue sets the node's value of the iterator point to
 func (iter *RbTreeIterator[K, V]) SetValue(val V) error {
 	iter.node.SetValue(val)
 	return nil

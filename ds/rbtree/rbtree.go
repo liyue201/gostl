@@ -3,6 +3,7 @@ package rbtree
 import (
 	"errors"
 	"fmt"
+
 	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/utils/visitor"
 )
@@ -19,7 +20,7 @@ type RbTree[K, V any] struct {
 	keyCmp comparator.Comparator[K]
 }
 
-//New creates a new RbTree
+// New creates a new RbTree
 func New[K, V any](cmp comparator.Comparator[K]) *RbTree[K, V] {
 	return &RbTree[K, V]{keyCmp: cmp}
 }

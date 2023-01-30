@@ -1,10 +1,11 @@
 package priorityqueue
 
 import (
+	gosync "sync"
+
 	"github.com/liyue201/gostl/ds/heap"
 	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/utils/sync"
-	gosync "sync"
 )
 
 var (

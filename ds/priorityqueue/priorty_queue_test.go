@@ -1,8 +1,9 @@
 package priorityqueue
 
 import (
-	"github.com/liyue201/gostl/utils/comparator"
 	"testing"
+
+	"github.com/liyue201/gostl/utils/comparator"
 )
 
 func TestMinPriorityQueue(t *testing.T) {

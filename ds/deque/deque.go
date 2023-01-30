@@ -12,7 +12,7 @@ const (
 
 // Define internal errors
 var (
-	ErrOutOffRange = errors.New("out off range")
+	ErrOutOfRange = errors.New("out off range")
 )
 
 // Deque is double-ended queue supports efficient data insertion from the head and tail, random access and iterator access.
@@ -168,7 +168,7 @@ func (d *Deque[T]) At(pos int) T {
 // Set sets the value of the deque's position pos with value val
 func (d *Deque[T]) Set(pos int, val T) error {
 	if pos < 0 || pos >= d.size {
-		return ErrOutOffRange
+		return ErrOutOfRange
 	}
 	seg, pos := d.pos(pos)
 	d.segmentAt(seg).set(pos, val)
@@ -360,7 +360,7 @@ func (d *Deque[T]) expand() {
 	d.segs = seg
 }
 
-//shrinkIfNeeded shrinks the deque if it has too many unused space.
+// shrinkIfNeeded shrinks the deque if it has too many unused space.
 func (d *Deque[T]) shrinkIfNeeded() {
 	if int(float64(d.segUsed()*2)*1.2) < cap(d.segs) {
 		newCapacity := cap(d.segs) / 2
