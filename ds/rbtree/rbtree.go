@@ -83,10 +83,7 @@ func (t *RbTree[K, V]) IterLast() *RbTreeIterator[K, V] {
 
 // Empty returns true if Tree is empty,otherwise returns false.
 func (t *RbTree[K, V]) Empty() bool {
-	if t.size == 0 {
-		return true
-	}
-	return false
+	return t.size == 0
 }
 
 // Size returns the size of the rbtree.
@@ -125,10 +122,10 @@ func (t *RbTree[K, V]) Insert(key K, value V) {
 
 func (t *RbTree[K, V]) rbInsertFixup(z *Node[K, V]) {
 	var y *Node[K, V]
-	for z.parent != nil && z.parent.color == RED {
+	for z.parent != nil && !z.parent.color {
 		if z.parent == z.parent.parent.left {
 			y = z.parent.parent.right
-			if y != nil && y.color == RED {
+			if y != nil && !y.color {
 				z.parent.color = BLACK
 				y.color = BLACK
 				z.parent.parent.color = RED
@@ -144,7 +141,7 @@ func (t *RbTree[K, V]) rbInsertFixup(z *Node[K, V]) {
 			}
 		} else {
 			y = z.parent.parent.left
-			if y != nil && y.color == RED {
+			if y != nil && !y.color {
 				z.parent.color = BLACK
 				y.color = BLACK
 				z.parent.parent.color = RED
@@ -200,7 +197,7 @@ func (t *RbTree[K, V]) Delete(node *Node[K, V]) {
 		z.value = y.value
 	}
 
-	if y.color == BLACK {
+	if y.color {
 		t.rbDeleteFixup(x, xparent)
 	}
 	t.size--
@@ -208,7 +205,7 @@ func (t *RbTree[K, V]) Delete(node *Node[K, V]) {
 
 func (t *RbTree[K, V]) rbDeleteFixup(x, parent *Node[K, V]) {
 	var w *Node[K, V]
-	for x != t.root && getColor(x) == BLACK {
+	for x != t.root && getColor(x) {
 		if x != nil {
 			parent = x.parent
 		}
@@ -225,17 +222,17 @@ func (t *RbTree[K, V]) rbDeleteFixup(x, parent *Node[K, V]) {
 
 func (t *RbTree[K, V]) rbFixupLeft(x, parent, w *Node[K, V]) (*Node[K, V], *Node[K, V]) {
 	w = parent.right
-	if w.color == RED {
+	if !w.color {
 		w.color = BLACK
 		parent.color = RED
 		t.leftRotate(parent)
 		w = parent.right
 	}
-	if getColor(w.left) == BLACK && getColor(w.right) == BLACK {
+	if getColor(w.left) && getColor(w.right) {
 		w.color = RED
 		x = parent
 	} else {
-		if getColor(w.right) == BLACK {
+		if getColor(w.right) {
 			if w.left != nil {
 				w.left.color = BLACK
 			}
@@ -256,17 +253,17 @@ func (t *RbTree[K, V]) rbFixupLeft(x, parent, w *Node[K, V]) (*Node[K, V], *Node
 
 func (t *RbTree[K, V]) rbFixupRight(x, parent, w *Node[K, V]) (*Node[K, V], *Node[K, V]) {
 	w = parent.left
-	if w.color == RED {
+	if !w.color {
 		w.color = BLACK
 		parent.color = RED
 		t.rightRotate(parent)
 		w = parent.left
 	}
-	if getColor(w.left) == BLACK && getColor(w.right) == BLACK {
+	if getColor(w.left) && getColor(w.right) {
 		w.color = RED
 		x = parent
 	} else {
-		if getColor(w.left) == BLACK {
+		if getColor(w.left) {
 			if w.right != nil {
 				w.right.color = BLACK
 			}
@@ -423,7 +420,7 @@ func (t *RbTree[K, V]) test(n *Node[K, V]) (int, int, bool) {
 		return 1, 0, true
 	}
 
-	if n == t.root && n.color != BLACK { // property 2:
+	if n == t.root && !n.color { // property 2:
 		return 1, 2, false
 	}
 	leftBlackCount, property, ok := t.test(n.left)
@@ -440,17 +437,17 @@ func (t *RbTree[K, V]) test(n *Node[K, V]) (int, int, bool) {
 	}
 	blackCount := leftBlackCount
 
-	if n.color == RED {
-		if getColor(n.left) != BLACK || getColor(n.right) != BLACK { // property 4:
+	if !n.color {
+		if !getColor(n.left) || !getColor(n.right) { // property 4:
 			return 0, 4, false
 		}
 	} else {
 		blackCount++
 	}
 
-	if n == t.root {
-		//fmt.Printf("blackCount:%v \n", blackCount)
-	}
+	// if n == t.root {
+	// 	fmt.Printf("blackCount:%v \n", blackCount)
+	// }
 	return blackCount, 0, true
 }
 

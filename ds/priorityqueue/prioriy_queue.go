@@ -47,10 +47,7 @@ func (h *ElementHolder[T]) Len() int {
 
 // Len compare two elements at position i and j , and returns true if elements[i] < elements[j]
 func (h *ElementHolder[T]) Less(i, j int) bool {
-	if h.cmpFun(h.elements[i], h.elements[j]) < 0 {
-		return true
-	}
-	return false
+	return h.cmpFun(h.elements[i], h.elements[j]) < 0
 }
 
 // Swap swaps two elements at position i and j
@@ -88,7 +85,7 @@ func New[T any](cmp comparator.Comparator[T], opts ...Option) *PriorityQueue[T] 
 		opt(&option)
 	}
 	holder := &ElementHolder[T]{
-		elements: make([]T, 0, 0),
+		elements: make([]T, 0),
 		cmpFun:   cmp,
 	}
 	return &PriorityQueue[T]{
