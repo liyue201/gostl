@@ -2,11 +2,12 @@ package set
 
 import (
 	"fmt"
+	gosync "sync"
+
 	"github.com/liyue201/gostl/ds/rbtree"
 	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/utils/sync"
 	"github.com/liyue201/gostl/utils/visitor"
-	gosync "sync"
 )
 
 // constants definition
@@ -187,7 +188,7 @@ func (s *Set[T]) Intersect(other *Set[T]) *Set[T] {
 	s.locker.RLock()
 	defer s.locker.RUnlock()
 
-	set := New[T](s.keyCmp)
+	set := New(s.keyCmp)
 	sIter := s.tree.IterFirst()
 	otherIter := other.tree.IterFirst()
 	for sIter.IsValid() && otherIter.IsValid() {
@@ -211,7 +212,7 @@ func (s *Set[T]) Union(other *Set[T]) *Set[T] {
 	s.locker.RLock()
 	defer s.locker.RUnlock()
 
-	set := New[T](s.keyCmp)
+	set := New(s.keyCmp)
 	sIter := s.tree.IterFirst()
 	otherIter := other.tree.IterFirst()
 	for sIter.IsValid() && otherIter.IsValid() {
@@ -243,7 +244,7 @@ func (s *Set[T]) Diff(other *Set[T]) *Set[T] {
 	s.locker.RLock()
 	defer s.locker.RUnlock()
 
-	set := New[T](s.keyCmp)
+	set := New(s.keyCmp)
 	sIter := s.tree.IterFirst()
 	otherIter := other.tree.IterFirst()
 	for sIter.IsValid() && otherIter.IsValid() {

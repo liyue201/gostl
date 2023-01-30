@@ -2,8 +2,9 @@ package bidlist
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestList(t *testing.T) {
@@ -82,10 +83,7 @@ func TestList(t *testing.T) {
 	ret := make([]int, 0)
 	list.Traversal(func(value int) bool {
 		ret = append(ret, value)
-		if value == 1 {
-			return false
-		}
-		return true
+		return value != 1
 	})
 	assert.Equal(t, "[5 2 1]", fmt.Sprintf("%v", ret))
 

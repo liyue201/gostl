@@ -45,7 +45,7 @@ func (iter *ListIterator[T]) SetValue(value T) {
 
 // Clone clones iter to a new ListIterator
 func (iter *ListIterator[T]) Clone() iterator.ConstIterator[T] {
-	return NewIterator[T](iter.node)
+	return NewIterator(iter.node)
 }
 
 // Equal returns whether iter is equal to other
