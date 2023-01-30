@@ -21,9 +21,10 @@ type Float interface {
 }
 
 // Comparator Should return a number:
-//    -1 , if a < b
-//    0  , if a == b
-//    1  , if a > b
+//
+//	-1 , if a < b
+//	0  , if a == b
+//	1  , if a > b
 type Comparator[T any] func(a, b T) int
 
 func OrderedTypeCmp[T Ordered](a, b T) int {
@@ -36,7 +37,7 @@ func OrderedTypeCmp[T Ordered](a, b T) int {
 	return 1
 }
 
-//Reverse returns a comparator reverse to cmp
+// Reverse returns a comparator reverse to cmp
 func Reverse[T any](cmp Comparator[T]) Comparator[T] {
 	return func(a, b T) int {
 		return -cmp(a, b)
@@ -44,9 +45,10 @@ func Reverse[T any](cmp Comparator[T]) Comparator[T] {
 }
 
 // IntComparator compare a with b
-//    -1 , if a < b
-//    0  , if a == b
-//    1  , if a > b
+//
+//	-1 , if a < b
+//	0  , if a == b
+//	1  , if a > b
 func IntComparator(a, b int) int {
 	if a == b {
 		return 0
@@ -58,9 +60,10 @@ func IntComparator(a, b int) int {
 }
 
 // UintComparator compare a with b
-//    -1 , if a < b
-//    0  , if a == b
-//    1  , if a > b
+//
+//	-1 , if a < b
+//	0  , if a == b
+//	1  , if a > b
 func UintComparator(a, b uint) int {
 	if a == b {
 		return 0
@@ -72,9 +75,10 @@ func UintComparator(a, b uint) int {
 }
 
 // Int8Comparator compare a with b
-//    -1 , if a < b
-//    0  , if a == b
-//    1  , if a > b
+//
+//	-1 , if a < b
+//	0  , if a == b
+//	1  , if a > b
 func Int8Comparator(a, b int8) int {
 	if a == b {
 		return 0
@@ -86,9 +90,10 @@ func Int8Comparator(a, b int8) int {
 }
 
 // Uint8Comparator compare a with b
-//    -1 , if a < b
-//    0  , if a == b
-//    1  , if a > b
+//
+//	-1 , if a < b
+//	0  , if a == b
+//	1  , if a > b
 func Uint8Comparator(a, b uint8) int {
 	if a == b {
 		return 0
@@ -100,9 +105,10 @@ func Uint8Comparator(a, b uint8) int {
 }
 
 // Int16Comparator compare a with b
-//    -1 , if a < b
-//    0  , if a == b
-//    1  , if a > b
+//
+//	-1 , if a < b
+//	0  , if a == b
+//	1  , if a > b
 func Int16Comparator(a, b int16) int {
 	if a == b {
 		return 0
@@ -114,9 +120,10 @@ func Int16Comparator(a, b int16) int {
 }
 
 // Uint16Comparator compare a with b
-//    -1 , if a < b
-//    0  , if a == b
-//    1  , if a > b
+//
+//	-1 , if a < b
+//	0  , if a == b
+//	1  , if a > b
 func Uint16Comparator(a, b uint16) int {
 	if a == b {
 		return 0
@@ -128,9 +135,10 @@ func Uint16Comparator(a, b uint16) int {
 }
 
 // Int32Comparator compare a with b
-//    -1 , if a < b
-//    0  , if a == b
-//    1  , if a > b
+//
+//	-1 , if a < b
+//	0  , if a == b
+//	1  , if a > b
 func Int32Comparator(a, b int32) int {
 	if a == b {
 		return 0
@@ -142,9 +150,10 @@ func Int32Comparator(a, b int32) int {
 }
 
 // Uint32Comparator compare a with b
-//    -1 , if a < b
-//    0  , if a == b
-//    1  , if a > b
+//
+//	-1 , if a < b
+//	0  , if a == b
+//	1  , if a > b
 func Uint32Comparator(a, b uint32) int {
 	if a == b {
 		return 0
@@ -156,9 +165,10 @@ func Uint32Comparator(a, b uint32) int {
 }
 
 // Int64Comparator compare a with b
-//    -1 , if a < b
-//    0  , if a == b
-//    1  , if a > b
+//
+//	-1 , if a < b
+//	0  , if a == b
+//	1  , if a > b
 func Int64Comparator(a, b int64) int {
 	if a == b {
 		return 0
@@ -170,9 +180,10 @@ func Int64Comparator(a, b int64) int {
 }
 
 // Uint64Comparator compare a with b
-//    -1 , if a < b
-//    0  , if a == b
-//    1  , if a > b
+//
+//	-1 , if a < b
+//	0  , if a == b
+//	1  , if a > b
 func Uint64Comparator(a, b uint64) int {
 	if a == b {
 		return 0
@@ -184,9 +195,10 @@ func Uint64Comparator(a, b uint64) int {
 }
 
 // Float32Comparator compare a with b
-//    -1 , if a < b
-//    0  , if a == b
-//    1  , if a > b
+//
+//	-1 , if a < b
+//	0  , if a == b
+//	1  , if a > b
 func Float32Comparator(a, b float32) int {
 	if a == b {
 		return 0
@@ -198,9 +210,10 @@ func Float32Comparator(a, b float32) int {
 }
 
 // Float64Comparator compare a with b
-//    -1 , if a < b
-//    0  , if a == b
-//    1  , if a > b
+//
+//	-1 , if a < b
+//	0  , if a == b
+//	1  , if a > b
 func Float64Comparator(a, b float64) int {
 	if a == b {
 		return 0
@@ -212,9 +225,10 @@ func Float64Comparator(a, b float64) int {
 }
 
 // StringComparator compare a with b
-//    -1 , if a < b
-//    0  , if a == b
-//    1  , if a > b
+//
+//	-1 , if a < b
+//	0  , if a == b
+//	1  , if a > b
 func StringComparator(a, b string) int {
 	if a == b {
 		return 0
@@ -226,9 +240,10 @@ func StringComparator(a, b string) int {
 }
 
 // UintptrComparator compare a with b
-//    -1 , if a < b
-//    0  , if a == b
-//    1  , if a > b
+//
+//	-1 , if a < b
+//	0  , if a == b
+//	1  , if a > b
 func UintptrComparator(a, b uintptr) int {
 	if a == b {
 		return 0
@@ -240,23 +255,25 @@ func UintptrComparator(a, b uintptr) int {
 }
 
 // BoolComparator compare a with b
-//    -1 , if a < b
-//    0  , if a == b
-//    1  , if a > b
+//
+//	-1 , if a < b
+//	0  , if a == b
+//	1  , if a > b
 func BoolComparator(a, b bool) int {
 	if a == b {
 		return 0
 	}
-	if a == false && b == true {
+	if !a && b {
 		return -1
 	}
 	return 1
 }
 
 // Complex64Comparator compare a with b
-//    -1 , if a < b
-//    0  , if a == b
-//    1  , if a > b
+//
+//	-1 , if a < b
+//	0  , if a == b
+//	1  , if a > b
 func Complex64Comparator(a, b complex64) int {
 	if a == b {
 		return 0
@@ -271,9 +288,10 @@ func Complex64Comparator(a, b complex64) int {
 }
 
 // Complex128Comparator compare a with b
-//    -1 , if a < b
-//    0  , if a == b
-//    1  , if a > b
+//
+//	-1 , if a < b
+//	0  , if a == b
+//	1  , if a > b
 func Complex128Comparator(a, b complex128) int {
 	if a == b {
 		return 0
