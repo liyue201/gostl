@@ -4,7 +4,7 @@ import (
 	"github.com/liyue201/gostl/utils/iterator"
 )
 
-//ListIterator is an implementation of BidIterator
+// ListIterator is an implementation of BidIterator
 var _ iterator.BidIterator[T] = (*ListIterator[T])(nil)
 
 // ListIterator is an implementation of list iterator
@@ -55,7 +55,7 @@ func (iter *ListIterator[T]) SetValue(value T) {
 
 // Clone clones the iterator to a new iterator
 func (iter *ListIterator[T]) Clone() iterator.ConstIterator[T] {
-	return NewIterator[T](iter.node)
+	return NewIterator(iter.node)
 }
 
 // Equal returns true if the iterator is equal to the passed iterator, otherwise returns false

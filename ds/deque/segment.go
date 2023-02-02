@@ -113,7 +113,7 @@ func (s *Segment[T]) preIndex(index int) int {
 func (s *Segment[T]) at(position int) T {
 	if position < 0 || position >= s.nSize {
 		//return nil
-		panic(ErrOutOffRange.Error())
+		panic(ErrOutOfRange.Error())
 	}
 	return s.data[(position+s.begin)%s.capacity()]
 }

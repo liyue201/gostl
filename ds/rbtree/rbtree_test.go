@@ -1,11 +1,12 @@
 package rbtree
 
 import (
-	"github.com/liyue201/gostl/utils/comparator"
-	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"testing"
 	"time"
+
+	"github.com/liyue201/gostl/utils/comparator"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestRbTeeFind(t *testing.T) {

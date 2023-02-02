@@ -3,6 +3,7 @@ package bidlist
 import (
 	"errors"
 	"fmt"
+
 	"github.com/liyue201/gostl/ds/container"
 	"github.com/liyue201/gostl/utils/visitor"
 )
@@ -10,7 +11,7 @@ import (
 // List is an implementation of Container
 type T any
 
-var ErrorOutOffRange = errors.New("out of range")
+var ErrorOutOfRange = errors.New("out of range")
 
 var _ container.Container[T] = (*List[T])(nil)
 
@@ -46,10 +47,9 @@ func (n *Node[T]) Prev() *Node[T] {
 
 // List represents a bidirectional list:
 //
-//   head -> node1 -- node2 --  node3
-//            |                   |
-//           node6 -- node5 --  node4
-//
+//	head -> node1 -- node2 --  node3
+//	         |                   |
+//	        node6 -- node5 --  node4
 type List[T any] struct {
 	head *Node[T] // point to the front Node
 	len  int      // current list length
@@ -92,7 +92,7 @@ func (l *List[T]) BackNode() *Node[T] {
 // Front returns the value of the front node
 func (l *List[T]) Front() T {
 	if l.len == 0 {
-		panic(ErrorOutOffRange)
+		panic(ErrorOutOfRange)
 	}
 	return l.head.Value
 }
@@ -100,7 +100,7 @@ func (l *List[T]) Front() T {
 // Back returns the value of the last node
 func (l *List[T]) Back() T {
 	if l.len == 0 {
-		panic(ErrorOutOffRange)
+		panic(ErrorOutOfRange)
 	}
 	return l.head.prev.Value
 }
@@ -200,7 +200,7 @@ func (l *List[T]) PopBack() T {
 	if n != nil {
 		return l.Remove(n)
 	}
-	panic(ErrorOutOffRange)
+	panic(ErrorOutOfRange)
 }
 
 // PopFront removes the first node in the list and returns its value
@@ -209,7 +209,7 @@ func (l *List[T]) PopFront() T {
 	if n != nil {
 		return l.Remove(n)
 	}
-	panic(ErrorOutOffRange)
+	panic(ErrorOutOfRange)
 }
 
 // MoveToFront moves node n to the front of the list.

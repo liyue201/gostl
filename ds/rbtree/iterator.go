@@ -16,10 +16,7 @@ func NewIterator[K, V any](node *Node[K, V]) *RbTreeIterator[K, V] {
 
 // IsValid returns true if the iterator is valid, otherwise returns false
 func (iter *RbTreeIterator[K, V]) IsValid() bool {
-	if iter.node != nil {
-		return true
-	}
-	return false
+	return iter.node != nil
 }
 
 // Next moves the pointer of the iterator to the next node, and returns itself
@@ -48,7 +45,7 @@ func (iter *RbTreeIterator[K, V]) Value() V {
 	return iter.node.Value()
 }
 
-//SetValue sets the node's value of the iterator point to
+// SetValue sets the node's value of the iterator point to
 func (iter *RbTreeIterator[K, V]) SetValue(val V) error {
 	iter.node.SetValue(val)
 	return nil
@@ -56,7 +53,7 @@ func (iter *RbTreeIterator[K, V]) SetValue(val V) error {
 
 // Clone clones the iterator into a new RbTreeIterator
 func (iter *RbTreeIterator[K, V]) Clone() iterator.ConstIterator[V] {
-	return NewIterator[K, V](iter.node)
+	return NewIterator(iter.node)
 }
 
 // Equal returns true if the iterator is equal to the passed iterator
