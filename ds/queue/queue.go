@@ -1,11 +1,12 @@
 package queue
 
 import (
+	gosync "sync"
+
 	"github.com/liyue201/gostl/ds/container"
 	"github.com/liyue201/gostl/ds/deque"
 	"github.com/liyue201/gostl/ds/list/bidlist"
 	"github.com/liyue201/gostl/utils/sync"
-	gosync "sync"
 )
 
 var (
@@ -48,7 +49,7 @@ type Queue[T any] struct {
 	locker    sync.Locker
 }
 
-//New creates a new queue
+// New creates a new queue
 func New[T any](opts ...Option[T]) *Queue[T] {
 	option := Options[T]{
 		locker:    defaultLocker,
@@ -89,7 +90,7 @@ func (q *Queue[T]) Push(value T) {
 }
 
 // Front returns the front value in the queue
-func (q *Queue[T]) Front() any {
+func (q *Queue[T]) Front() T {
 	q.locker.RLock()
 	defer q.locker.RUnlock()
 
@@ -97,7 +98,7 @@ func (q *Queue[T]) Front() any {
 }
 
 // Back returns the back value in the queue
-func (q *Queue[T]) Back() any {
+func (q *Queue[T]) Back() T {
 	q.locker.RLock()
 	defer q.locker.RUnlock()
 
@@ -105,7 +106,7 @@ func (q *Queue[T]) Back() any {
 }
 
 // Pop removes the the front element in the queue, and returns its value
-func (q *Queue[T]) Pop() any {
+func (q *Queue[T]) Pop() T {
 	q.locker.Lock()
 	defer q.locker.Unlock()
 
