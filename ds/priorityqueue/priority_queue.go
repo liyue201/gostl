@@ -126,6 +126,15 @@ func (q *PriorityQueue[T]) Empty() bool {
 	return q.holder.Len() == 0
 }
 
+// Clear clears all elements in the priority queue
+func (q *PriorityQueue[T]) Clear() {
+	q.locker.Lock()
+	defer q.locker.Unlock()
+
+	// reset cap to zero
+	q.holder.elements = q.holder.elements[:0]
+}
+
 // Size returns the amount of elements in the queue
 func (q *PriorityQueue[T]) Size() int {
 	q.locker.RLock()
