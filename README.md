@@ -30,7 +30,7 @@ GoSTL is a data structure and algorithm library for go, designed to provide func
     - [bloom_filter](#bloom_filter)
     - [hamt(hash_array_mapped_trie)](#hamt)
     - [ketama](#ketama)
-    - [skiplist](#skliplist)
+    - [skiplist](#skiplist)
 - algorithm
     - [sort(quick_sort)](#sort)
     - [stable_sort(merge_sort)](#sort)
@@ -490,8 +490,8 @@ func main() {
 
 
 ```
-### <a name="skliplist">skliplist</a>
-Skliplist is a kind of data structure which can search quickly by exchanging space for time. Goroutine safety is supported.
+### <a name="skiplist">skiplist</a>
+Skiplist is a kind of data structure which can search quickly by exchanging space for time. Goroutine safety is supported.
 
 ```go
 package main
