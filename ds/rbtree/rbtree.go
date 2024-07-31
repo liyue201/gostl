@@ -45,6 +45,11 @@ func (t *RbTree[K, V]) FindNode(key K) *Node[K, V] {
 	return t.findFirstNode(key)
 }
 
+// Compare compares two keys wrt the RbTree's key comparator
+func (t *RbTree[K, V]) Compare(key1, key2 K) int {
+	return t.keyCmp(key1, key2)
+}
+
 // Begin returns the node with minimum key in the RbTree
 func (t *RbTree[K, V]) Begin() *Node[K, V] {
 	return t.First()
