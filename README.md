@@ -678,6 +678,9 @@ func main() {
 - FindIf：Find the first element satisfying function f in the iterator interval and return its iterator
 - MaxElement : Find the largest element and return its iterator
 - MinElement : Find the smallest element and return its iterator
+- AnyOf : Returns true if any element satisfies the function f in the iterator interval
+- AllOf: Returns true if all elements satisfy the function f in the iterator interval
+- NoneOf: Returns true if none of the elements satisfy the function f in the iterator interval
 
 ```go
 package main
@@ -728,6 +731,10 @@ func main() {
   if !iter.Equal(a.End()) {
     fmt.Printf("largest value : %v\n", iter.Value())
   }
+
+	fmt.Printf("Any even: %v\n", algorithm.AnyOf[int](a.Begin(), a.End(), isEven))
+	fmt.Printf("All even: %v\n", algorithm.AllOf[int](a.Begin(), a.End(), isEven))
+	fmt.Printf("None even: %v\n", algorithm.NoneOf[int](a.Begin(), a.End(), isEven))
 }
 
 
