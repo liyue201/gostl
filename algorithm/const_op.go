@@ -85,7 +85,7 @@ func AnyOf[T any](first, last iterator.ConstIterator[T], f func(iterator.ConstIt
 	return false
 }
 
-// AnyOf returns whether all of the elements satisfy the function f in range [first, last)
+// AllOf returns whether all of the elements satisfy the function f in range [first, last)
 func AllOf[T any](first, last iterator.ConstIterator[T], f func(iterator.ConstIterator[T]) bool) bool {
 	for iter := first.Clone(); !iter.Equal(last); iter.Next() {
 		if !f(iter) {
@@ -95,7 +95,7 @@ func AllOf[T any](first, last iterator.ConstIterator[T], f func(iterator.ConstIt
 	return true
 }
 
-// AnyOf returns whether none of the elements satisfy the function f in range [first, last)
+// NoneOf returns whether none of the elements satisfy the function f in range [first, last)
 func NoneOf[T any](first, last iterator.ConstIterator[T], f func(iterator.ConstIterator[T]) bool) bool {
 	return !AnyOf(first, last, f)
 }
