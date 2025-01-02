@@ -196,14 +196,15 @@ func Uint64Comparator(a, b uint64) int {
 
 // Float32Comparator compare a with b
 //
-//	-1 , if a < b
-//	0  , if a == b
-//	1  , if a > b
+//	-1 , if a < b or a is NaN and b is not NaN
+//	0  , if a == b or a is NaN and b is NaN
+//	1  , if a > b or a is not NaN and b is NaN
 func Float32Comparator(a, b float32) int {
-	if a == b {
+	aIsNaN, bIsNaN := math.IsNaN(float64(a)), math.IsNaN(float64(b))
+	if a == b || (aIsNaN && bIsNaN) {
 		return 0
 	}
-	if a < b {
+	if a < b || aIsNaN {
 		return -1
 	}
 	return 1
@@ -211,14 +212,15 @@ func Float32Comparator(a, b float32) int {
 
 // Float64Comparator compare a with b
 //
-//	-1 , if a < b
-//	0  , if a == b
-//	1  , if a > b
+//	-1 , if a < b or a is NaN and b is not NaN
+//	0  , if a == b or a is NaN and b is NaN
+//	1  , if a > b or a is not NaN and b is NaN
 func Float64Comparator(a, b float64) int {
-	if a == b {
+	aIsNaN, bIsNaN := math.IsNaN(a), math.IsNaN(b)
+	if a == b || (aIsNaN && bIsNaN) {
 		return 0
 	}
-	if a < b {
+	if a < b || aIsNaN {
 		return -1
 	}
 	return 1
