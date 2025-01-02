@@ -74,3 +74,28 @@ func MinElement[T any](first, last iterator.ConstIterator[T], cmp comparator.Com
 	}
 	return smallest
 }
+
+// AnyOf returns whether any of the elements satisfy the function f in range [first, last)
+func AnyOf[T any](first, last iterator.ConstIterator[T], f func(iterator.ConstIterator[T]) bool) bool {
+	for iter := first.Clone(); !iter.Equal(last); iter.Next() {
+		if f(iter) {
+			return true
+		}
+	}
+	return false
+}
+
+// AllOf returns whether all of the elements satisfy the function f in range [first, last)
+func AllOf[T any](first, last iterator.ConstIterator[T], f func(iterator.ConstIterator[T]) bool) bool {
+	for iter := first.Clone(); !iter.Equal(last); iter.Next() {
+		if !f(iter) {
+			return false
+		}
+	}
+	return true
+}
+
+// NoneOf returns whether none of the elements satisfy the function f in range [first, last)
+func NoneOf[T any](first, last iterator.ConstIterator[T], f func(iterator.ConstIterator[T]) bool) bool {
+	return !AnyOf(first, last, f)
+}

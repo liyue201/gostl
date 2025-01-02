@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/liyue201/gostl/algorithm"
 	"github.com/liyue201/gostl/ds/deque"
 	"github.com/liyue201/gostl/utils/comparator"
@@ -46,4 +47,8 @@ func main() {
 	if !iter.Equal(a.End()) {
 		fmt.Printf("largest value : %v\n", iter.Value())
 	}
+
+	fmt.Printf("Any even: %v\n", algorithm.AnyOf[int](a.Begin(), a.End(), isEven))
+	fmt.Printf("All even: %v\n", algorithm.AllOf[int](a.Begin(), a.End(), isEven))
+	fmt.Printf("None even: %v\n", algorithm.NoneOf[int](a.Begin(), a.End(), isEven))
 }
