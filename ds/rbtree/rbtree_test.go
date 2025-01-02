@@ -179,3 +179,10 @@ func TestNode(t *testing.T) {
 		i++
 	}
 }
+
+func TestRbTreeCompare(t *testing.T) {
+	tree := New[int, int](comparator.IntComparator)
+	assert.Equal(t, 0, tree.Compare(1, 1))
+	assert.Equal(t, -1, tree.Compare(1, 2))
+	assert.Equal(t, 1, tree.Compare(2, 1))
+}

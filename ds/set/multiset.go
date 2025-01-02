@@ -2,6 +2,7 @@ package set
 
 import (
 	"fmt"
+
 	"github.com/liyue201/gostl/ds/rbtree"
 	"github.com/liyue201/gostl/utils/comparator"
 	"github.com/liyue201/gostl/utils/sync"
@@ -36,8 +37,19 @@ func (ms *MultiSet[T]) Insert(element T) {
 	ms.tree.Insert(element, Empty)
 }
 
-// Erase erases all node with passed element in the MultiSet
+// Erase erases the first node with passed element in the MultiSet
 func (ms *MultiSet[T]) Erase(element T) {
+	ms.locker.Lock()
+	defer ms.locker.Unlock()
+
+	node := ms.tree.FindNode(element)
+	if node != nil {
+		ms.tree.Delete(node)
+	}
+}
+
+// Erase erases all node with passed element in the MultiSet
+func (ms *MultiSet[T]) EraseAll(element T) {
 	ms.locker.Lock()
 	defer ms.locker.Unlock()
 
@@ -59,7 +71,7 @@ func (ms *MultiSet[T]) Find(element T) *SetIterator[T] {
 	return &SetIterator[T]{node: node}
 }
 
-//LowerBound finds the first element that is equal to or greater than the passed element in the MultiSet, and returns its iterator
+// LowerBound finds the first element that is equal to or greater than the passed element in the MultiSet, and returns its iterator
 func (ms *MultiSet[T]) LowerBound(element T) *SetIterator[T] {
 	ms.locker.RLock()
 	defer ms.locker.RUnlock()
@@ -68,7 +80,7 @@ func (ms *MultiSet[T]) LowerBound(element T) *SetIterator[T] {
 	return &SetIterator[T]{node: node}
 }
 
-//UpperBound finds the first element that is greater than the passed element in the MultiSet, and returns its iterator
+// UpperBound finds the first element that is greater than the passed element in the MultiSet, and returns its iterator
 func (ms *MultiSet[T]) UpperBound(element T) *SetIterator[T] {
 	ms.locker.RLock()
 	defer ms.locker.RUnlock()
@@ -90,12 +102,26 @@ func (ms *MultiSet[T]) First() *SetIterator[T] {
 	return &SetIterator[T]{node: ms.tree.First()}
 }
 
-//Last returns the iterator with the maximum element in the MultiSet
+// Last returns the iterator with the maximum element in the MultiSet
 func (ms *MultiSet[T]) Last() *SetIterator[T] {
 	ms.locker.RLock()
 	defer ms.locker.RUnlock()
 
 	return &SetIterator[T]{node: ms.tree.Last()}
+}
+
+// Count returns the amount of elements that are equal to the passed element in the MultiSet
+func (ms *MultiSet[T]) Count(element T) int {
+	ms.locker.RLock()
+	defer ms.locker.RUnlock()
+
+	count := 0
+	for node := ms.tree.First(); node != nil; node = node.Next() {
+		if ms.tree.Compare(node.Key(), element) == 0 {
+			count++
+		}
+	}
+	return count
 }
 
 // Clear clears all elements in the MultiSet

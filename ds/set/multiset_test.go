@@ -23,7 +23,14 @@ func TestMultiSet(t *testing.T) {
 		t.Logf("%v\n", iter.Value())
 	}
 	assert.Equal(t, "[1 1 5]", mset.String())
-	mset.Erase(1)
+	mset.EraseAll(1)
+	assert.Equal(t, "[5]", mset.String())
+
+	mset.Insert(5)
+	assert.Equal(t, 2, mset.Count(5))
+	assert.Equal(t, "[5 5]", mset.String())
+	mset.Erase(5)
+	assert.Equal(t, 1, mset.Count(5))
 	assert.Equal(t, "[5]", mset.String())
 
 	mset.Clear()
