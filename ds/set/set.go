@@ -110,6 +110,9 @@ func (s *Set[T]) UpperBound(element T) *SetIterator[T] {
 
 // Begin returns the iterator with the minimum element in the set
 func (s *Set[T]) Begin() *SetIterator[T] {
+	s.locker.RLock()
+	defer s.locker.RUnlock()
+
 	return s.First()
 }
 

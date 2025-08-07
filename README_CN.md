@@ -28,7 +28,7 @@ GoSTL是一个go语言数据结构和算法库，类似C++的STL，但功能更�
     - [布隆过滤器（bloom_filter）](#bloom_filter)
     - [哈希数组映射字典树（hash_array_mapped_trie）](#hamt)
     - [一致性哈希（ketama）](#ketama)
-    - [跳表（skiplist）](#skliplist)
+    - [跳表（skiplist）](#skiplist)
 - 算法
     - [快排（sort）](#sort)
     - [稳定排序（stable_sort）](#sort)
@@ -103,6 +103,11 @@ func main() {
   for iter := a.Begin(); iter.IsValid(); iter.Next() {
     fmt.Printf("%v ", iter.Value())
   }
+
+  // Go 1.23+
+  for v := range a.Iter() {
+    fmt.Printf("%v ", v)
+  }
 }
 
 ```
@@ -135,6 +140,11 @@ func main() {
   for iter := v.Begin(); iter.IsValid(); iter.Next() {
     fmt.Printf("%v ", iter.Value())
   }
+
+  // Go 1.23+
+  for value := range v.Iter() {
+    fmt.Printf("%v ", value)
+  }
 }
 
 ```
@@ -163,6 +173,11 @@ func main() {
     fmt.Printf("%v ", n.Value)
   }
   fmt.Printf("\n===============\n")
+
+  // Go 1.23+
+  for value := range l.Iter() {
+    fmt.Printf("%v ", value)
+  }
 }
 ```
   
@@ -186,6 +201,11 @@ func main() {
     fmt.Printf("%v ", n.Value)
   }
   fmt.Printf("\n")
+
+  // Go 1.23+
+  for v := range l.Iter() {
+    fmt.Printf("%v ", v)
+  }
 
   for n := l.BackNode(); n != nil; n = n.Prev() {
     fmt.Printf("%v ", n.Value)
@@ -224,6 +244,11 @@ func main() {
     q.EraseAt(r)
   }
   fmt.Printf("%v\n", q)
+
+  // Go 1.23+
+  for v := range q.Iter() {
+    fmt.Printf("%v ", v)
+  }
 }
 
 ```
@@ -325,6 +350,11 @@ func main() {
     return true
   })
   tree.Delete(tree.FindNode(3))
+
+  // Go 1.23+
+  for k, v := range tree.Iter2() {
+    fmt.Printf("%v : %v\n", k, v)
+  }
 }
 
 
@@ -354,6 +384,11 @@ func main() {
   fmt.Printf("b = %v\n", b)
 
   m.Erase("b")
+
+  // Go 1.23+
+  for k, v := range m.Iter2() {
+    fmt.Printf("%v : %v\n", k, v)
+  }
 }
 
 ```
@@ -386,6 +421,11 @@ func main() {
 
   fmt.Printf("%v\n", s.Contains(3))
   fmt.Printf("%v\n", s.Contains(10))
+
+  // Go 1.23+
+  for v := range s.Iter() {
+    fmt.Printf("%v\n", v)
+  }
 }
 
 ```
@@ -489,7 +529,7 @@ func main() {
 
 
 ```
-### <a name="skliplist">跳表（skliplist）</a>
+### <a name="skiplist">跳表（skiplist）</a>
 跳表是一种通过以空间换时间来实现快速查找的数据结构。支持线程安全。
 
 ```go

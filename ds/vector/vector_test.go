@@ -77,7 +77,7 @@ func TestModifyVector(t *testing.T) {
 	v.Clear()
 }
 
-func TestVectorIter(t *testing.T) {
+func TestVectorIterator(t *testing.T) {
 	v := New[int]()
 	v.PushBack(1)
 	v.PushBack(2)

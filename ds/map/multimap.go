@@ -7,7 +7,7 @@ import (
 	"github.com/liyue201/gostl/utils/visitor"
 )
 
-// MultiMap uses RbTress for internal data structure, and keys can bee repeated.
+// MultiMap uses RbTress for internal data structure, and keys can be repeated.
 type MultiMap[K, V any] struct {
 	tree   *rbtree.RbTree[K, V]
 	locker sync.Locker

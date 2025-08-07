@@ -1,5 +1,7 @@
 package comparator
 
+import "math"
+
 type Ordered interface {
 	Integer | Float | ~string
 }

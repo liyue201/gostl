@@ -104,6 +104,11 @@ func main() {
   for iter := a.Begin(); iter.IsValid(); iter.Next() {
     fmt.Printf("%v ", iter.Value())
   }
+
+  // Go 1.23+
+  for v := range a.Iter() {
+    fmt.Printf("%v ", v)
+  }
 }
 
 ```
@@ -136,6 +141,11 @@ func main() {
   for iter := v.Begin(); iter.IsValid(); iter.Next() {
     fmt.Printf("%v ", iter.Value())
   }
+
+  // Go 1.23+
+  for v := range v.Iter() {
+    fmt.Printf("%v ", v)
+  }
 }
 
 ```
@@ -163,6 +173,11 @@ func main() {
     fmt.Printf("%v ", n.Value)
   }
   fmt.Printf("\n===============\n")
+
+  // Go 1.23+
+  for n := range l.Iter() {
+    fmt.Printf("%v ", n.Value)
+  }
 }
 
 ```
@@ -190,6 +205,11 @@ func main() {
   fmt.Printf("\n")
 
   for n := l.BackNode(); n != nil; n = n.Prev() {
+    fmt.Printf("%v ", n.Value)
+  }
+
+  // Go 1.23+
+  for n := range l.Iter() {
     fmt.Printf("%v ", n.Value)
   }
 }
@@ -226,6 +246,11 @@ func main() {
     q.EraseAt(r)
   }
   fmt.Printf("%v\n", q)
+
+  // Go 1.23+
+  for v := range q.Iter() {
+    fmt.Printf("%v ", v)
+  }
 }
 
 ```
@@ -328,6 +353,11 @@ func main() {
     return true
   })
   tree.Delete(tree.FindNode(3))
+
+  // Go 1.23+
+  for k, v := range tree.Iter2() {
+    fmt.Printf("%v : %v\n", k, v)
+  }
 }
 
 ```
@@ -356,6 +386,11 @@ func main() {
   fmt.Printf("b = %v\n", b)
 
   m.Erase("b")
+
+  // Go 1.23+
+  for k, v := range m.Iter2() {
+    fmt.Printf("%v : %v\n", k, v)
+  }
 }
 
 ```
@@ -388,6 +423,11 @@ func main() {
 
   fmt.Printf("%v\n", s.Contains(3))
   fmt.Printf("%v\n", s.Contains(10))
+
+  // Go 1.23+
+  for v := range s.Iter() {
+    fmt.Printf("%v\n", v)
+  }
 }
 
 ```
